@@ -3,8 +3,6 @@ on: [push]
 
 jobs:
   build:
-    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
