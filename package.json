@@ -13,12 +13,10 @@
   },
   "peerDependencies": {},
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.9.1",
     "@types/async": "^3.2.5",
     "@types/bl": "^2.1.0",
     "@types/node": "^14.14.10",
     "@types/generic-pool": "^3.1.9",
-    "@types/node-fetch": "^2.5.7",
     "@types/yargs": "^15.0.11",
     "@types/express": "^4.17.9",
     "@types/multer": "^1.4.4",
@@ -30,10 +28,7 @@
   "dependencies": {
     "async": "^3.2.0",
     "bl": "^4.0.3",
-    "debug": "^4.3.1",
     "generic-pool": "^3.7.1",
-    "node-fetch": "^2.6.1",
-    "ts-node": "^9.1.0",
     "yargs": "^16.2.0",
     "express": "^4.17.1",
     "multer": "^1.4.2"
