@@ -9,8 +9,7 @@
     "build": "tsdx build",
     "test": "tsdx test",
     "lint": "tsdx lint src/ test/",
-    "format": "prettier --write src/**/* test/**/*",
-    "prepare": "tsdx build"
+    "format": "prettier --write src/**/* test/**/*"
   },
   "peerDependencies": {},
   "devDependencies": {
