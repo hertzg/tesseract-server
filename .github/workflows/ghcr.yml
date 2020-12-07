@@ -27,7 +27,7 @@ jobs:
         uses: crazy-max/ghaction-docker-buildx@v1
 
       - name: Login
-        run: echo ${{ secrets.GHCR_PAT }} | docker login --username ${{ secrets.GHCR_USER }} --password-stdin
+        run: echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io --username ${{ secrets.GHCR_USER }} --password-stdin
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
         uses: crazy-max/ghaction-docker-buildx@v1
 
       - name: Login
-        run: echo ${{ secrets.GHCR_PAT }} | docker login --username ${{ secrets.GHCR_USER }} --password-stdin
+        run: echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io --username ${{ secrets.GHCR_USER }} --password-stdin
 
       - name: Checkout
         uses: actions/checkout@v2
