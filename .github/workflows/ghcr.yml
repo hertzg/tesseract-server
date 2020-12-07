@@ -1,0 +1,74 @@
+name: CI
+on:
+  push:
+    branches: [master]
+    tags: 'v*'
+    paths:
+      - '.github/workflows/ghcr.yml'
+
+env:
+  PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+  IMAGE_NAME: ghcr.io/hertzg/tesseract-server
+
+jobs:
+  tag:
+    name: Build a docker image for a tag
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Prepare
+        id: prepare
+        run: |
+          echo ::set-output name=PLATFORMS::$PLATFORMS
+          echo ::set-output name=IMAGE_NAME::$IMAGE_NAME
+          echo ::set-output name=IMAGE_TAG::${GITHUB_REF#refs/tags/}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+
+      - name: Login
+        run: echo ${{ secrets.GHCR_PAT }} | docker login --username USERNAME --password-stdin
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Push :${{ steps.prepare.outputs.IMAGE_TAG }} & :latest tags
+        run: |
+          docker buildx build --platform ${{ steps.prepare.outputs.PLATFORMS }} \
+          --output "type=image,push=true" \
+          --tag "${{ steps.prepare.outputs.IMAGE_NAME }}:${{ steps.prepare.outputs.IMAGE_TAG }}" \
+          --tag "${{ steps.prepare.outputs.IMAGE_NAME }}:latest" \
+          --file Dockerfile .
+
+  branch:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/')
+    name: Branch
+    steps:
+      - name: Prepare
+        id: prepare
+        run: |
+          echo ::set-output name=PLATFORMS::$PLATFORMS
+          echo ::set-output name=IMAGE_NAME::$IMAGE_NAME
+          if [[ ${GITHUB_REF#refs/heads/} == master ]]; then
+            echo ::set-output name=IMAGE_TAG::master
+          else
+            echo ::set-output name=IMAGE_TAG::git-${GITHUB_REF#refs/heads/}
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+
+      - name: Login
+        run: echo ${{ secrets.GHCR_PAT }} | docker login --username USERNAME --password-stdin
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Push :${{ steps.prepare.outputs.IMAGE_TAG }} tag
+        run: |
+          docker buildx build --platform ${{ steps.prepare.outputs.PLATFORMS }} \
+          --output "type=image,push=true" \
+          --tag "${{ steps.prepare.outputs.IMAGE_NAME }}:${{ steps.prepare.outputs.IMAGE_TAG }}" \
+          --file Dockerfile .

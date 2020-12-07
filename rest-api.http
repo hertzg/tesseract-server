@@ -1,0 +1,17 @@
+POST http://127.0.0.1:8884/
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="options"
+Content-Type: application/json
+
+{
+  "languages": ["eng"]
+}
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="sample.jpg"
+
+< sample.jpg
+--WebAppBoundary--
+
+<> 2020-12-07T071123.400.json
