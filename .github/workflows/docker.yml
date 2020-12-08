@@ -33,11 +33,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
-      - uses: docker/login-action@v1
-        with:
-          registry: docker.pkg.github.com
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -61,8 +56,6 @@ jobs:
             hertzg/tesseract-server:latest
             ghcr.io/hertzg/tesseract-server:${{ steps.prepare.outputs.IMAGE_TAG }}
             ghcr.io/hertzg/tesseract-server:latest
-            docker.pkg.github.com/hertzg/tesseract-server:${{ steps.prepare.outputs.IMAGE_TAG }}
-            docker.pkg.github.com/hertzg/tesseract-server:latest
 
   branch:
     runs-on: ubuntu-latest
@@ -91,11 +84,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
-      - uses: docker/login-action@v1
-        with:
-          registry: docker.pkg.github.com
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -117,4 +105,3 @@ jobs:
           tags: |
             hertzg/tesseract-server:${{ steps.prepare.outputs.IMAGE_TAG }}
             ghcr.io/hertzg/tesseract-server:${{ steps.prepare.outputs.IMAGE_TAG }}
-            docker.pkg.github.com/hertzg/tesseract-server:${{ steps.prepare.outputs.IMAGE_TAG }}
