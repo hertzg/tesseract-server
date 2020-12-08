@@ -2,24 +2,26 @@ FROM node:alpine AS base
 WORKDIR /app
 COPY ./package.json ./package-*.json ./yarn.lock ./
 
-FROM base AS prodDeps
+FROM base AS deps_prod
 WORKDIR /app
-RUN yarn install --frozen-lockfile --production
+RUN yarn install --frozen-lockfile --prefer-offline --production
 
-FROM prodDeps AS devDeps
+FROM deps_prod AS deps_dev
 WORKDIR /app
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --prefer-offline
 
-FROM devDeps as builder
+FROM deps_dev AS builder
 WORKDIR /app
 COPY ./src ./src/
 COPY ./tsconfig.json ./
 RUN yarn build
 
-FROM prodDeps as prod
+FROM base AS base_prod
 RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-deu tesseract-ocr-data-pol tesseract-ocr-data-rus
+COPY --from=deps_prod /app/node_modules/ ./dist/node_modules/
 
-FROM prod
+FROM base_prod AS prod
 WORKDIR /app
-COPY --from=builder /app/dist/* ./dist/
+COPY --from=builder /app/dist/index.js /app/dist/*.production.*.js ./dist/
 CMD dist/index.js
+ENV NODE_ENV "production"
