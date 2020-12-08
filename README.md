@@ -22,7 +22,7 @@ $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0
 
 There are a few endpoints exposed this section describes each one.
 
-### OCR Endpoint
+### OCR Endpoint - `/`
 
 This endpoint performs OCR on provided `file`, You can control the OCR process by providing `options` field with `JSON` object containing the configuration.
 This is the main endpoint that expects http `multipart` request containing `options` and `file` fields and returns a `json` containing `stdout` and `stderr` of the tesseract process.
