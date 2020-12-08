@@ -1,6 +1,6 @@
 {
   "name": "tesseract-server",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/tesseract-server.esm.js",
@@ -15,11 +15,11 @@
   "devDependencies": {
     "@types/async": "^3.2.5",
     "@types/bl": "^2.1.0",
-    "@types/node": "^14.14.10",
-    "@types/generic-pool": "^3.1.9",
-    "@types/yargs": "^15.0.11",
     "@types/express": "^4.17.9",
+    "@types/generic-pool": "^3.1.9",
     "@types/multer": "^1.4.4",
+    "@types/node": "^14.14.10",
+    "@types/yargs": "^15.0.11",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
     "typescript": "^4.1.2"
@@ -27,10 +27,10 @@
   "dependencies": {
     "async": "^3.2.0",
     "bl": "^4.0.3",
-    "generic-pool": "^3.7.1",
-    "yargs": "^16.2.0",
     "express": "^4.17.1",
-    "multer": "^1.4.2"
+    "generic-pool": "^3.7.1",
+    "multer": "^1.4.2",
+    "yargs": "^16.2.0"
   },
   "resolutions": {
     "**/typescript": "^4.0.5",
