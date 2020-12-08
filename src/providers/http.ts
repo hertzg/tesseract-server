@@ -14,17 +14,39 @@ class HTTPProvider implements IProvider {
   private readonly app = express();
   private readonly upload = multer({
     storage: multer.diskStorage({
-      destination: argv['http.tmp-dir'],
+      destination: argv['http.upload.tmpDir'],
     }),
   });
 
   constructor(private tess: IProcessor) {
-    this.app.post('/', this.upload.single('file'), this._onPost);
+    this.app.post(
+      '/',
+      this.upload.single(argv['http.input.fileField']),
+      this._onPost,
+    );
+
+    if (argv['http.output.jsonSpaces'] && argv['http.output.jsonSpaces'] > 0) {
+      this.app.set('json spaces', argv['http.output.jsonSpaces']);
+    }
+
+    if (argv['http.endpoint.status.enable']) {
+      this.app.get('/status', this._onStatus);
+    }
   }
+
+  private _onStatus = (req: Request, res: Response) => {
+    this.tess.status().then(status => {
+      res.status(200).json({
+        data: {
+          processor: status,
+        },
+      });
+    });
+  };
 
   private _getOptions = async (req: Request): Promise<Options> => {
     // TODO: Validate input
-    return JSON.parse(req.body.options);
+    return JSON.parse(req.body[argv['http.input.optionsField']]);
   };
 
   private _getReadable = async (req: Request): Promise<Readable> => {

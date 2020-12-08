@@ -2,16 +2,40 @@ import Yargs from 'yargs';
 import { tmpdir } from 'os';
 
 export default Yargs(process.argv).options({
-  'pool-min': {
+  'pool.default.min': {
     default: 0,
     type: 'number',
   },
-  'pool-max': {
+  'pool.default.max': {
     default: 2,
     type: 'number',
   },
-  'http.tmp-dir': {
+  'pool.default.idleTimeoutMillis': {
+    default: 5000,
+    type: 'number',
+  },
+  'pool.default.evictionRunIntervalMillis': {
+    default: 5000,
+    type: 'number',
+  },
+  'http.upload.tmpDir': {
     default: tmpdir(),
+    type: 'string',
+  },
+  'http.endpoint.status.enable': {
+    default: true,
+    type: 'boolean',
+  },
+  'http.output.jsonSpaces': {
+    default: 0,
+    type: 'number',
+  },
+  'http.input.optionsField': {
+    default: 'options',
+    type: 'string',
+  },
+  'http.input.fileField': {
+    default: 'file',
     type: 'string',
   },
 }).argv;

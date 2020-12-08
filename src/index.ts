@@ -4,8 +4,8 @@ import { createProcessor } from './processor';
 
 const processor = createProcessor({
   pool: {
-    min: argv['pool-min'],
-    max: argv['pool-max'],
+    min: argv['pool.default.min'],
+    max: argv['pool.default.max'],
   },
 });
 
