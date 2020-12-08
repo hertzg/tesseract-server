@@ -1,103 +1,56 @@
-# TSDX User Guide
+# Tesseract server
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+A small lightweight http server exposing tesseract as a service.
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+## Usage
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
+The easiest way to get started is using pre-build docker images
 
-## Commands
-
-TSDX scaffolds your new library inside `/src`.
-
-To run TSDX, use:
-
-```bash
-npm start # or yarn start
+```shell script
+$ docker -p 8884:8884 hertzg/tesseract-server:latest
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+You can use the service by sending `multipart` http requests containing `options` and `file` fields.
 
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle Analysis
-
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+```shell script
+# Run OCR using english language on file sample.jpg in current directory
+$ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/
+{"data":{"exit":{"code":0,"signal":null},"stderr":"Warning: Invalid resolution 0 dpi. Using 70 instead.\nEstimating resolution as 153\n","stdout":" \n\n \n\nThe Life and Work of\nFredson Bowers\n\nby\nG. THOMAS TANSELLE\n\n \n\nN EVERY FIELD OF ENDEAVOR THERE ARE A FEW FIGURES WHOSE AGCOM-\nplishment and influence cause them to be the symbols of their age;\ntheir careers and oeuvres become the touchstones by which the\nfield is measured and its history told. In the related pursuits of\n\nanalytical and descriptive bibliography, textual criticism, and scholarly\nediting, Fredson Bowers was such a figure, dominating the four decades\nafter 1949, when his Principles of Bibliographical Description was pub-\nlished. By 1973 the period was already being called “the age of Bowers”:\nin that year Norman Sanders, writing the chapter on textual scholarship\nfor Stanley Wells's Shakespeare: Select Bibliographies, gave this title to\na section of his essay. For most people, it would be achievement enough\nto ise to such a position in a field as complex as Shakespearean textual\nstudies; but Bowers played an equally important role in other areas.\nEditors of nineteenth-century American authors, for example, would\nalso have to call the recent past “the age of Bowers, as would the writers\nof descriptive bibliographics of authors and presses. His ubiquity in\nthe broad field of bibliographical and textual study, his seemingly com-\nplete possession of it, distinguished him from his illustrious predeces-\nsors and made him the personification of bibliographical scholarship in\nhis time.\n\nWhen in 1969 Bowers was awarded the Gold Medal of the Biblio-\ngraphical Society in London, John Carter’s citation referred to the\nPrinciples as “majestic,” called Bowers’s current projects “formidable,”\nsaid that he had “imposed critical discipline” on the texts of several\nauthors, described Studies in Bibliography as a “great and continuing\nachievement,” and included among his characteristics “uncompromising\nseriousness of purpose” and “professional intensity.” Bowers was not\nunaccustomed to such encomia, but he had also experienced his share of\nattacks: his scholarly positions were not universally popular, and he\nexpressed them with an aggressiveness that almost seemed calculated to\n\n \n\f"}}
 ```
 
-### Rollup
+## HTTP API
 
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+There are a few endpoints exposed this section describes each one.
 
-### TypeScript
+### OCR Endpoint
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+This endpoint performs OCR on provided `file`, You can control the OCR process by providing `options` field with `JSON` object containing the configuration.
+This is the main endpoint that expects http `multipart` request containing `options` and `file` fields and returns a `json` containing `stdout` and `stderr` of the tesseract process.
 
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```typescript
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+The `options` json object fields directly relate to the CLI options of `tesseract` command.
+```json5
+{
+  "languages": ['eng'],               // -l LANG[+LANG]        Specify language(s) used for OCR.
+  "dpi": 300,                         // --dpi VALUE           Specify DPI for input image.
+  "pageSegmentationMethod": 3,        // --psm NUM             Specify page segmentation mode.
+  "ocrEngineMode": 3,                 // --oem NUM             Specify OCR Engine mode.
+  "tessDataDir": './dir',             // --tessdata-dir PATH   Specify the location of tessdata path.,
+  "userPatternsFile": './file',       // --user-words PATH     Specify the location of user words file.
+  "userWordsFile": './file',          // --user-patterns PATH  Specify the location of user patterns file.
+  "configParams": {                   // -c VAR=VALUE          Set value for config variables.
+    "VAR": "VALUE",                   // Note: You can use tesseract --print-parameters to see all available parameters
+  },
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
-
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
+The returned response has the following shape
+```json5
+{
+  "exit": {
+    "code": 0,                        // Process exit code
+    "signal": null                    // Process signal that caused the exit
+  },
+  "stderr":  "...",                    // Tesseract Errors and warnings
+  "stdout":  "..."                     // Tesseract output that contains the result
+}
+```
