@@ -24,4 +24,5 @@ FROM base_prod AS prod
 WORKDIR /app
 COPY --from=builder /app/dist/index.js /app/dist/*.production.*.js ./dist/
 CMD node dist/index.js
+EXPOSE 8884
 ENV NODE_ENV "production"
