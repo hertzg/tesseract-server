@@ -23,5 +23,5 @@ COPY --from=deps_prod /app/node_modules/ ./dist/node_modules/
 FROM base_prod AS prod
 WORKDIR /app
 COPY --from=builder /app/dist/index.js /app/dist/*.production.*.js ./dist/
-CMD dist/index.js
+CMD node dist/index.js
 ENV NODE_ENV "production"
