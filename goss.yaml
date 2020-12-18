@@ -1,0 +1,22 @@
+package:
+  tesseract-ocr:
+    installed: true
+    versions:
+    - 4.1.0-r0
+  tesseract-ocr-data-*:
+    installed: true
+    versions:
+    - tesseract-ocr-data-rus-4.1.0-r0
+    - tesseract-ocr-data-pol-4.1.0-r0
+    - tesseract-ocr-data-deu-4.1.0-r0
+
+process:
+  node:
+    running: true
+
+http:
+  http://127.0.0.1:8884/status:
+    status: 200
+    allow-insecure: false
+    no-follow-redirects: false
+    timeout: 5000
