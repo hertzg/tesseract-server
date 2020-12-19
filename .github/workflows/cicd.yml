@@ -51,17 +51,18 @@ jobs:
   #      - run: dgoss run tesseract-server:goss
 
   publish:
-    #if: ${{ startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/heads/') }}
+    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master' }}
     #needs: [build, dgoss]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - id: prepare
-        uses: ./.github/actions/publish/prepare
+      - id: dockerTagger
+        uses: ./.github/actions/publish/dockerTagger
         with:
           image-names: |
             ghcr.io/hertzg/tesseract-server
             hertzg/tesseract-server
+
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
@@ -89,4 +90,4 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ steps.prepare.outputs.image-tags }}
+          tags: ${{ steps.dockerTagger.outputs.image-tags }}
