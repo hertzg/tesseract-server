@@ -51,7 +51,6 @@ jobs:
     if: ${{ startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/heads/') }}
     needs: [build, dgoss]
     runs-on: ubuntu-latest
-    env: REPOSITORIES=
     steps:
       - name: Prepare
         id: prepare
