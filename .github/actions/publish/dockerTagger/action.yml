@@ -1,0 +1,19 @@
+name: Docker image tagger
+description: Action that generates docker tags based on github events
+
+inputs:
+  git-ref:
+    required: true
+    description: 'GitHub ref to base tags off of. (default: $github.ref)'
+    default: ${{ github.ref }}
+  image-names:
+    required: true
+    description: 'New line delimited list of repositories'
+
+outputs:
+  image-tags:
+    description: 'New line separated list of tags... can be directly used as "tags" for docker/build-push-action@v2'
+
+runs:
+  using: node12
+  main: index.js
