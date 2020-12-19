@@ -12,7 +12,7 @@ inputs:
 
 outputs:
   image-tags:
-    description: 'New line separated list of tags to apply to images'
+    description: 'New line separated list of tags... can be directly used as "tags" for docker/build-push-action@v2'
 
 runs:
   using: node12
