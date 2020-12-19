@@ -1,6 +1,7 @@
 name: CICD
 on:
   push:
+    branches: '*'
     tags: 'v*'
     paths:
       - '.github/workflows/cicd.yml'
@@ -54,6 +55,10 @@ jobs:
     steps:
       - id: prepare
         uses: ./.github/actions/publish/prepare
+        with:
+          image-names: |
+            ghcr.io/hertzg/tesseract-server
+            hertzg/tesseract-server
 
       - uses: actions/checkout@v2
       - uses: docker/setup-qemu-action@v1
