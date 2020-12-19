@@ -1,0 +1,27 @@
+name: Docker tag generator
+description: Action that generates docker tags based on github events
+
+inputs:
+  github-ref:
+    required: true
+    description: 'GitHub ref to base tags off of. (default: $github.ref)'
+    default: ${{ github.ref }}
+  image-names:
+    required: true
+    description: 'New line delimited list of repositories'
+  tag-as-latest:
+    required: false
+    description: 'Tagging strategy for :latest tags'
+    default: 'none'
+  branch-tag-prefix:
+    required: false
+    description: prefix to be applied to tags generated for branch events
+    default: 'git-'
+
+outputs:
+  image-tags:
+    description: 'New line separated list of tags to apply to images'
+
+runs:
+  using: node12
+  main: index.js
