@@ -43,6 +43,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
+          load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: tesseract-server:goss
