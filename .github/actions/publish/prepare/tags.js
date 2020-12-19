@@ -1,13 +1,13 @@
 const { isHead, parseRef } = require('./git-ref');
+const { writeInfo } = require('./io');
 const { isVersionTag, isMaster } = require('./helpers');
 
-const applyTaggingStrategy = (ref, strategy, branchPrefix) => {
+const applyTaggingStrategies = (ref, strategies, branchPrefix) => {
+  writeInfo(`applying ${JSON.stringify(strategies)} strategy to ${ref}`);
   const tags = [];
 
-  const tagAsLatest = (...chosenStrategies) =>
-    chosenStrategies.some(chosenStrategy =>
-      strategy.includes(chosenStrategy),
-    ) && tags.push('latest');
+  const tagAsLatest = (...options) =>
+    options.some(option => strategies.includes(option)) && tags.push('latest');
 
   switch (true) {
     case isVersionTag(ref):
@@ -33,6 +33,6 @@ const joinWithRepositories = (tags, repos) =>
     .map(([repo, tag]) => `${repo}:${tag}`);
 
 module.exports = {
-  applyTaggingStrategy,
+  applyTaggingStrategies,
   joinWithRepositories,
 };

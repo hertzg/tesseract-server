@@ -11,7 +11,7 @@ inputs:
     description: 'New line delimited list of repositories'
   tag-as-latest:
     required: false
-    description: 'Tagging strategy for :latest tags'
+    description: 'New line delimited list tagging strategies for :latest tags'
     default: 'none'
   branch-tag-prefix:
     required: false

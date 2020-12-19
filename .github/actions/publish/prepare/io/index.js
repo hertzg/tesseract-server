@@ -1,4 +1,4 @@
-const { getInput, getInputLines, getInputEnum } = require('./input');
+const { getInput, getInputLines, getInputEnumLines } = require('./input');
 const {
   writeDebug,
   writeInfo,
@@ -20,17 +20,16 @@ const getConfig = () => {
   const ref = getInput('github-ref');
   const repositories = getInputLines('image-names');
 
-  const taggingStrategy = getInputEnum(
+  const taggingStrategies = getInputEnumLines(
     'tag-as-latest',
     TAGGING_STRATEGIES,
-    'any-tag',
   );
   const branchPrefix = getInput('branch-tag-prefix', 'git-');
 
   return {
     ref,
     repositories,
-    taggingStrategy,
+    taggingStrategies,
     branchPrefix,
   };
 };

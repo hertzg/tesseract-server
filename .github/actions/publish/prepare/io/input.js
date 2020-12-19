@@ -10,16 +10,16 @@ const getInputLines = (name, separator = '\n') => {
   return input ? input.split(separator).map(line => line.trim()) : [];
 };
 
-const getInputEnum = (name, values = [], defaultValue = values[0]) => {
-  const input = getInput(name, defaultValue);
-  if (!values.includes(input)) {
-    fail(`${name} can't be ${input}. Only ${values.join(', ')} allowed`);
+const getInputEnumLines = (name, options = [], separator = '\n') => {
+  const inputs = getInputLines(name, separator);
+  if (!inputs.every(input => options.includes(input))) {
+    fail(`${name} can't be ${inputs}. Only ${options.join(', ')} allowed`);
   }
-  return input;
+  return inputs;
 };
 
 module.exports = {
   getInput,
-  getInputEnum,
+  getInputEnumLines,
   getInputLines,
 };
