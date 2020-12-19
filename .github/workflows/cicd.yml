@@ -51,7 +51,7 @@ jobs:
   #      - run: dgoss run tesseract-server:goss
 
   publish:
-    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master' }}
+    #if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master' }}
     #needs: [build, dgoss]
     runs-on: ubuntu-latest
     steps:
@@ -87,7 +87,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          push: true
+          push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ steps.dockerTagger.outputs.image-tags }}
