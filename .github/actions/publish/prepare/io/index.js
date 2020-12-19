@@ -1,5 +1,12 @@
 const { getInput, getInputLines, getInputEnum } = require('./input');
-const { setOutput, fail } = require('./output');
+const {
+  writeDebug,
+  writeInfo,
+  writeWarning,
+  writeError,
+  setOutput,
+  fail,
+} = require('./output');
 
 const TAGGING_STRATEGIES = [
   'none',
@@ -32,6 +39,10 @@ module.exports = {
   getInput,
   getInputLines,
   getConfig,
+  writeDebug,
+  writeInfo,
+  writeWarning,
+  writeError,
   setOutput,
   fail,
 };

@@ -36,10 +36,18 @@ const writeLine = line => process.stdout.write(`${line}${EOL}`);
 const setOutput = (name, data) =>
   writeLine(formatCommand('set-output', data, { name }));
 
-const writeError = error =>
-  writeLine(
-    formatCommand('error', error instanceof Error ? error.toString() : error),
-  );
+const writeDebug = message => writeLine(formatCommand('debug', message));
+
+const writeInfo = message => writeLine(message);
+
+const ensureString = reason =>
+  reason instanceof Error ? reason.toString() : reason;
+
+const writeWarning = message =>
+  writeLine(formatCommand('warning', ensureString(message)));
+
+const writeError = message =>
+  writeLine(formatCommand('error', ensureString(message)));
 
 const fail = reason => {
   writeError(reason);
@@ -48,6 +56,9 @@ const fail = reason => {
 
 module.exports = {
   setOutput,
+  writeDebug,
+  writeInfo,
+  writeWarning,
   writeError,
   fail,
 };
