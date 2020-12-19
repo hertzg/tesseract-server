@@ -91,4 +91,4 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ steps.prepare.output.image-tags }}
+          tags: ${{ steps.prepare.outputs.image-tags }}
