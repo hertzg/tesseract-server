@@ -55,14 +55,15 @@ jobs:
     needs: [build, dgoss]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - id: prepare
         uses: ./.github/actions/publish/prepare
         with:
+          branch-tag-prefix: git-
+          tag-as-latest: any-tag
           image-names: |
             ghcr.io/hertzg/tesseract-server
             hertzg/tesseract-server
-
-      - uses: actions/checkout@v2
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
