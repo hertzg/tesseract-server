@@ -10,9 +10,7 @@
     "test": "tsdx test",
     "lint": "tsdx lint src/ test/",
     "format": "prettier --write src/**/* test/**/*",
-    "release": "yarn run release:patch",
-    "release:minor": "standard-version --release-as minor && git push --follow-tags",
-    "release:patch": "standard-version --release-as patch && git push --follow-tags"
+    "release": "standard-version"
   },
   "peerDependencies": {},
   "devDependencies": {
