@@ -1,6 +1,7 @@
 import argv from './argv';
 import { createProviders } from './providers';
 import { createProcessor } from './processor';
+import { createHealthChecker } from './health';
 
 const processor = createProcessor({
   pool: {
@@ -9,8 +10,11 @@ const processor = createProcessor({
   },
 });
 
+const healthChecker = createHealthChecker();
+
 const provider = createProviders({
   processor,
+  healthChecker,
 });
 
 provider.start();

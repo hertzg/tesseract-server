@@ -38,6 +38,7 @@ This endpoint performs OCR on provided `file`, You can control the OCR process b
 This is the main endpoint that expects http `multipart` request containing `options` and `file` fields and returns a `json` containing `stdout` and `stderr` of the tesseract process.
 
 The `options` json object fields directly relate to the CLI options of `tesseract` command.
+
 ```json5
 {
   "languages": ['eng'],               // -l LANG[+LANG]        Specify language(s) used for OCR.
@@ -54,6 +55,7 @@ The `options` json object fields directly relate to the CLI options of `tesserac
 ```
 
 The returned response has the following shape
+
 ```json5
 {
   "exit": {
@@ -64,3 +66,15 @@ The returned response has the following shape
   "stdout":  "..."                     // Tesseract output that contains the result
 }
 ```
+
+### Health Endpoints
+
+Endpoints:
+
+- `/.well-known/health/healthy`
+- `/.well-known/health/live`
+- `/.well-known/health/ready`
+
+The difference between liveness and readiness endpoints is the purpose: readiness should be used to denote whether an application is "ready" to receive requests, and liveness should be used to denote whether an application is "live" (vs. in a state where it should be restarted.
+
+The combined health endpoint is designed for cloud technologies, such as Cloud Foundry which only support a single endpoint for both liveness and readiness checking.

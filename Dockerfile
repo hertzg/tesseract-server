@@ -1,4 +1,5 @@
 FROM node:alpine AS base
+RUN apk add --no-cache curl
 WORKDIR /app
 COPY ./package.json ./package-*.json ./yarn.lock ./
 
@@ -25,4 +26,5 @@ WORKDIR /app
 COPY --from=builder /app/dist/index.js /app/dist/*.production.*.js ./dist/
 CMD node dist/index.js
 EXPOSE 8884
+HEALTHCHECK CMD curl -f http://127.0.0.1:8884/.well-known/health/healthy || exit 1
 ENV NODE_ENV "production"

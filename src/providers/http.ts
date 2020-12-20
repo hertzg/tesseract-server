@@ -1,4 +1,10 @@
 import express, { Request, Response } from 'express';
+import {
+  HealthChecker,
+  HealthEndpoint,
+  LivenessEndpoint,
+  ReadinessEndpoint,
+} from '@cloudnative/health-connect';
 import FS from 'fs';
 import multer from 'multer';
 import { IProcessor, Options } from '../processor';
@@ -6,8 +12,8 @@ import argv from '../argv';
 import { Readable } from 'stream';
 import { IProvider, IProviderFactory } from './types';
 
-export const createHttpProvider: IProviderFactory = ({ processor }) => {
-  return new HTTPProvider(processor);
+export const createHttpProvider: IProviderFactory = ({ processor, healthChecker }) => {
+  return new HTTPProvider(processor, healthChecker);
 };
 
 class HTTPProvider implements IProvider {
@@ -18,7 +24,10 @@ class HTTPProvider implements IProvider {
     }),
   });
 
-  constructor(private tess: IProcessor) {
+  constructor(
+    private readonly tess: IProcessor,
+    private readonly health: HealthChecker,
+  ) {
     this.app.post(
       '/',
       this.upload.single(argv['http.input.fileField']),
@@ -31,6 +40,12 @@ class HTTPProvider implements IProvider {
 
     if (argv['http.endpoint.status.enable']) {
       this.app.get('/status', this._onStatus);
+    }
+
+    if (argv['http.endpoint.health.enable']) {
+      this.app.use('/.well-known/health/healthy', HealthEndpoint(this.health));
+      this.app.use('/.well-known/health/live', LivenessEndpoint(this.health));
+      this.app.use('/.well-known/health/ready', ReadinessEndpoint(this.health));
     }
   }
 
