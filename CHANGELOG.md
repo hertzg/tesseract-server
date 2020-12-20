@@ -1,3 +1,22 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.1.5](https://github.com/hertzg/tesseract-server/compare/v1.1.4...v1.1.5) (2020-12-20)
+
+
+### 🚀 Features
+
+* introduce changelog generation with release ([16bc9e7](https://github.com/hertzg/tesseract-server/commit/16bc9e797031ee1b101a8a4a154096df14d1fc75))
+
+
+### 🛠️ General Chores
+
+* add conventional-changelog cli tool ([13ba011](https://github.com/hertzg/tesseract-server/commit/13ba011f7e924584082d91e107e529dcb434fac5))
+* convert .npmrc to .yarnrc ([4067163](https://github.com/hertzg/tesseract-server/commit/40671634b3aa91702914c956c71ffc9eeb3bee7c))
+* introduce release tool + commit generator ([16f12a9](https://github.com/hertzg/tesseract-server/commit/16f12a9ab644fc638293b3c75bf83f5055ef18e6))
+* **dev-deps:** upgrade typescript and drop resolutions ([8bf0d91](https://github.com/hertzg/tesseract-server/commit/8bf0d91e1af55e799a41abfeb04306914f77eb8a))
+
 ## [1.1.4](https://github.com/hertzg/tesseract-server/compare/v1.1.3...v1.1.4) (2020-12-19)
 
 
@@ -98,6 +117,3 @@
 ### fix
 
 * sort config args to allow pool reuse ([e5f8356](https://github.com/hertzg/tesseract-server/commit/e5f83561c4cd3b8c5078d880e91b0fc0f1ac4334))
-
-
-
