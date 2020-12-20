@@ -12,7 +12,10 @@ import argv from '../argv';
 import { Readable } from 'stream';
 import { IProvider, IProviderFactory } from './types';
 
-export const createHttpProvider: IProviderFactory = ({ processor, healthChecker }) => {
+export const createHttpProvider: IProviderFactory = ({
+  processor,
+  healthChecker,
+}) => {
   return new HTTPProvider(processor, healthChecker);
 };
 
