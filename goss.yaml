@@ -1,3 +1,14 @@
+file:
+  /docker-entrypoint.sh:
+    exists: true
+    mode: "0755"
+    filetype: file
+    contains: []
+  /sbin/tini:
+    exists: true
+    mode: "0755"
+    filetype: file
+    contains: []
 package:
   tesseract-ocr:
     installed: true
@@ -9,14 +20,15 @@ package:
     - tesseract-ocr-data-rus-4.1.0-r0
     - tesseract-ocr-data-pol-4.1.0-r0
     - tesseract-ocr-data-deu-4.1.0-r0
-
 process:
+  tini:
+    running: true
   node:
     running: true
-
 http:
   http://127.0.0.1:8884/status:
     status: 200
     allow-insecure: false
     no-follow-redirects: false
     timeout: 5000
+    body: []
