@@ -1,10 +1,8 @@
 name: CICD
 on:
   push:
-    branches: '*'
+    branches: []
     tags: 'v*'
-    paths:
-      - '.github/workflows/cicd.yml'
 
 jobs:
   test:
