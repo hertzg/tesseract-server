@@ -72,6 +72,61 @@ References:
 ```
 <!-- prettier-ignore-end -->
 
+## Docker
+
+Docker images are multi-arch images based on `alpine` variant of official `node`
+docker images supporting `linux/amd64`, `linux/arm/v6`, `linux/arm/v7`,
+`linux/arm64/v8` platforms.
+
+## Raspberry Pi support
+
+The docker images support ARM architectures which means that they can be used on
+at least the following versions of Raspberry Pi:
+
+- RPi 1 Model A
+- RPi 1 Model A+
+- RPi 3 Model A+
+- RPi 1 Model B
+- RPi 1 Model B+
+- RPi 2 Model B
+- RPi 2 Model B v1.2 (:heavy_check_mark: tested)
+- RPi 3 Model B
+- RPi 3 Model B+ (:heavy_check_mark: tested)
+- RPi 4 Model B (:heavy_check_mark: tested)
+- Compute Module 1
+- Compute Module 3
+- Compute Module 3 Lite
+- Compute Module 3+
+- Compute Module 3+ Lite
+- RPi Zero PCB v1.2
+- RPi Zero PCB v1.3
+- RPi Zero W
+
+If you have any of those devices and have successfully used the images feel free
+to report them and help update this list. :open_hands:
+
+## Supported Languages
+
+The container by default installs tesseract and 3 datapacks:
+
+- `tesseract-ocr` - English (included)
+- `tesseract-ocr-data-deu` - German
+- `tesseract-ocr-data-pol` - Polish
+- `tesseract-ocr-data-rus` - Russian
+
+To add more languages you can extend this image and install one or more
+[available language datapacks](https://pkgs.alpinelinux.org/packages?name=tesseract-ocr-data-*&branch=edge&arch=x86_64)
+with the package manager:
+
+<!-- prettier-ignore-start -->
+```Dockerfile
+FROM hertzg/tesseract-server:latest
+RUN apk add --no-cache tesseract-ocr-data-spa tesseract-ocr-data-ara # and so on
+```
+<!-- prettier-ignore-end -->
+
+After starting the container the new language will be automatically available.
+
 ## HTTP API
 
 There are a few endpoints exposed this section describes each one.
