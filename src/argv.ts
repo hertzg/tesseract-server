@@ -28,6 +28,10 @@ export default Yargs(process.argv)
       default: true,
       type: 'boolean',
     },
+    'http.endpoint.health.enable': {
+      default: true,
+      type: 'boolean',
+    },
     'http.output.jsonSpaces': {
       default: 0,
       type: 'number',
