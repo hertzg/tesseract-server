@@ -67,6 +67,40 @@ The returned response has the following shape
 }
 ```
 
+### Status Endpoint - `/status`
+
+```shell script
+# Get worker status
+$ curl http://127.0.0.1:8884/status
+```
+
+Returns the pool and their statuses as JSON. When you make OCR request the first pool will be created and then re-used.
+This endpoint also shows detailed information about each pool including process pids and eviction flags.
+
+```json5
+{
+  data: {
+    processor: {
+      pools: [
+        {
+          args: '-l eng',
+          resources: [],
+          status: {
+            spareResourceCapacity: 2,
+            size: 0,
+            available: 0,
+            borrowed: 0,
+            pending: 0,
+            max: 2,
+            min: 0,
+          },
+        },
+      ],
+    },
+  },
+}
+```
+
 ### Health Endpoints
 
 Endpoints:
