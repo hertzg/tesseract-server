@@ -2,16 +2,20 @@
 
 A small lightweight http server exposing tesseract as a service.
 
-## Usage
+## Quick Start
 
-The easiest way to get started is using pre-build docker images
+The easiest way to get started is using
+[pre-built docker images](https://hub.docker.com/repository/docker/hertzg/tesseract-server)
+(multi-arch)
 
 ```shell script
 $ docker -p 8884:8884 hertzg/tesseract-server:latest
 ```
 
-You can use the service by sending `multipart` http requests containing `options` and `file` fields.
+You can use the service by sending `multipart` http requests containing
+`options` and `file` fields.
 
+<!-- prettier-ignore-start -->
 ```shell script
 # Run OCR using english language on file sample.jpg in current directory
 $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/
@@ -27,6 +31,7 @@ $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0
   }
 }
 ```
+<!-- prettier-ignore-end -->
 
 ## HTTP API
 
@@ -34,11 +39,16 @@ There are a few endpoints exposed this section describes each one.
 
 ### OCR Endpoint - `/`
 
-This endpoint performs OCR on provided `file`, You can control the OCR process by providing `options` field with `JSON` object containing the configuration.
-This is the main endpoint that expects http `multipart` request containing `options` and `file` fields and returns a `json` containing `stdout` and `stderr` of the tesseract process.
+This endpoint performs OCR on provided `file`, You can control the OCR process
+by providing `options` field with `JSON` object containing the configuration.
+This is the main endpoint that expects http `multipart` request containing
+`options` and `file` fields and returns a `json` containing `stdout` and
+`stderr` of the tesseract process.
 
-The `options` json object fields directly relate to the CLI options of `tesseract` command.
+The `options` json object fields directly relate to the CLI options of
+`tesseract` command.
 
+<!-- prettier-ignore-start -->
 ```json5
 {
   "languages": ['eng'],               // -l LANG[+LANG]        Specify language(s) used for OCR.
@@ -53,9 +63,11 @@ The `options` json object fields directly relate to the CLI options of `tesserac
   },
 }
 ```
+<!-- prettier-ignore-end -->
 
 The returned response has the following shape
 
+<!-- prettier-ignore-start -->
 ```json5
 {
   "exit": {
@@ -66,6 +78,7 @@ The returned response has the following shape
   "stdout":  "..."                     // Tesseract output that contains the result
 }
 ```
+<!-- prettier-ignore-end -->
 
 ### Status Endpoint - `/status`
 
@@ -74,9 +87,11 @@ The returned response has the following shape
 $ curl http://127.0.0.1:8884/status
 ```
 
-Returns the pool and their statuses as JSON. When you make OCR request the first pool will be created and then re-used.
-This endpoint also shows detailed information about each pool including process pids and eviction flags.
+Returns the pool and their statuses as JSON. When you make OCR request the first
+pool will be created and then re-used. This endpoint also shows detailed
+information about each pool including process pids and eviction flags.
 
+<!-- prettier-ignore-start -->
 ```json5
 {
   data: {
@@ -100,6 +115,7 @@ This endpoint also shows detailed information about each pool including process 
   },
 }
 ```
+<!-- prettier-ignore-end -->
 
 ### Health Endpoints
 
@@ -109,6 +125,11 @@ Endpoints:
 - `/.well-known/health/live`
 - `/.well-known/health/ready`
 
-The difference between liveness and readiness endpoints is the purpose: readiness should be used to denote whether an application is "ready" to receive requests, and liveness should be used to denote whether an application is "live" (vs. in a state where it should be restarted.
+The difference between liveness and readiness endpoints is the purpose:
+readiness should be used to denote whether an application is "ready" to receive
+requests, and liveness should be used to denote whether an application is "live"
+(vs. in a state where it should be restarted.
 
-The combined health endpoint is designed for cloud technologies, such as Cloud Foundry which only support a single endpoint for both liveness and readiness checking.
+The combined health endpoint is designed for cloud technologies, such as Cloud
+Foundry which only support a single endpoint for both liveness and readiness
+checking.
