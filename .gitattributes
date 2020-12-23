@@ -1,0 +1,3 @@
+./.* -linguist-detectable
+./scripts -linguist-detectable
+./.github -linguist-detectable
