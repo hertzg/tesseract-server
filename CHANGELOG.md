@@ -1,3 +1,30 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.2.0](https://github.com/hertzg/tesseract-server/compare/v1.1.4...v1.2.0) (2020-12-20)
+
+
+### 🚀 Features
+
+* introduce health check endpoints ([#5](https://github.com/hertzg/tesseract-server/issues/5)) ([88db003](https://github.com/hertzg/tesseract-server/commit/88db00346eba0c269b77cf57536b9d3be77845d4))
+
+
+### 🚆 Pipeline Improvements
+
+* introduce standard-version as a release tool ([6cce1a7](https://github.com/hertzg/tesseract-server/commit/6cce1a78c7296b4a69652a1bd386091250f50533))
+* trigger on all branches ([#6](https://github.com/hertzg/tesseract-server/issues/6)) ([6ebf08f](https://github.com/hertzg/tesseract-server/commit/6ebf08ff7428ea56c00b199191cc44af3b828433))
+
+
+### 🛠️ General Chores
+
+* update lockfile ([c8b8c4b](https://github.com/hertzg/tesseract-server/commit/c8b8c4b2c92c379fd923cf85b85e4d3da94bf491))
+
+
+### 📖 Documentation Updates
+
+* document `/status` entrypoint ([d9711db](https://github.com/hertzg/tesseract-server/commit/d9711db39280fa5f3448566188e97bacdfd86c3c))
+
 ## [1.1.4](https://github.com/hertzg/tesseract-server/compare/v1.1.3...v1.1.4) (2020-12-19)
 
 
@@ -98,6 +125,3 @@
 ### fix
 
 * sort config args to allow pool reuse ([e5f8356](https://github.com/hertzg/tesseract-server/commit/e5f83561c4cd3b8c5078d880e91b0fc0f1ac4334))
-
-
-

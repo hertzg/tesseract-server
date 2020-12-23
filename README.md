@@ -1,17 +1,21 @@
-# Tesseract server
+# Tesseract server (OCR over HTTP)
 
-A small lightweight http server exposing tesseract as a service.
+A small lightweight http server exposing optical character recognition over HTTP using Tesseract.
 
-## Usage
+## Quick Start
 
-The easiest way to get started is using pre-build docker images
+The easiest way to get started is using
+[pre-built docker images](https://hub.docker.com/repository/docker/hertzg/tesseract-server)
+(multi-arch)
 
 ```shell script
 $ docker -p 8884:8884 hertzg/tesseract-server:latest
 ```
 
-You can use the service by sending `multipart` http requests containing `options` and `file` fields.
+You can use the service by sending `multipart` http requests containing
+`options` and `file` fields.
 
+<!-- prettier-ignore-start -->
 ```shell script
 # Run OCR using english language on file sample.jpg in current directory
 $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/
@@ -27,6 +31,101 @@ $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0
   }
 }
 ```
+<!-- prettier-ignore-end -->
+
+## Usage
+
+The service provides configurations as cli options. All the options with their
+descriptions, types and defaults including some usage examples can be seen using
+`--help` flag.
+
+<!-- prettier-ignore-start -->
+```shell script
+# Using Docker
+$ docker hertzg/tesseract-server:latest --help
+tesseract-server [options]
+
+A small lightweight http server exposing tesseract as a service.
+
+Options:
+  --help                                    Show help                                                                                              [boolean]
+  --version                                 Show version number                                                                                    [boolean]
+  --pool.default.min                        Minimum number of processes to keep waiting in each pool                                   [number] [default: 0]
+  --pool.default.max                        Maximum number of processes to spawn for each pool after which requests are queued         [number] [default: 2]
+  --pool.default.idleTimeoutMillis          Time (in milliseconds) a processes can stay idle in queue before eviction               [number] [default: 5000]
+  --pool.default.evictionRunIntervalMillis  Time interval (in milliseconds) between eviction checks                                 [number] [default: 5000]
+  --http.upload.tmpDir                      Path to where temp uploads are saved to                                               [string] [default: "/tmp"]
+  --http.endpoint.status.enable             Enable /status endpoint                                                                [boolean] [default: true]
+  --http.endpoint.health.enable             Enable /.well-known/health/* endpoints and health checkers                             [boolean] [default: true]
+  --http.input.optionsField                 Multipart field name containing OCR Options                                        [string] [default: "options"]
+  --http.input.fileField                    Multipart field name containing OCR file                                              [string] [default: "file"]
+  --http.output.jsonSpaces                  Enable json pretty printing and set number of spaces to use for indentation                [number] [default: 0]
+
+Examples:
+  tesseract-server --http.output.jsonSpaces 2                                               Enable JSON pretty printing
+  tesseract-server --http.endpoint.status.enable false --http.endpoint.health.enable false  Disable Status and Health endpoints
+
+References:
+  GitHub: https://github.com/hertzg/tesseract-server
+  Issues: https://github.com/hertzg/tesseract-server/discussions
+  Bugs: https://github.com/hertzg/tesseract-server/issues
+```
+<!-- prettier-ignore-end -->
+
+## Docker
+
+Docker images are multi-arch images based on `alpine` variant of official `node`
+docker images supporting `linux/amd64`, `linux/arm/v6`, `linux/arm/v7`,
+`linux/arm64/v8` platforms.
+
+## Raspberry Pi support
+
+The docker images support ARM architectures which means that they can be used on
+at least the following versions of Raspberry Pi:
+
+- RPi 1 Model A
+- RPi 1 Model A+
+- RPi 3 Model A+
+- RPi 1 Model B
+- RPi 1 Model B+
+- RPi 2 Model B
+- RPi 2 Model B v1.2 (:heavy_check_mark: tested)
+- RPi 3 Model B
+- RPi 3 Model B+ (:heavy_check_mark: tested)
+- RPi 4 Model B (:heavy_check_mark: tested)
+- Compute Module 1
+- Compute Module 3
+- Compute Module 3 Lite
+- Compute Module 3+
+- Compute Module 3+ Lite
+- RPi Zero PCB v1.2
+- RPi Zero PCB v1.3
+- RPi Zero W
+
+If you have any of those devices and have successfully used the images feel free
+to report them and help update this list. :open_hands:
+
+## Supported Languages
+
+The container by default installs tesseract and 3 datapacks:
+
+- `tesseract-ocr` - English (included)
+- `tesseract-ocr-data-deu` - German
+- `tesseract-ocr-data-pol` - Polish
+- `tesseract-ocr-data-rus` - Russian
+
+To add more languages you can extend this image and install one or more
+[available language datapacks](https://pkgs.alpinelinux.org/packages?name=tesseract-ocr-data-*&branch=edge&arch=x86_64)
+with the package manager:
+
+<!-- prettier-ignore-start -->
+```Dockerfile
+FROM hertzg/tesseract-server:latest
+RUN apk add --no-cache tesseract-ocr-data-spa tesseract-ocr-data-ara # and so on
+```
+<!-- prettier-ignore-end -->
+
+After starting the container the new language will be automatically available.
 
 ## HTTP API
 
@@ -34,11 +133,16 @@ There are a few endpoints exposed this section describes each one.
 
 ### OCR Endpoint - `/`
 
-This endpoint performs OCR on provided `file`, You can control the OCR process by providing `options` field with `JSON` object containing the configuration.
-This is the main endpoint that expects http `multipart` request containing `options` and `file` fields and returns a `json` containing `stdout` and `stderr` of the tesseract process.
+This endpoint performs OCR on provided `file`, You can control the OCR process
+by providing `options` field with `JSON` object containing the configuration.
+This is the main endpoint that expects http `multipart` request containing
+`options` and `file` fields and returns a `json` containing `stdout` and
+`stderr` of the tesseract process.
 
-The `options` json object fields directly relate to the CLI options of `tesseract` command.
+The `options` json object fields directly relate to the CLI options of
+`tesseract` command.
 
+<!-- prettier-ignore-start -->
 ```json5
 {
   "languages": ['eng'],               // -l LANG[+LANG]        Specify language(s) used for OCR.
@@ -53,9 +157,11 @@ The `options` json object fields directly relate to the CLI options of `tesserac
   },
 }
 ```
+<!-- prettier-ignore-end -->
 
 The returned response has the following shape
 
+<!-- prettier-ignore-start -->
 ```json5
 {
   "exit": {
@@ -66,6 +172,44 @@ The returned response has the following shape
   "stdout":  "..."                     // Tesseract output that contains the result
 }
 ```
+<!-- prettier-ignore-end -->
+
+### Status Endpoint - `/status`
+
+```shell script
+# Get worker status
+$ curl http://127.0.0.1:8884/status
+```
+
+Returns the pool and their statuses as JSON. When you make OCR request the first
+pool will be created and then re-used. This endpoint also shows detailed
+information about each pool including process pids and eviction flags.
+
+<!-- prettier-ignore-start -->
+```json5
+{
+  data: {
+    processor: {
+      pools: [
+        {
+          args: '-l eng',
+          resources: [],
+          status: {
+            spareResourceCapacity: 2,
+            size: 0,
+            available: 0,
+            borrowed: 0,
+            pending: 0,
+            max: 2,
+            min: 0,
+          },
+        },
+      ],
+    },
+  },
+}
+```
+<!-- prettier-ignore-end -->
 
 ### Health Endpoints
 
@@ -75,6 +219,11 @@ Endpoints:
 - `/.well-known/health/live`
 - `/.well-known/health/ready`
 
-The difference between liveness and readiness endpoints is the purpose: readiness should be used to denote whether an application is "ready" to receive requests, and liveness should be used to denote whether an application is "live" (vs. in a state where it should be restarted.
+The difference between liveness and readiness endpoints is the purpose:
+readiness should be used to denote whether an application is "ready" to receive
+requests, and liveness should be used to denote whether an application is "live"
+(vs. in a state where it should be restarted.
 
-The combined health endpoint is designed for cloud technologies, such as Cloud Foundry which only support a single endpoint for both liveness and readiness checking.
+The combined health endpoint is designed for cloud technologies, such as Cloud
+Foundry which only support a single endpoint for both liveness and readiness
+checking.

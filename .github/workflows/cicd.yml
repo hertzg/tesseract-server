@@ -49,6 +49,8 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: tesseract-server:goss
       - uses: e1himself/goss-installation-action@v1.0.3
+        with:
+          version: v0.3.16
       - run: dgoss run tesseract-server:goss
 
   publish:
