@@ -4,6 +4,8 @@ A small lightweight HTTP server that coverts photos, images and scanned
 documents to text using optical character recognition by utilizing the power of
 [Google Tesseract](https://github.com/tesseract-ocr/tesseract).
 
+![An arrow from papers to json signifying conversion, arrow is labeled as http](featured-image.jpg)
+
 ## Quick Start
 
 The easiest way to get started is using
