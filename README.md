@@ -1,6 +1,6 @@
 # Tesseract server (OCR over HTTP)
 
-A small lightweight http server exposing tesseract as a service.
+A small lightweight http server exposing optical character recognition over HTTP using Tesseract.
 
 ## Quick Start
 
