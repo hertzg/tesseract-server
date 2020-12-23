@@ -1,6 +1,6 @@
 # Tesseract server (OCR over HTTP)
 
-A small lightweight HTTP server that coverts photos, images and scanned
+A small lightweight HTTP server that converts photos, images and scanned
 documents to text using optical character recognition by utilizing the power of
 [Google Tesseract](https://github.com/tesseract-ocr/tesseract).
 
