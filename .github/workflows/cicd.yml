@@ -3,6 +3,18 @@ on:
   push:
     branches: []
     tags: 'v*'
+    paths:
+      - 'src/**/*'
+      - 'test/**/*'
+      - '.github/action/**/*'
+      - '.github/workflows/**/*'
+      - 'package*.json'
+      - 'tsconfig*.json'
+      - 'yarn.lock'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'docker-entrypoint.sh'
+      - 'goss*.yaml'
 
 jobs:
   test:
