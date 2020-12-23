@@ -10,7 +10,12 @@
     "test": "tsdx test",
     "lint": "tsdx lint src/ test/",
     "format": "prettier --write src/**/* test/**/*",
-    "release": "standard-version"
+    "release": "standard-version --dry-run",
+    "changelog": "yarn run changelog:prev && yarn run changelog:next",
+    "changelog:prev": "yarn run release --no-dry-run --skip.commit --skip.tag --first-release",
+    "changelog:next": "yarn run changelog:next:clean && yarn run changelog:next:generate",
+    "changelog:next:generate": "conventional-changelog -n .changelog.js -i CHANGELOG-next.md -s",
+    "changelog:next:clean": "node ./scripts/changelog/clean.js"
   },
   "peerDependencies": {},
   "devDependencies": {
@@ -22,6 +27,8 @@
     "@types/multer": "^1.4.4",
     "@types/node": "^14.14.10",
     "@types/yargs": "^15.0.11",
+    "conventional-changelog-cli": "^2.1.1",
+    "conventional-changelog-conventionalcommits": "^4.5.0",
     "standard-version": "^9.0.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
