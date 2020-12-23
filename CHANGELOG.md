@@ -1,6 +1,13 @@
+
+[//]: # (GENERATED FILE. DO NOT EDIT DIRECTLY. ALL CHANGES WILL BE OVERWRITTEN)
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## Unreleased (pending for next release)
+
+All unreleased changes scheduled for the next release are in [CHANGELOG-next.md](./CHANGELOG-next.md)
 
 ## [1.2.0](https://github.com/hertzg/tesseract-server/compare/v1.1.4...v1.2.0) (2020-12-20)
 
