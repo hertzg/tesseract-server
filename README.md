@@ -1,4 +1,4 @@
-# Tesseract server
+# Tesseract server (OCR over HTTP)
 
 A small lightweight http server exposing tesseract as a service.
 
