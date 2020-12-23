@@ -20,11 +20,12 @@ RUN yarn build
 FROM base AS base_prod
 RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-deu tesseract-ocr-data-pol tesseract-ocr-data-rus
 COPY --from=deps_prod /app/node_modules/ ./dist/node_modules/
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 FROM base_prod AS prod
 WORKDIR /app
 COPY --from=builder /app/dist/index.js /app/dist/*.production.*.js ./dist/
-COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
 EXPOSE 8884
 HEALTHCHECK CMD curl -f http://127.0.0.1:8884/.well-known/health/healthy || exit 1
