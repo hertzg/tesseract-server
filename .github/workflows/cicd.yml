@@ -91,7 +91,7 @@ jobs:
       - name: Load Verdaccio cache
         run: |
           sudo chown -R 10001:65533 /tmp/.verdaccio-storage
-          docker restart verdaccio
+          docker restart ${{ job.services.verdaccio.id }}
 
       - id: dockerTagger
         uses: ./.github/actions/publish/dockerTagger
