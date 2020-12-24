@@ -75,7 +75,7 @@ jobs:
       verdaccio:
         image: verdaccio/verdaccio
         ports:
-          - 4873:4873
+          - 4873/tcp
         volumes:
           - /tmp/.verdaccio-storage:/verdaccio/storage
     steps:
@@ -131,7 +131,6 @@ jobs:
             DEPS_YARN_REGISTRY=http://localhost:${{ job.services.verdaccio.ports[4873] }}
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           push: false # TODO: Don't forget to return back to true
-          load: true # TODO: Remove this line
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ steps.dockerTagger.outputs.image-tags }}
