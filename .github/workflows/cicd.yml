@@ -128,7 +128,7 @@ jobs:
           context: .
           file: ./Dockerfile
           build-args: |
-            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
+            DEPS_YARN_REGISTRY=http://localhost:${{ job.services.verdaccio.ports[4873] }}
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           push: false # TODO: Don't forget to return back to true
           load: true # TODO: Remove this line
