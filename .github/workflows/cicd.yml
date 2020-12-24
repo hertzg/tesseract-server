@@ -3,74 +3,96 @@ on:
   push:
     branches: []
     tags: 'v*'
-    paths:
-      - 'src/**/*'
-      - 'test/**/*'
-      - '.github/action/**/*'
-      - '.github/workflows/**/*'
-      - 'package*.json'
-      - 'tsconfig*.json'
-      - 'yarn.lock'
-      - 'Dockerfile'
-      - '.dockerignore'
-      - 'docker-entrypoint.sh'
-      - 'goss*.yaml'
+#    paths:
+#      - 'src/**/*'
+#      - 'test/**/*'
+#      - '.github/action/**/*'
+#      - '.github/workflows/**/*'
+#      - 'package*.json'
+#      - 'tsconfig*.json'
+#      - 'yarn.lock'
+#      - 'Dockerfile'
+#      - '.dockerignore'
+#      - 'docker-entrypoint.sh'
+#      - 'goss*.yaml'
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node: ['14.x', '12.x', '10.x']
-        os: [ubuntu-latest]
-    steps:
-      - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v2
-      - name: Use Node v${{ matrix.node }}
-        uses: actions/setup-node@v2
-        with:
-          check-latest: true
-          node-version: ${{ matrix.node }}
-      - uses: bahmutov/npm-install@v1
-      - run: yarn lint
-      - run: yarn test --ci --coverage --maxWorkers=2
-      - run: yarn build
-      - uses: codecov/codecov-action@v1
-        if: ${{ success() }}
-        continue-on-error: true
-
-  test-dgoss:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: docker/setup-buildx-action@v1
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-      - uses: actions/checkout@v2
-      - uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          load: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: tesseract-server:goss
-      - uses: e1himself/goss-installation-action@v1.0.3
-        with:
-          version: v0.3.16
-      - run: dgoss run tesseract-server:goss
+#  test:
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        node: ['14.x', '12.x', '10.x']
+#        os: [ubuntu-latest]
+#    steps:
+#      - run: git config --global core.autocrlf false
+#      - uses: actions/checkout@v2
+#      - name: Use Node v${{ matrix.node }}
+#        uses: actions/setup-node@v2
+#        with:
+#          check-latest: true
+#          node-version: ${{ matrix.node }}
+#      - uses: bahmutov/npm-install@v1
+#      - run: yarn lint
+#      - run: yarn test --ci --coverage --maxWorkers=2
+#      - run: yarn build
+#      - uses: codecov/codecov-action@v1
+#        if: ${{ success() }}
+#        continue-on-error: true
+#
+#  test-dgoss:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: docker/setup-buildx-action@v1
+#      - name: Cache Docker layers
+#        uses: actions/cache@v2
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: ${{ runner.os }}-buildx-${{ github.sha }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-
+#      - uses: actions/checkout@v2
+#      - uses: docker/build-push-action@v2
+#        with:
+#          context: .
+#          file: ./Dockerfile
+#          push: false
+#          load: true
+#          cache-from: type=local,src=/tmp/.buildx-cache
+#          cache-to: type=local,dest=/tmp/.buildx-cache
+#          tags: tesseract-server:goss
+#      - uses: e1himself/goss-installation-action@v1.0.3
+#        with:
+#          version: v0.3.16
+#      - run: dgoss run tesseract-server:goss
 
   publish:
-    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master' }}
-    needs: [test, test-dgoss]
+#    if:
+#      ${{ startsWith(github.ref, 'refs/tags/v') || github.ref ==
+#      'refs/heads/master' }}
+#    needs: [test, test-dgoss]
     runs-on: ubuntu-latest
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - /tmp/.verdaccio-storage:/verdaccio/storage
     steps:
       - uses: actions/checkout@v2
+
+      - name: Cache yarn packages
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.verdaccio-storage
+          key: ${{ runner.os }}-verdaccio-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-verdaccio-
+      - name: Load Verdaccio cache
+        run: |
+          sudo chown -R 10001:65533 /tmp/.verdaccio-storage
+          docker restart verdaccio
+
       - id: dockerTagger
         uses: ./.github/actions/publish/dockerTagger
         with:
@@ -80,6 +102,9 @@ jobs:
 
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
+
       - uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -89,6 +114,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
+
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -101,8 +127,11 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          build-args: |
+            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          push: true
+          push: false # TODO: Don't forget to return back to true
+          load: true # TODO: Remove this line
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ steps.dockerTagger.outputs.image-tags }}

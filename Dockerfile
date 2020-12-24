@@ -4,12 +4,14 @@ WORKDIR /app
 COPY ./package.json ./package-*.json ./yarn.lock ./
 
 FROM base AS deps_prod
+ARG DEPS_YARN_REGISTRY="https://registry.npmjs.org/"
 WORKDIR /app
-RUN yarn install --frozen-lockfile --prefer-offline --production
+RUN yarn --registry "$DEPS_YARN_ARGS" install --frozen-lockfile --production
 
 FROM deps_prod AS deps_dev
+ARG DEPS_YARN_REGISTRY="https://registry.npmjs.org/"
 WORKDIR /app
-RUN yarn install --frozen-lockfile --prefer-offline
+RUN yarn --registry "$DEPS_YARN_ARGS" install --frozen-lockfile
 
 FROM deps_dev AS builder
 WORKDIR /app
