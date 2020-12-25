@@ -107,6 +107,8 @@ jobs:
         run: |
           sudo chown -R 10001:65533 /tmp/.verdaccio-storage
           docker restart ${{ job.services.verdaccio.id }}
+          sleep 3
+          docker logs ${{ job.services.verdaccio.id }}
 
       - uses: docker/setup-buildx-action@v1
         with:
@@ -178,6 +180,8 @@ jobs:
         run: |
           sudo chown -R 10001:65533 /tmp/.verdaccio-storage
           docker restart ${{ job.services.verdaccio.id }}
+          sleep 3
+          docker logs ${{ job.services.verdaccio.id }}
 
       - uses: actions/checkout@v2
 
