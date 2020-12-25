@@ -232,7 +232,7 @@ jobs:
           context: .
           file: ./Dockerfile
           build-args: |
-            DIST_SRC=
+            DIST_SRC=./dist
             DEPS_YARN_REGISTRY=http://127.0.0.1:4873
           target: prod_copy_dist
           allow: |
