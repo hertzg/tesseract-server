@@ -7,10 +7,11 @@ import {
 } from '@cloudnative/health-connect';
 import FS from 'fs';
 import multer from 'multer';
-import { IProcessor, Options } from '../processor';
-import argv from '../argv';
+import { IProcessor, Options } from '../../processor';
+import argv from '../../argv';
 import { Readable } from 'stream';
-import { IProvider, IProviderFactory } from './types';
+import { IProvider, IProviderFactory } from '../types';
+import { asOptions } from './decoders';
 
 export const createHttpProvider: IProviderFactory = ({
   processor,
@@ -63,8 +64,7 @@ class HTTPProvider implements IProvider {
   };
 
   private _getOptions = async (req: Request): Promise<Options> => {
-    // TODO: Validate input
-    return JSON.parse(req.body[argv['http.input.optionsField']]);
+    return asOptions(JSON.parse(req.body[argv['http.input.optionsField']]));
   };
 
   private _getReadable = async (req: Request): Promise<Readable> => {
@@ -75,7 +75,7 @@ class HTTPProvider implements IProvider {
     Promise.all([this._getOptions(req), this._getReadable(req)])
       .catch(reason => {
         res.status(400).json({
-          error: 'request missing multipart options or file filed',
+          error: 'Request input validation failed',
           reason: String(reason),
         });
         throw reason;

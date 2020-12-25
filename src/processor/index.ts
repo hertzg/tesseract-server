@@ -1,4 +1,9 @@
-import { IWorker, Options } from './worker';
+import {
+  IWorker,
+  OCREngineMode,
+  Options,
+  PageSegmentationMethod,
+} from './worker';
 import {
   Options as GenericPoolSettings,
   Pool as GenericPool,
@@ -114,4 +119,4 @@ class Processor implements IProcessor {
   };
 }
 
-export { Options };
+export { Options, OCREngineMode, PageSegmentationMethod };
