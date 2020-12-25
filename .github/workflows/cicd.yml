@@ -17,7 +17,46 @@ on:
       - 'goss*.yaml'
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          check-latest: true
+          node-version: '14.x'
+      - uses: bahmutov/npm-install@v1
+      - run: yarn lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          check-latest: true
+          node-version: '14.x'
+      - uses: bahmutov/npm-install@v1
+      - run: yarn build
+      - run: |
+          tar -cvf dist.tar dist/
+          tar -cvf dist.prod.tar dist/index.js dist/*.production.*.js
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist.prod
+          path: dist.prod.tar
+          retention-days: 7
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist.tar
+          retention-days: 7
+
   test:
+    needs:
+      - build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,23 +65,55 @@ jobs:
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ./
+      - run: |
+          tar xf dist.tar
+          rm dist.tar
       - name: Use Node v${{ matrix.node }}
         uses: actions/setup-node@v2
         with:
           check-latest: true
           node-version: ${{ matrix.node }}
+
       - uses: bahmutov/npm-install@v1
-      - run: yarn lint
       - run: yarn test --ci --coverage --maxWorkers=2
-      - run: yarn build
       - uses: codecov/codecov-action@v1
         if: ${{ success() }}
         continue-on-error: true
 
   test-dgoss:
+    needs:
+      - build
     runs-on: ubuntu-latest
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - /tmp/.verdaccio-storage:/verdaccio/storage
     steps:
+      - name: Verdaccio Cache
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.verdaccio-storage
+          key: ${{ runner.os }}-verdaccio-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-verdaccio-
+      - name: Restart Verdaccio
+        run: |
+          sudo chown -R 10001:65533 /tmp/.verdaccio-storage
+          docker restart ${{ job.services.verdaccio.id }}
+          sleep 3
+          docker logs ${{ job.services.verdaccio.id }}
+
       - uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
+
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -50,27 +121,72 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
       - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: dist.prod
+          path: ./
+      - run: |
+          tar xf dist.prod.tar
+          rm dist.prod.tar
+
       - uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
+          build-args: |
+            DIST_SRC=./dist
+            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
+          target: prod_copy_dist
+          allow: |
+            network.host
           push: false
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: tesseract-server:goss
+
       - uses: e1himself/goss-installation-action@v1.0.3
         with:
           version: v0.3.16
       - run: dgoss run tesseract-server:goss
 
   publish:
-    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master' }}
-    needs: [test, test-dgoss]
+    if:
+      ${{ startsWith(github.ref, 'refs/tags/v') || github.ref ==
+      'refs/heads/master' }}
+    needs:
+      - build
+      - test
+      - test-dgoss
     runs-on: ubuntu-latest
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - /tmp/.verdaccio-storage:/verdaccio/storage
     steps:
+      - name: Verdaccio Cache
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.verdaccio-storage
+          key: ${{ runner.os }}-verdaccio-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-verdaccio-
+      - name: Restart Verdaccio
+        run: |
+          sudo chown -R 10001:65533 /tmp/.verdaccio-storage
+          docker restart ${{ job.services.verdaccio.id }}
+          sleep 3
+          docker logs ${{ job.services.verdaccio.id }}
+
       - uses: actions/checkout@v2
+
       - id: dockerTagger
         uses: ./.github/actions/publish/dockerTagger
         with:
@@ -80,6 +196,9 @@ jobs:
 
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
+
       - uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -89,6 +208,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
+
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -96,11 +216,27 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: dist.prod
+          path: ./
+      - run: |
+          tar xf dist.prod.tar
+          rm dist.prod.tar
+
       - name: Build & Push
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
+          build-args: |
+            DIST_SRC=./dist
+            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
+          target: prod_copy_dist
+          allow: |
+            network.host
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
