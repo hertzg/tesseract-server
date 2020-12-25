@@ -85,7 +85,7 @@ jobs:
   #        continue-on-error: true
 
   test-dgoss:
-    needs:
+    #needs:
     #- build
     runs-on: ubuntu-latest
     services:
