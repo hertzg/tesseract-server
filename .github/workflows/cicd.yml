@@ -109,7 +109,6 @@ jobs:
           docker restart ${{ job.services.verdaccio.id }}
           sleep 3
           docker logs ${{ job.services.verdaccio.id }}
-          curl http://127.0.0.1:4873/
 
       - uses: docker/setup-buildx-action@v1
         with:
@@ -140,7 +139,7 @@ jobs:
           file: ./Dockerfile
           build-args: |
             DIST_SRC=./dist
-            DEPS_YARN_REGISTRY=http://verdaccio:${{ job.services.verdaccio.ports[4873] }}
+            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
           target: prod_copy_dist
           allow: |
             network.host
@@ -168,7 +167,7 @@ jobs:
       verdaccio:
         image: verdaccio/verdaccio
         ports:
-          - 4873/tcp
+          - 4873:4873
         volumes:
           - /tmp/.verdaccio-storage:/verdaccio/storage
     steps:
@@ -234,7 +233,7 @@ jobs:
           file: ./Dockerfile
           build-args: |
             DIST_SRC=
-            DEPS_YARN_REGISTRY=http://verdaccio:${{ job.services.verdaccio.ports[4873] }}
+            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
           target: prod_copy_dist
           allow: |
             network.host
