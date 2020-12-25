@@ -3,18 +3,18 @@ on:
   push:
     branches: []
     tags: 'v*'
-#    paths:
-#      - 'src/**/*'
-#      - 'test/**/*'
-#      - '.github/action/**/*'
-#      - '.github/workflows/**/*'
-#      - 'package*.json'
-#      - 'tsconfig*.json'
-#      - 'yarn.lock'
-#      - 'Dockerfile'
-#      - '.dockerignore'
-#      - 'docker-entrypoint.sh'
-#      - 'goss*.yaml'
+    paths:
+      - 'src/**/*'
+      - 'test/**/*'
+      - '.github/action/**/*'
+      - '.github/workflows/**/*'
+      - 'package*.json'
+      - 'tsconfig*.json'
+      - 'yarn.lock'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'docker-entrypoint.sh'
+      - 'goss*.yaml'
 
 jobs:
   lint:
@@ -155,9 +155,9 @@ jobs:
       - run: dgoss run tesseract-server:goss
 
   publish:
-    #    if:
-    #      ${{ startsWith(github.ref, 'refs/tags/v') || github.ref ==
-    #      'refs/heads/master' }}
+    if:
+      ${{ startsWith(github.ref, 'refs/tags/v') || github.ref ==
+      'refs/heads/master' }}
     needs:
       - build
       - test
@@ -238,7 +238,7 @@ jobs:
           allow: |
             network.host
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          push: false # TODO: Don't forget to return back to true
+          push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ steps.dockerTagger.outputs.image-tags }}

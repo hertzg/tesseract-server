@@ -1,6 +1,6 @@
 FROM node:alpine AS base
-RUN apk add --no-cache curl tini
 WORKDIR /app
+RUN apk add --no-cache curl tini
 COPY ./package.json ./
 
 FROM base AS deps_prod
