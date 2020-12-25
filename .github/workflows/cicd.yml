@@ -141,6 +141,8 @@ jobs:
             DIST_SRC=./dist
             DEPS_YARN_REGISTRY=http://localhost:${{ job.services.verdaccio.ports[4873] }}
           target: prod_copy_dist
+          allow: |
+            network.host
           push: false
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -233,6 +235,8 @@ jobs:
             DIST_SRC=
             DEPS_YARN_REGISTRY=http://localhost:${{ job.services.verdaccio.ports[4873] }}
           target: prod_copy_dist
+          allow: |
+            network.host
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           push: false # TODO: Don't forget to return back to true
           cache-from: type=local,src=/tmp/.buildx-cache
