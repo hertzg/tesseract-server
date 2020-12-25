@@ -41,8 +41,8 @@ jobs:
       - uses: bahmutov/npm-install@v1
       - run: yarn build
       - run: |
-          tar -cvf dist.prod.tar dist/index.js dist/*.production.*.js
           tar -cvf dist.tar dist/
+          tar -cvf dist.prod.tar dist/index.js dist/*.production.*.js
       - uses: actions/upload-artifact@v2
         with:
           name: dist.prod
@@ -65,19 +65,25 @@ jobs:
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist.tar
+
+      - run: |
+          ls -lah .
+          ls -lah ./dist
+          ls -lah ./dist/*
+
+      - run: |
+          tar xf dist.tar
+          rm dist.tar
       - name: Use Node v${{ matrix.node }}
         uses: actions/setup-node@v2
         with:
           check-latest: true
           node-version: ${{ matrix.node }}
-      - uses: actions/download-artifact@v2
-        id: download
-        with:
-          name: dist
-          path: dist.tar
-      - run: |
-          tar xf dist.tar
-          rm dist.tar
+
       - uses: bahmutov/npm-install@v1
       - run: yarn test --ci --coverage --maxWorkers=2
       - uses: codecov/codecov-action@v1
