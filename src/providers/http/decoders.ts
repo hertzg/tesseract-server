@@ -1,8 +1,22 @@
-import { dict, exact, guard, integer, oneOf, optional, string } from 'decoders';
+import {
+  compose,
+  dict,
+  exact,
+  guard,
+  integer,
+  oneOf,
+  optional,
+  predicate,
+  string,
+} from 'decoders';
 import { nonEmptyArray } from 'decoders/array';
-import { OCREngineMode, Options, PageSegmentationMethod } from '../processor';
+import {
+  OCREngineMode,
+  Options,
+  PageSegmentationMethod,
+} from '../../processor';
 
-const pageSegmentationMethod = oneOf([
+const psmDecoder = oneOf([
   PageSegmentationMethod.ORIENTATION_AND_SCRIPT_DETECTION_ONLY,
   PageSegmentationMethod.AUTO_PAGE_SEGMENTATION_WITH_OSD,
   PageSegmentationMethod.AUTO_PAGE_SEGMENTATION_WITHOUT_OSD_AND_OCR,
@@ -19,22 +33,32 @@ const pageSegmentationMethod = oneOf([
   PageSegmentationMethod.RAW_SINGLE_LINE,
 ]);
 
-const ocrEngineMode = oneOf([
+const oemDecoder = oneOf([
   OCREngineMode.TESSERACT,
   OCREngineMode.LSTM,
   OCREngineMode.TESSERACT_WITH_LSTM,
   OCREngineMode.AUTO,
 ]);
 
-const optionsDecoder = exact({
+const positiveInteger = compose(
+  integer,
+  predicate(i => i >= 0, 'Must be positive integer'),
+);
+
+const dpiDecoder = compose(
+  positiveInteger,
+  predicate(i => i > 0, 'Must be positive non zero integer'),
+);
+
+const options = exact({
   languages: optional(nonEmptyArray(string)),
-  dpi: optional(integer),
-  pageSegmentationMethod: optional(pageSegmentationMethod),
-  ocrEngineMode: optional(ocrEngineMode),
+  dpi: optional(dpiDecoder),
+  pageSegmentationMethod: optional(psmDecoder),
+  ocrEngineMode: optional(oemDecoder),
   tessDataDir: optional(string),
   userPatternsFile: optional(string),
   userWordsFile: optional(string),
   configParams: optional(dict(string)),
 });
 
-export const asOptions = guard<Options>(optionsDecoder);
+export const asOptions = guard<Options>(options);
