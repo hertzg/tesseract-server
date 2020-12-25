@@ -1,10 +1,5 @@
-## [Unreleased](https://github.com/hertzg/tesseract-server/compare/v1.2.0...7a989eb37be7fb9436a1a3a29f44209a65cb7359) (2020-12-25)
+## [Unreleased](https://github.com/hertzg/tesseract-server/compare/v1.2.0...fa9f9f55e581956cd01e3fb0f49e12ee06b90220) (2020-12-25)
 
-
-### 🚀 Features
-
-* **docker:** multi-target dockerfile & workflow speedups ([#9](https://github.com/hertzg/tesseract-server/issues/9)) ([7a989eb](https://github.com/hertzg/tesseract-server/commit/7a989eb37be7fb9436a1a3a29f44209a65cb7359))
-* document all options and improve `--help` ([08f7094](https://github.com/hertzg/tesseract-server/commit/08f7094eadd24a1601a9241cce6023816c729710))
 
 ### 🐛 Bug Fixes
 
@@ -34,8 +29,17 @@
 
 ### 🛠️ General Chores
 
+* **changelog:** generate CHANGELOG-next.md ([2d8b37a](https://github.com/hertzg/tesseract-server/commit/2d8b37aa92cda038e76fa4096481f40726cc055c))
 * **changelog:** generate CHANGELOG-next.md ([a76d1b8](https://github.com/hertzg/tesseract-server/commit/a76d1b8d1a92891078a62956de2eebea9c0f875d))
 * **linguist:** Ignore supporting files & scripts from language statistics ([099cb58](https://github.com/hertzg/tesseract-server/commit/099cb580d977d54117b1aeaf50995fe81e402f33))
-* **prettier:** always wrap proses (markdown texts) at 80 chars ([0f99abe](https://github.com/hertzg/tesseract-server/commit/0f99abe4ddbf388265a2cd07518968c87d073230))
 * **readme:** fix typo ([40d93b3](https://github.com/hertzg/tesseract-server/commit/40d93b39aa467fe7d9213cd129113be459d49e0c))
 * drop hazardous release:* run commands ([a97699a](https://github.com/hertzg/tesseract-server/commit/a97699ae3fbf727a93f69c55b466bf5ade1510b1))
+* **prettier:** always wrap proses (markdown texts) at 80 chars ([0f99abe](https://github.com/hertzg/tesseract-server/commit/0f99abe4ddbf388265a2cd07518968c87d073230))
+
+
+### 🚀 Features
+
+* **docker:** multi-target dockerfile & workflow speedups ([#9](https://github.com/hertzg/tesseract-server/issues/9)) ([7a989eb](https://github.com/hertzg/tesseract-server/commit/7a989eb37be7fb9436a1a3a29f44209a65cb7359))
+* **http:** validate user input (`options`) ([#14](https://github.com/hertzg/tesseract-server/issues/14)) ([fa9f9f5](https://github.com/hertzg/tesseract-server/commit/fa9f9f55e581956cd01e3fb0f49e12ee06b90220))
+* document all options and improve `--help` ([08f7094](https://github.com/hertzg/tesseract-server/commit/08f7094eadd24a1601a9241cce6023816c729710))
+
