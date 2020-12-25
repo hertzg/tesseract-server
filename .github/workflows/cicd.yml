@@ -68,13 +68,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: dist
-          path: dist.tar
-
-      - run: |
-          ls -lah .
-          ls -lah ./dist
-          ls -lah ./dist/*
-
+          path: ./
       - run: |
           tar xf dist.tar
           rm dist.tar
@@ -132,7 +126,7 @@ jobs:
         id: download
         with:
           name: dist.prod
-          path: dist.prod.tar
+          path: ./
       - run: |
           tar xf dist.prod.tar
           rm dist.prod.tar
@@ -221,7 +215,7 @@ jobs:
         id: download
         with:
           name: dist.prod
-          path: dist.prod.tar
+          path: ./
       - run: |
           tar xf dist.prod.tar
           rm dist.prod.tar
