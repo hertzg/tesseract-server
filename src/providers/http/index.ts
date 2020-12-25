@@ -7,10 +7,10 @@ import {
 } from '@cloudnative/health-connect';
 import FS from 'fs';
 import multer from 'multer';
-import { IProcessor, Options } from '../processor';
-import argv from '../argv';
+import { IProcessor, Options } from '../../processor';
+import argv from '../../argv';
 import { Readable } from 'stream';
-import { IProvider, IProviderFactory } from './types';
+import { IProvider, IProviderFactory } from '../types';
 import { asOptions } from './decoders';
 
 export const createHttpProvider: IProviderFactory = ({
