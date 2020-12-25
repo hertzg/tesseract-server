@@ -139,7 +139,7 @@ jobs:
           file: ./Dockerfile
           build-args: |
             DIST_SRC=./dist
-            DEPS_YARN_REGISTRY=http://localhost:${{ job.services.verdaccio.ports[4873] }}
+            DEPS_YARN_REGISTRY=http://verdaccio:${{ job.services.verdaccio.ports[4873] }}
           target: prod_copy_dist
           allow: |
             network.host
@@ -233,7 +233,7 @@ jobs:
           file: ./Dockerfile
           build-args: |
             DIST_SRC=
-            DEPS_YARN_REGISTRY=http://localhost:${{ job.services.verdaccio.ports[4873] }}
+            DEPS_YARN_REGISTRY=http://verdaccio:${{ job.services.verdaccio.ports[4873] }}
           target: prod_copy_dist
           allow: |
             network.host
