@@ -22,7 +22,7 @@ const usageActual = async (columns: number) =>
       createYargs([])
         .wrap(columns)
         .exitProcess(false)
-        .showHelp((s)=>resolve(s)).argv,
+        .showHelp(s => resolve(s)).argv,
   );
 
 describe('README.md tests', () => {
