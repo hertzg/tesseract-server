@@ -47,32 +47,35 @@ descriptions, types and defaults including some usage examples can be seen using
 ```shell script
 # Using Docker
 $ docker hertzg/tesseract-server:latest --help
+```
+```text test-id="--help" test-param-columns="160"
 tesseract-server [options]
 
 A small lightweight http server exposing tesseract as a service.
 
 Options:
-  --help                                    Show help                                                                                              [boolean]
-  --version                                 Show version number                                                                                    [boolean]
-  --pool.default.min                        Minimum number of processes to keep waiting in each pool                                   [number] [default: 0]
-  --pool.default.max                        Maximum number of processes to spawn for each pool after which requests are queued         [number] [default: 2]
-  --pool.default.idleTimeoutMillis          Time (in milliseconds) a processes can stay idle in queue before eviction               [number] [default: 5000]
-  --pool.default.evictionRunIntervalMillis  Time interval (in milliseconds) between eviction checks                                 [number] [default: 5000]
-  --http.upload.tmpDir                      Path to where temp uploads are saved to                                               [string] [default: "/tmp"]
-  --http.endpoint.status.enable             Enable /status endpoint                                                                [boolean] [default: true]
-  --http.endpoint.health.enable             Enable /.well-known/health/* endpoints and health checkers                             [boolean] [default: true]
-  --http.input.optionsField                 Multipart field name containing OCR Options                                        [string] [default: "options"]
-  --http.input.fileField                    Multipart field name containing OCR file                                              [string] [default: "file"]
-  --http.output.jsonSpaces                  Enable json pretty printing and set number of spaces to use for indentation                [number] [default: 0]
+  --help                                    Show help                                                                                                  [boolean]
+  --version                                 Show version number                                                                                        [boolean]
+  --pool.default.min                        Minimum number of processes to keep waiting in each pool                                       [number] [default: 0]
+  --pool.default.max                        Maximum number of processes to spawn for each pool after which requests are queued             [number] [default: 2]
+  --pool.default.idleTimeoutMillis          Time (in milliseconds) a processes can stay idle in queue before eviction                   [number] [default: 5000]
+  --pool.default.evictionRunIntervalMillis  Time interval (in milliseconds) between eviction checks                                     [number] [default: 5000]
+  --http.upload.tmpDir                      Path to where temp uploads are saved to                                                   [string] [default: "/tmp"]
+  --http.endpoint.status.enable             Enable /status endpoint                                                                    [boolean] [default: true]
+  --http.endpoint.health.enable             Enable /.well-known/health/* endpoints and health checkers                                 [boolean] [default: true]
+  --http.input.optionsField                 Multipart field name containing OCR Options                                            [string] [default: "options"]
+  --http.input.fileField                    Multipart field name containing OCR file                                                  [string] [default: "file"]
+  --http.output.jsonSpaces                  Enable json pretty printing and set number of spaces to use for indentation                    [number] [default: 0]
 
 Examples:
-  tesseract-server --http.output.jsonSpaces 2                                               Enable JSON pretty printing
-  tesseract-server --http.endpoint.status.enable false --http.endpoint.health.enable false  Disable Status and Health endpoints
+  tesseract-server --http.output.jsonSpaces 2                                       Enable JSON pretty printing
+  tesseract-server --http.endpoint.status.enable false                              Disable Status and Health endpoints
+  --http.endpoint.health.enable false
 
 References:
   GitHub: https://github.com/hertzg/tesseract-server
-  Issues: https://github.com/hertzg/tesseract-server/discussions
-  Bugs: https://github.com/hertzg/tesseract-server/issues
+  Discussions: https://github.com/hertzg/tesseract-server/discussions
+  Issues: https://github.com/hertzg/tesseract-server/issues
 ```
 <!-- prettier-ignore-end -->
 
@@ -180,7 +183,7 @@ The returned response has the following shape
 
 ### Status Endpoint - `/status`
 
-```shell script
+```shell
 # Get worker status
 $ curl http://127.0.0.1:8884/status
 ```
