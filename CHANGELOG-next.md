@@ -1,5 +1,9 @@
-## [Unreleased](https://github.com/hertzg/tesseract-server/compare/v1.2.0...8fecc4d9f972a296571e8b3c3833dda30a7e3cd3) (2020-12-26)
+## [Unreleased](https://github.com/hertzg/tesseract-server/compare/v1.2.0...78068bdd1b1fbe256993d22e2e3c85fa80442031) (2020-12-26)
 
+
+### ⚠ BREAKING CHANGES
+
+* **node:** target current lts version (node v14.x) only
 
 ### 🐛 Bug Fixes
 
@@ -22,13 +26,6 @@
 * **pipeline:** only trigger on relevant file changes ([58bfc74](https://github.com/hertzg/tesseract-server/commit/58bfc7454714ce48be5117b5a9e54f4949a97fee))
 
 
-### 🚀 Features
-
-* **docker:** multi-target dockerfile & workflow speedups ([#9](https://github.com/hertzg/tesseract-server/issues/9)) ([7a989eb](https://github.com/hertzg/tesseract-server/commit/7a989eb37be7fb9436a1a3a29f44209a65cb7359))
-* **http:** validate user input (`options`) ([#14](https://github.com/hertzg/tesseract-server/issues/14)) ([fa9f9f5](https://github.com/hertzg/tesseract-server/commit/fa9f9f55e581956cd01e3fb0f49e12ee06b90220))
-* document all options and improve `--help` ([08f7094](https://github.com/hertzg/tesseract-server/commit/08f7094eadd24a1601a9241cce6023816c729710))
-
-
 ### 🧪 Testing Improvements
 
 * **goss:** test tini and docker-entrypoint in container ([ee634e2](https://github.com/hertzg/tesseract-server/commit/ee634e2052e94c9d37f8cc2b4d93e570ebc55fcb))
@@ -44,7 +41,16 @@
 * **linguist:** Ignore supporting files & scripts from language statistics ([099cb58](https://github.com/hertzg/tesseract-server/commit/099cb580d977d54117b1aeaf50995fe81e402f33))
 * **prettier:** always wrap proses (markdown texts) at 80 chars ([0f99abe](https://github.com/hertzg/tesseract-server/commit/0f99abe4ddbf388265a2cd07518968c87d073230))
 * **readme:** fix typo ([40d93b3](https://github.com/hertzg/tesseract-server/commit/40d93b39aa467fe7d9213cd129113be459d49e0c))
+* **readme:** generate CHANGELOG-next.md ([a6c733b](https://github.com/hertzg/tesseract-server/commit/a6c733b6f2e83b423f967bb5caa5b061e82860d4))
 * **tools:** avoid arrowParens with prettier ([8fecc4d](https://github.com/hertzg/tesseract-server/commit/8fecc4d9f972a296571e8b3c3833dda30a7e3cd3))
 * **tools:** format readme and add full-test command ([1b8215b](https://github.com/hertzg/tesseract-server/commit/1b8215b21dac9ee466781b386628c6aa6c5f94b5))
 * drop hazardous release:* run commands ([a97699a](https://github.com/hertzg/tesseract-server/commit/a97699ae3fbf727a93f69c55b466bf5ade1510b1))
+
+
+### 🚀 Features
+
+* **docker:** multi-target dockerfile & workflow speedups ([#9](https://github.com/hertzg/tesseract-server/issues/9)) ([7a989eb](https://github.com/hertzg/tesseract-server/commit/7a989eb37be7fb9436a1a3a29f44209a65cb7359))
+* **http:** validate user input (`options`) ([#14](https://github.com/hertzg/tesseract-server/issues/14)) ([fa9f9f5](https://github.com/hertzg/tesseract-server/commit/fa9f9f55e581956cd01e3fb0f49e12ee06b90220))
+* **node:** target current lts version (node v14.x) only ([78068bd](https://github.com/hertzg/tesseract-server/commit/78068bdd1b1fbe256993d22e2e3c85fa80442031))
+* document all options and improve `--help` ([08f7094](https://github.com/hertzg/tesseract-server/commit/08f7094eadd24a1601a9241cce6023816c729710))
 
