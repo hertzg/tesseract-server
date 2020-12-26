@@ -57,7 +57,7 @@
     "dist/"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "author": "George Kotchlamazashvili <georgedot@gmail.com>",
   "license": "MIT"

@@ -1,4 +1,4 @@
-FROM node:alpine AS base
+FROM node:14-alpine AS base
 WORKDIR /app
 RUN apk add --no-cache curl tini
 COPY ./package.json ./
