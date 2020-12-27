@@ -4,12 +4,13 @@ const { REF_TYPE, getRefType } = require('./helpers');
 const refTypeTag = (refType, parsedRef, branchPrefix) => {
   switch (refType) {
     case REF_TYPE.VERSION_TAG:
-      return [parsedRef[1]];
+      return parsedRef[1];
     case REF_TYPE.MASTER_BRANCH:
-      return ['master'];
+      return 'master';
     case REF_TYPE.NON_MASTER_BRANCH:
-      return [`${branchPrefix}${parsedRef[1]}`];
+      return `${branchPrefix}${parsedRef[1]}`;
   }
+  return null;
 };
 
 const latestTag = refType =>
@@ -18,7 +19,7 @@ const latestTag = refType =>
 const getTags = (parsedRef, branchPrefix) => {
   const refType = getRefType(parsedRef);
   return [
-    ...refTypeTag(refType, parsedRef, branchPrefix),
+    refTypeTag(refType, parsedRef, branchPrefix),
     ...latestTag(refType),
   ];
 };
@@ -35,4 +36,6 @@ const getTagMatrix = (ref, imageNames, branchPrefix) => {
 
 module.exports = {
   getTagMatrix,
+  refTypeTag,
+  getTags,
 };
