@@ -150,10 +150,18 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ join(matrix.tags, ',') }}
 
-      - run: docker save ${{ matrix.save.tag }} > ${{ matrix.save.file }}.tar
-      - uses: actions/upload-artifact@v2
+      - if: ${{ matrix.id == 'amd64' }}
+        uses: yuichielectric/dive-action@0.0.4
         with:
-          name: ${{ matrix.save.file }}
+          image: ${{ matrix.save.tag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: ${{ matrix.id == 'amd64' }}
+        run: docker save ${{ matrix.save.tag }} > ${{ matrix.save.file }}.tar
+      - if: ${{ matrix.id == 'amd64' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-${{ matrix.save.file }}
           path: ${{ matrix.save.file }}.tar
           retention-days: 3
 
