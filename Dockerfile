@@ -1,4 +1,4 @@
-FROM docker.io/library/node:lts-alpine AS base
+FROM node:lts-alpine3.9 AS base
 RUN apk add --no-cache curl tini
 WORKDIR /app
 COPY ./package.json /yarn.lock ./
