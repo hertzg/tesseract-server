@@ -36,6 +36,9 @@ const writeLine = line => process.stdout.write(`${line}${EOL}`);
 const setOutput = (name, data) =>
   writeLine(formatCommand('set-output', data, { name }));
 
+const setOutputs = obj =>
+  Object.entries(obj).forEach(([k, v]) => setOutput(k, v));
+
 const writeDebug = message => writeLine(formatCommand('debug', message));
 
 const writeInfo = message => writeLine(message);
@@ -56,6 +59,7 @@ const fail = reason => {
 
 module.exports = {
   setOutput,
+  setOutputs,
   writeDebug,
   writeInfo,
   writeWarning,

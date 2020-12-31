@@ -87,7 +87,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     outputs:
-      config: ${{ steps.generate.outputs.config }}
       builds: ${{ steps.generate.outputs.builds }}
       manifests: ${{ steps.generate.outputs.manifests }}
     steps:
@@ -104,12 +103,14 @@ jobs:
             linux/arm64/v8
             linux/arm/v7
             linux/arm/v6
+          publish-on: |
+            version-tag
+            master-branch
 
   docker-build:
     needs:
       - docker
       - build
-    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
@@ -125,6 +126,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      # Build the container
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         id: download
@@ -148,50 +150,98 @@ jobs:
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ join(matrix.tags, ',') }}
-
-      - if: ${{ matrix.id == 'amd64' }}
-        uses: yuichielectric/dive-action@0.0.4
+          tags: ${{ matrix.tag }}
+      - uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: ${{ matrix.save.tag }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image: ${{ matrix.tag }}
 
-      - if: ${{ matrix.id == 'amd64' }}
-        run: docker save ${{ matrix.save.tag }} > ${{ matrix.save.file }}.tar
-      - if: ${{ matrix.id == 'amd64' }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: docker-${{ matrix.save.file }}
-          path: ${{ matrix.save.file }}.tar
-          retention-days: 3
-
-      - uses: e1himself/goss-installation-action@v1.0.3
-        with:
-          version: v0.3.16
-      - run: dgoss run ${{ matrix.save.tag }}
-
-      - if: ${{ success() && fromJSON(needs.docker.outputs.config).shouldPush }}
-        run: |
-          for tag in $TO_PUSH; do
-            docker push $tag
-          done
-        env:
-          TO_PUSH: ${{ join(matrix.tags, ' ') }}
-
-  docker-manifest:
-    if: ${{ fromJSON(needs.docker.outputs.config).shouldPush }}
+  docker-test:
     needs:
       - docker
       - docker-build
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
+      matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
     steps:
-      - name: ${{ matrix.name }}
-        run: |
-          echo "Manifest tag=${{ matrix.tag }} images=${{ join(matrix.images, ',') }}"
+      - uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: ${{ matrix.tag }}
+      # Test that container is working
       - uses: e1himself/goss-installation-action@v1.0.3
         with:
           version: v0.3.16
       - run: dgoss run ${{ matrix.tag }}
+
+  docker-dive:
+    if: ${{ matrix.platform == 'linux/amd64' }}
+    needs:
+      - docker
+      - docker-build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+    steps:
+      uses: yuichielectric/dive-action@0.0.4
+      with:
+        image: ${{ matrix.tag }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  docker-push:
+    needs:
+      - docker
+      - docker-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+    steps:
+      - uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      # Build the container
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: dist.prod
+          path: ./
+      - run: |
+          tar xf dist.prod.tar
+          rm dist.prod.tar
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            DIST_SRC=./dist
+          target: prod_copy_dist
+          allow: |
+            network.host
+          platforms: ${{ matrix.platform }}
+          push: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          tags: ${{ join(matrix.tags, ',') }}
+      - uses: ishworkh/docker-image-artifact-upload@v1
+        with:
+          image: ${{ matrix.tag }}
+
+  docker-multiarch:
+    needs:
+      - docker
+      - docker-push
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
+    steps:
+      - run: |
+          docker manifest create ${{ matrix.tag }} ${{ join(matrix.images, ' ') }}
+          docker manifest push ${{ matrix.tag }}

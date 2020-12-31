@@ -1,79 +1,133 @@
-const { getRefType } = require('../../commons/helpers');
+const {
+  formatImageName,
+  createBuildImageFormatter,
+  escapeImageTag,
+} = require('./utils');
 const { parseRef } = require('../../commons/git-ref');
 const { getTags } = require('../../commons/tags');
 const {
   getInput,
   getInputLines,
-  setOutput,
+  setOutputs,
   writeInfo,
 } = require('../../commons/io');
 const { ghaMatrix } = require('../../commons/github');
 
-const BRANCH_PREFIX = 'branch-';
-
-const gitRef = getInput('git-ref');
-const repositories = getInputLines('repositories');
-const platforms = getInputLines('platforms');
-const publishOn = getInputLines('publish-on');
-
-const parsedRef = parseRef(gitRef);
-
-const tags = getTags(parsedRef, BRANCH_PREFIX);
-const [version] = tags;
-
-const asArch = s => s.split('/').slice(1).join('-');
-const asImageString = ([repository, tag]) => `${repository}:${tag}`;
-
-const escapeString = s => s.replace(/[^0-9a-z-._]+/gi, '-');
-const withPlatform = (image, platform) => `${image}-${escapeString(platform)}`;
-
-const images = repositories.flatMap(repository =>
-  tags.map(tag => [repository, tag]),
-);
-
-const config = {
-  shouldPublish: publishOn.includes(getRefType(parsedRef)),
+const parseRepository = repo => {
+  const split = repo.split('/');
+  const [imageMaybeWithTag, group, ...rest] = split.reverse();
+  const [image, maybeTag] = imageMaybeWithTag.split(':');
+  const registry = rest.reverse().join('/');
+  return {
+    repo,
+    registry: registry || undefined,
+    group: group || undefined,
+    image,
+    tag: maybeTag || undefined,
+  };
 };
 
-const builds = platforms
-  .map(platform => ({
-    id: escapeString(asArch(platform)),
-    save: {
-      tag: withPlatform(asImageString([repositories[0], version]), platform),
-      file: escapeString(withPlatform(version, platform)),
-    },
-    tags: images.map(image => withPlatform(asImageString(image), platform)),
-  }))
-  .map(config => ({
-    name: `docker-build-${config.id}`,
-    ...config,
-  }));
+const stringifyRepository = ({ registry, group, image, tag }) =>
+  [
+    ...(registry ? [registry] : []),
+    ...(group ? [group] : []),
+    [image, ...(tag ? [tag] : [])].join(':'),
+  ].join('/');
 
-const manifests = images
-  .map(image => ({
-    tag: asImageString(image),
-    image,
-    images: platforms.map(platform =>
-      withPlatform(asImageString(image), platform),
+const createImageCombinations = (repos, tags) =>
+  repos.flatMap(repo =>
+    tags.map(tag => ({
+      ...parseRepository(formatImageName({ repo, tag })),
+    })),
+  );
+
+const createImageInfo = (
+  gitRef,
+  repositories,
+  platforms,
+  { branchManifestPrefix },
+) => {
+  const [firstRepo] = repositories;
+  return {
+    build: {
+      as: parseRepository(firstRepo).image,
+      platforms,
+    },
+    publishAs: createImageCombinations(
+      repositories,
+      getTags(parseRef(gitRef), branchManifestPrefix),
     ),
-  }))
-  .map(config => ({
-    name: `docker-manifest (${config.image.reverse().join(', ')})`,
-    ...config,
-  }));
+  };
+};
 
-writeInfo(
-  JSON.stringify(
-    {
-      config: config,
-      builds: ghaMatrix(builds),
-      manifests: ghaMatrix(manifests),
-    },
-    null,
-    2,
-  ),
-);
+const createMatrixBuilder = ({ buildTagPrefix }) => {
+  const buildImage = createBuildImageFormatter(buildTagPrefix);
 
-setOutput('config', JSON.stringify(config));
-setOutput('builds', JSON.stringify(ghaMatrix(builds)));
-setOutput('manifests', JSON.stringify(ghaMatrix(manifests)));
+  const createBuildMatrices = ({ build, publishAs }, sha) => {
+    return build.platforms.map(platform => {
+      return {
+        name: `docker-${escapeImageTag(platform)}`,
+        platform,
+        tag: buildImage.name(build.as, sha, platform),
+        push: [
+          ...new Set(
+            publishAs.map(repo =>
+              stringifyRepository({
+                ...repo,
+                tag: buildImage.tag(sha, platform),
+              }),
+            ),
+          ),
+        ],
+      };
+    });
+  };
+
+  const createManifestMatrices = (builds, publishAs) =>
+    publishAs.map(repo => {
+      return {
+        name: `docker-push (${repo.tag}, ${repo.image}, ${repo.group}, ${repo.registry})`,
+        repo,
+        multiarch: {
+          tag: repo.repo,
+          images: builds.map(build =>
+            stringifyRepository({
+              ...repo,
+              tag: parseRepository(build.tag).tag,
+            }),
+          ),
+        },
+      };
+    });
+
+  return {
+    builds: createBuildMatrices,
+    manifests: createManifestMatrices,
+  };
+};
+
+const BRANCH_PREFIX = 'branch-';
+const BUILD_TAG_PREFIX = 'git-';
+
+const gitRef = getInput('git-ref');
+const gitSha = getInput('git-sha');
+const repositories = getInputLines('repositories');
+const platforms = getInputLines('platforms');
+
+const matrixBuilder = createMatrixBuilder({
+  buildTagPrefix: BUILD_TAG_PREFIX,
+});
+
+const imagesInfo = createImageInfo(gitRef, repositories, platforms, {
+  branchManifestPrefix: BRANCH_PREFIX,
+});
+const builds = matrixBuilder.builds(imagesInfo, gitSha);
+const manifests = matrixBuilder.manifests(builds, imagesInfo.publishAs);
+
+const outputs = {
+  builds: ghaMatrix(builds),
+  manifests: ghaMatrix(manifests),
+};
+
+writeInfo(JSON.stringify({ imagesInfo, ...outputs }, null, 2));
+setOutputs(outputs);

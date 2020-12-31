@@ -7,6 +7,10 @@ inputs:
     required: true
     description: 'GitHub ref to base tags off of. (default: $github.ref)'
     default: ${{ github.ref }}
+  git-sha:
+    required: true
+    description: 'GitHub sha, used for intermediate build tags. (default: $github.sha)'
+    default: ${{ github.sha }}
   repositories:
     required: true
     description:
@@ -26,8 +30,6 @@ inputs:
       master-branch or non-master-branch) (default: version-tag,master-branch)'
 
 outputs:
-  config:
-    description: 'config json'
   builds:
     description: 'build matrix json'
   manifest:

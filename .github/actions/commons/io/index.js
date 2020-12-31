@@ -5,6 +5,7 @@ const {
   writeWarning,
   writeError,
   setOutput,
+  setOutputs,
   fail,
 } = require('./output');
 
@@ -16,5 +17,6 @@ module.exports = {
   writeWarning,
   writeError,
   setOutput,
+  setOutputs,
   fail,
 };
