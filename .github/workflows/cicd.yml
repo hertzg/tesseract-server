@@ -182,10 +182,10 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
     steps:
-      uses: yuichielectric/dive-action@0.0.4
-      with:
-        image: ${{ matrix.tag }}
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: yuichielectric/dive-action@0.0.4
+        with:
+          image: ${{ matrix.tag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   docker-push:
     needs:
