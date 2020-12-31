@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.9 AS base
+FROM node:lts-alpine AS base
 RUN apk add --no-cache curl tini
 WORKDIR /app
 COPY ./package.json /yarn.lock ./
@@ -6,7 +6,7 @@ COPY ./package.json /yarn.lock ./
 FROM base AS deps_prod
 ARG DEPS_YARN_REGISTRY="https://registry.npmjs.org/"
 WORKDIR /app
-RUN yarn list
+RUN env && ls -lah /usr/local/bin
 RUN yarn install --registry $DEPS_YARN_REGISTRY --no-lockfile --production
 
 FROM base AS base_prod
