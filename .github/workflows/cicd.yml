@@ -148,6 +148,7 @@ jobs:
           allow: |
             network.host
           platforms: ${{ matrix.platform }}
+          pull: true
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
@@ -160,7 +161,6 @@ jobs:
     needs:
       - docker
       - docker-build
-    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}

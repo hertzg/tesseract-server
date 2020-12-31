@@ -1,4 +1,4 @@
-FROM node:14-alpine AS base
+FROM docker.io/library/node:14-alpine AS base
 RUN apk add --no-cache curl tini
 WORKDIR /app
 COPY ./package.json ./
