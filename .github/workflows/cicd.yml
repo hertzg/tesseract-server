@@ -174,7 +174,6 @@ jobs:
       - run: dgoss run ${{ matrix.tag }}
 
   docker-dive:
-    if: ${{ matrix.platform == 'linux/amd64' }}
     needs:
       - docker
       - docker-build
@@ -182,7 +181,8 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
     steps:
-      - uses: yuichielectric/dive-action@0.0.4
+      - if: ${{ matrix.platform == 'linux/amd64' }}
+        uses: yuichielectric/dive-action@0.0.4
         with:
           image: ${{ matrix.tag }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
