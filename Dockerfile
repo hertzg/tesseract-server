@@ -1,7 +1,7 @@
-FROM docker.io/library/node:14-alpine AS base
+FROM docker.io/library/node:14.15.3-alpine3.12 AS base
 RUN apk add --no-cache curl tini
 WORKDIR /app
-COPY ./package.json ./
+COPY ./package.json /yarn.lock ./
 
 FROM base AS deps_prod
 ARG DEPS_YARN_REGISTRY="https://registry.npmjs.org/"
