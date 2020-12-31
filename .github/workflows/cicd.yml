@@ -114,6 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
     steps:
       - uses: docker/setup-buildx-action@v1
         with:
@@ -163,6 +164,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
     steps:
       - uses: ishworkh/docker-image-artifact-download@v1
         with:
@@ -180,6 +182,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
     steps:
       - if: ${{ matrix.platform == 'linux/amd64' }}
         uses: yuichielectric/dive-action@0.0.4
@@ -194,6 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
     steps:
       - uses: docker/setup-buildx-action@v1
         with:
@@ -241,6 +245,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
+      fail-fast: false
     steps:
       - run: |
           docker manifest create ${{ matrix.tag }} ${{ join(matrix.images, ' ') }}
