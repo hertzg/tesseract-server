@@ -6,6 +6,7 @@ COPY ./package.json ./
 FROM base AS deps_prod
 ARG DEPS_YARN_REGISTRY="https://registry.npmjs.org/"
 WORKDIR /app
+RUN yarn list
 RUN yarn install --registry $DEPS_YARN_REGISTRY --no-lockfile --production
 
 FROM base AS base_prod
