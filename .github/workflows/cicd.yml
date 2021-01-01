@@ -124,8 +124,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
-      - name: Cache Docker layers
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-v2-${{ github.sha }}
