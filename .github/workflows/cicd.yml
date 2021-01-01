@@ -174,19 +174,16 @@ jobs:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
     steps:
-      - if: ${{ matrix.platform == 'linux/amd64' }}
-        uses: docker/setup-qemu-action@v1
-      - if: ${{ matrix.platform == 'linux/amd64' }}
-        uses: ishworkh/docker-image-artifact-download@v1
+      - uses: docker/setup-qemu-action@v1
+      - uses: ishworkh/docker-image-artifact-download@v1
         with:
           image: ${{ matrix.tag }}
       # Test that container is working
-      - if: ${{ matrix.platform == 'linux/amd64' }}
-        uses: e1himself/goss-installation-action@v1.0.3
+      - uses: e1himself/goss-installation-action@v1.0.3
         with:
           version: v0.3.16
-      - if: ${{ matrix.platform == 'linux/amd64' }}
-        run: dgoss run ${{ matrix.tag }}
+      - uses: actions/checkout@v2
+      - run: dgoss run ${{ matrix.tag }}
 
   docker-dive:
     needs:
