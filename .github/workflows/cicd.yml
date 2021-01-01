@@ -196,6 +196,7 @@ jobs:
 
   docker-push:
     needs:
+      - test
       - docker
       - docker-test
     runs-on: ubuntu-latest
