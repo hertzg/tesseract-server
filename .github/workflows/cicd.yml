@@ -223,7 +223,7 @@ jobs:
             docker tag $LOCAL $remote
             docker push $remote
           done;
-        with:
+        env:
           LOCAL: ${{ matrix.tag }}
           REMOTES: ${{ join(matrix.push, ' ') }}
 
