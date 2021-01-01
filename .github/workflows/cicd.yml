@@ -124,8 +124,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-v2-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-v2-${{ matrix.platform }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-buildx-v2-${{ matrix.platform }}
             ${{ runner.os }}-buildx-v2-
 
       # Build the container
