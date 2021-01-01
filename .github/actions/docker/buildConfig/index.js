@@ -86,16 +86,13 @@ const createMatrixBuilder = ({ buildTagPrefix }) => {
   const createManifestMatrices = (builds, publishAs) =>
     publishAs.map(repo => {
       return {
-        repo,
-        multiarch: {
-          tag: repo.repo,
-          images: builds.map(build =>
-            stringifyRepository({
-              ...repo,
-              tag: parseRepository(build.tag).tag,
-            }),
-          ),
-        },
+        name: repo.repo,
+        images: builds.map(build =>
+          stringifyRepository({
+            ...repo,
+            tag: parseRepository(build.tag).tag,
+          }),
+        ),
       };
     });
 
