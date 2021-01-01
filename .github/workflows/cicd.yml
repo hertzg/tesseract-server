@@ -235,6 +235,8 @@ jobs:
       fail-fast: false
     steps:
       - uses: docker/setup-buildx-action@v1
-      - run: |
+      - env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
+        run: |
           docker manifest create ${{ matrix.name }} ${{ join(matrix.images, ' ') }}
           docker manifest push ${{ matrix.name }}
