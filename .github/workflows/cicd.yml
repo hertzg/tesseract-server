@@ -189,6 +189,10 @@ jobs:
       fail-fast: false
     steps:
       - if: ${{ matrix.platform == 'linux/amd64' }}
+        uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: ${{ matrix.tag }}
+      - if: ${{ matrix.platform == 'linux/amd64' }}
         uses: yuichielectric/dive-action@0.0.4
         with:
           image: ${{ matrix.tag }}
