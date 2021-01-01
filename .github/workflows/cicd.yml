@@ -220,7 +220,6 @@ jobs:
           LOCAL_NAME: ${{ matrix.tag }}
           PUSH_NAMES: ${{ join(matrix.push, ' ') }}
         run: |
-          env;
           for PUSH_NAME in $PUSH_NAMES; do
             docker tag $LOCAL_NAME $PUSH_NAME
             docker push $PUSH_NAME
