@@ -86,7 +86,6 @@ const createMatrixBuilder = ({ buildTagPrefix }) => {
   const createManifestMatrices = (builds, publishAs) =>
     publishAs.map(repo => {
       return {
-        name: `docker-push (${repo.tag}, ${repo.image}, ${repo.group}, ${repo.registry})`,
         repo,
         multiarch: {
           tag: repo.repo,
