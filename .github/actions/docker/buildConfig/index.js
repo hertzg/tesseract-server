@@ -43,12 +43,18 @@ const createImageCombinations = (repos, tags) =>
 
 const createImageInfo = (
   gitRef,
+  gitSha,
   repositories,
   platforms,
   { branchManifestPrefix },
 ) => {
   const [firstRepo] = repositories;
   return {
+    startedAt: new Date().toISOString(),
+    git: {
+      ref: gitRef,
+      sha: gitSha,
+    },
     build: {
       as: parseRepository(firstRepo).image,
       platforms,
@@ -114,16 +120,17 @@ const matrixBuilder = createMatrixBuilder({
   buildTagPrefix: BUILD_TAG_PREFIX,
 });
 
-const imagesInfo = createImageInfo(gitRef, repositories, platforms, {
+const imagesInfo = createImageInfo(gitRef, gitSha, repositories, platforms, {
   branchManifestPrefix: BRANCH_PREFIX,
 });
 const builds = matrixBuilder.builds(imagesInfo, gitSha);
 const manifests = matrixBuilder.manifests(builds, imagesInfo.publishAs);
 
 const outputs = {
+  config: imagesInfo,
   builds: ghaMatrix(builds),
   manifests: ghaMatrix(manifests),
 };
 
-writeInfo(JSON.stringify({ imagesInfo, ...outputs }, null, 2));
+writeInfo(JSON.stringify({ ...outputs }, null, 2));
 setOutputs(outputs);

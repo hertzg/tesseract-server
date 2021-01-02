@@ -84,6 +84,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     outputs:
+      config: ${{ steps.generate.outputs.config }}
       builds: ${{ steps.generate.outputs.builds }}
       manifests: ${{ steps.generate.outputs.manifests }}
     steps:
@@ -100,6 +101,21 @@ jobs:
             linux/arm64/v8
             linux/arm/v7
             linux/arm/v6
+      - uses: jwalton/gh-find-current-pr@v1
+        id: find-pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.find-pr.outputs.pr }}
+          message: |
+            # Docker build request
+            ```json
+            ${{ toJSON(fromJSON(steps.generate.outputs.config)) }}
+            ```
+
+            Images are being built, please wait a few minutes before they get published. They will appear in this comment as soon as they are ready. You can follow the process by inspecting the running checks.
 
   docker-build:
     needs:
@@ -124,7 +140,8 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-v2-${{ matrix.platform }}-${{ github.sha }}
+          key:
+            ${{ runner.os }}-buildx-v2-${{ matrix.platform }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-v2-${{ matrix.platform }}
             ${{ runner.os }}-buildx-v2-
@@ -248,3 +265,17 @@ jobs:
         run: |
           docker manifest create ${{ matrix.name }} ${{ join(matrix.images, ' ') }}
           docker manifest push ${{ matrix.name }}
+      - uses: jwalton/gh-find-current-pr@v1
+        id: find-pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.find-pr.outputs.pr }}
+          append: true
+          message: |
+            ## Published `${{ matrix.name }}`
+            ```json
+            ${{ toJSON(matrix) }}
+            ```
