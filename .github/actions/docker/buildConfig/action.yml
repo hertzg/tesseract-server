@@ -1,0 +1,40 @@
+name: Docker build config
+description:
+  Action that generates config json needed to parallel build multiarch images
+
+inputs:
+  git-ref:
+    required: true
+    description: 'GitHub ref to base tags off of. (default: $github.ref)'
+    default: ${{ github.ref }}
+  git-sha:
+    required: true
+    description: 'GitHub sha, used for intermediate build tags. (default: $github.sha)'
+    default: ${{ github.sha }}
+  repositories:
+    required: true
+    description:
+      'New line or comma delimited list of repositories used for tagging.
+      (required)'
+  platforms:
+    required: false
+    default: 'linux/amd64'
+    description:
+      'New line or comma delimited list of platforms to build for.
+      (default:  linux/amd64)'
+  publish-on:
+    required: false
+    default: 'version-tag,master-branch'
+    description:
+      'New line or comma delimited list of conditions. (options: version-tag,
+      master-branch or non-master-branch) (default: version-tag,master-branch)'
+
+outputs:
+  builds:
+    description: 'build matrix json'
+  manifest:
+    description: 'manifest matrix json'
+
+runs:
+  using: node12
+  main: index.js

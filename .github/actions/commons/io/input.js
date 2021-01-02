@@ -7,7 +7,12 @@ const getInput = (name, defaultValue = '') => getRawInput(name) || defaultValue;
 
 const getInputLines = (name, separator = '\n') => {
   const input = getInput(name).trim();
-  return input ? input.split(separator).map(line => line.trim()) : [];
+  return input
+    ? input
+        .split(separator)
+        .flatMap(line => line.split(','))
+        .map(line => line.trim())
+    : [];
 };
 
 const validateEnum = (name, value, options = []) =>

@@ -1,7 +1,14 @@
-const { getTagMatrix } = require('./tags');
-const { getConfig, setOutput, writeInfo, fail } = require('./io');
+const { getTagMatrix } = require('../../commons/tags');
+const {
+  getInput,
+  getInputLines,
+  setOutput,
+  writeInfo,
+  fail,
+} = require('../../commons/io');
 
-const { gitRef, imageNames } = getConfig();
+const gitRef = getInput('git-ref');
+const imageNames = getInputLines('image-names');
 
 const tags = getTagMatrix(gitRef, imageNames, 'git-');
 if (!tags.length) {

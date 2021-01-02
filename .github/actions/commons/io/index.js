@@ -5,22 +5,18 @@ const {
   writeWarning,
   writeError,
   setOutput,
+  setOutputs,
   fail,
 } = require('./output');
-
-const getConfig = () => ({
-  gitRef: getInput('git-ref'),
-  imageNames: getInputLines('image-names'),
-});
 
 module.exports = {
   getInput,
   getInputLines,
-  getConfig,
   writeDebug,
   writeInfo,
   writeWarning,
   writeError,
   setOutput,
+  setOutputs,
   fail,
 };

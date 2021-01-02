@@ -1,15 +1,35 @@
 const { parseRef } = require('./git-ref');
 const { REF_TYPE, getRefType } = require('./helpers');
+const { createHash } = require('crypto');
+
+const asTag = tag => {
+  let sanitized = tag
+    .replace(/([^a-z0-9_.-])/gi, '_') // invalid to _
+    .replace(/(_+)/g, '_'); // remove consecutive _ chars
+
+  // Replace with hash if longer than 80 chars
+  // 80 chars is arbitrary just to allow
+  if (sanitized.length > 80) {
+    const hash = createHash('sha1')
+      .update(tag)
+      .digest('hex');
+    return `${hash}`;
+  }
+
+  return sanitized;
+};
 
 const refTypeTag = (refType, parsedRef, branchPrefix) => {
   switch (refType) {
     case REF_TYPE.VERSION_TAG:
-      return [parsedRef[1]];
+      return asTag(parsedRef[1]);
     case REF_TYPE.MASTER_BRANCH:
-      return ['master'];
+      return 'master';
     case REF_TYPE.NON_MASTER_BRANCH:
-      return [`${branchPrefix}${parsedRef[1]}`];
+      return `${branchPrefix}${asTag(parsedRef[1])}`;
   }
+
+  throw new Error('Unable to determine refTypeTag');
 };
 
 const latestTag = refType =>
@@ -17,10 +37,7 @@ const latestTag = refType =>
 
 const getTags = (parsedRef, branchPrefix) => {
   const refType = getRefType(parsedRef);
-  return [
-    ...refTypeTag(refType, parsedRef, branchPrefix),
-    ...latestTag(refType),
-  ];
+  return [refTypeTag(refType, parsedRef, branchPrefix), ...latestTag(refType)];
 };
 
 const combine = (imageNames, tags) =>
@@ -35,4 +52,6 @@ const getTagMatrix = (ref, imageNames, branchPrefix) => {
 
 module.exports = {
   getTagMatrix,
+  refTypeTag,
+  getTags,
 };

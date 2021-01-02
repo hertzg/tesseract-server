@@ -34,12 +34,24 @@ jobs:
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: dist/
+          key:
+            ${{ runner.os }}-src-${{ hashFiles('src/**', '**/package*.json',
+            '**/*.lock', 'tsconfig.json') }}
+
+      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
+        uses: actions/setup-node@v2
         with:
           check-latest: true
           node-version: '14.x'
-      - uses: bahmutov/npm-install@v1
-      - run: yarn build
+      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
+        uses: bahmutov/npm-install@v1
+      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
+        run: yarn build
+
       - run: |
           tar -cvf dist.tar dist/
           tar -cvf dist.prod.tar dist/index.js dist/*.production.*.js
@@ -55,150 +67,51 @@ jobs:
           retention-days: 7
 
   test:
-    needs:
-      - build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node: ['14.x']
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: ./
-      - run: |
-          tar xf dist.tar
-          rm dist.tar
-      - name: Use Node v${{ matrix.node }}
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           check-latest: true
-          node-version: ${{ matrix.node }}
-
+          node-version: '14.x'
       - uses: bahmutov/npm-install@v1
       - run: yarn test --ci --coverage --maxWorkers=2
       - uses: codecov/codecov-action@v1
         if: ${{ success() }}
         continue-on-error: true
 
-  test-dgoss:
-    needs:
-      - build
+  docker:
     runs-on: ubuntu-latest
-    services:
-      verdaccio:
-        image: verdaccio/verdaccio
-        ports:
-          - 4873:4873
-        volumes:
-          - /tmp/.verdaccio-storage:/verdaccio/storage
+    outputs:
+      builds: ${{ steps.generate.outputs.builds }}
+      manifests: ${{ steps.generate.outputs.manifests }}
     steps:
-      - name: Verdaccio Cache
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.verdaccio-storage
-          key: ${{ runner.os }}-verdaccio-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-verdaccio-
-      - name: Restart Verdaccio
-        run: |
-          sudo chown -R 10001:65533 /tmp/.verdaccio-storage
-          docker restart ${{ job.services.verdaccio.id }}
-          sleep 3
-          docker logs ${{ job.services.verdaccio.id }}
-
-      - uses: docker/setup-buildx-action@v1
-        with:
-          driver-opts: network=host
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
+      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
-
-      - uses: actions/download-artifact@v2
-        id: download
+      - id: generate
+        uses: ./.github/actions/docker/buildConfig
         with:
-          name: dist.prod
-          path: ./
-      - run: |
-          tar xf dist.prod.tar
-          rm dist.prod.tar
-
-      - uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          build-args: |
-            DIST_SRC=./dist
-            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
-          target: prod_copy_dist
-          allow: |
-            network.host
-          push: false
-          load: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: tesseract-server:goss
-
-      - uses: e1himself/goss-installation-action@v1.0.3
-        with:
-          version: v0.3.16
-      - run: dgoss run tesseract-server:goss
-
-  publish:
-    if:
-      ${{ startsWith(github.ref, 'refs/tags/v') || github.ref ==
-      'refs/heads/master' }}
-    needs:
-      - build
-      - test
-      - test-dgoss
-    runs-on: ubuntu-latest
-    services:
-      verdaccio:
-        image: verdaccio/verdaccio
-        ports:
-          - 4873:4873
-        volumes:
-          - /tmp/.verdaccio-storage:/verdaccio/storage
-    steps:
-      - name: Verdaccio Cache
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.verdaccio-storage
-          key: ${{ runner.os }}-verdaccio-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-verdaccio-
-      - name: Restart Verdaccio
-        run: |
-          sudo chown -R 10001:65533 /tmp/.verdaccio-storage
-          docker restart ${{ job.services.verdaccio.id }}
-          sleep 3
-          docker logs ${{ job.services.verdaccio.id }}
-
-      - uses: actions/checkout@v2
-
-      - id: dockerTagger
-        uses: ./.github/actions/publish/dockerTagger
-        with:
-          image-names: |
+          repositories: |
             ghcr.io/hertzg/tesseract-server
             hertzg/tesseract-server
+          platforms: |
+            linux/amd64
+            linux/arm64/v8
+            linux/arm/v7
+            linux/arm/v6
 
+  docker-build:
+    needs:
+      - docker
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
+    steps:
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
-        with:
-          driver-opts: network=host
-
       - uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -208,15 +121,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-v2-${{ matrix.platform }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-v2-${{ matrix.platform }}
+            ${{ runner.os }}-buildx-v2-
 
+      # Build the container
+      - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         id: download
         with:
@@ -225,20 +139,112 @@ jobs:
       - run: |
           tar xf dist.prod.tar
           rm dist.prod.tar
-
-      - name: Build & Push
+      - name: Build
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           build-args: |
             DIST_SRC=./dist
-            DEPS_YARN_REGISTRY=http://127.0.0.1:4873
           target: prod_copy_dist
-          allow: |
-            network.host
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          push: true
+          platforms: ${{ matrix.platform }}
+          load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ steps.dockerTagger.outputs.image-tags }}
+          tags: ${{ matrix.tag }}
+      - uses: ishworkh/docker-image-artifact-upload@v1
+        with:
+          image: ${{ matrix.tag }}
+
+  docker-test:
+    needs:
+      - docker
+      - docker-build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
+    steps:
+      - uses: docker/setup-qemu-action@v1
+      - uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: ${{ matrix.tag }}
+      # Test that container is working
+      - uses: e1himself/goss-installation-action@v1.0.3
+        with:
+          version: v0.3.16
+      - uses: actions/checkout@v2
+      - run: dgoss run ${{ matrix.tag }}
+
+  docker-dive:
+    needs:
+      - docker
+      - docker-build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
+    steps:
+      - uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: ${{ matrix.tag }}
+      - uses: yuichielectric/dive-action@0.0.4
+        with:
+          image: ${{ matrix.tag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  docker-push:
+    needs:
+      - test
+      - docker
+      - docker-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
+      fail-fast: false
+    steps:
+      - uses: docker/setup-buildx-action@v1
+      - uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: ${{ matrix.tag }}
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_PAT }}
+      - env:
+          LOCAL_NAME: ${{ matrix.tag }}
+          PUSH_NAMES: ${{ join(matrix.push, ' ') }}
+        run: |
+          for PUSH_NAME in $PUSH_NAMES; do
+            docker tag $LOCAL_NAME $PUSH_NAME
+            docker push $PUSH_NAME
+          done;
+
+  docker-multiarch:
+    needs:
+      - docker
+      - docker-push
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
+      fail-fast: false
+    steps:
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_PAT }}
+      - env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
+        run: |
+          docker manifest create ${{ matrix.name }} ${{ join(matrix.images, ' ') }}
+          docker manifest push ${{ matrix.name }}
