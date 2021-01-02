@@ -81,15 +81,6 @@ jobs:
         if: ${{ success() }}
         continue-on-error: true
 
-  deps:
-    runs-on: ubuntu-latest
-    steps:
-      - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v2
-      - uses: hiwelo/new-dependencies-action@1.0.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   docker:
     runs-on: ubuntu-latest
     outputs:
@@ -110,14 +101,21 @@ jobs:
             linux/arm64/v8
             linux/arm/v7
             linux/arm/v6
+      - uses: jwalton/gh-find-current-pr@v1
+        id: find-pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.find-pr.outputs.pr }}
           message: |
-            # Docker Build
+            # Docker build request
             ```json
-              ${{ toJSON(fromJSON(steps.generate.outputs.config)) }}
+            ${{ toJSON(fromJSON(steps.generate.outputs.config)) }}
             ```
+
+            Images are being built, please wait a few minutes before they get published. They will appear in this comment as soon as they are ready. You can follow the process by inspecting the running checks.
 
   docker-build:
     needs:
@@ -174,12 +172,6 @@ jobs:
       - uses: ishworkh/docker-image-artifact-upload@v1
         with:
           image: ${{ matrix.tag }}
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          append: true
-          message: |
-            - [X] Docker Build `${{ matrix.platform }}`
 
   docker-test:
     needs:
@@ -200,12 +192,6 @@ jobs:
           version: v0.3.16
       - uses: actions/checkout@v2
       - run: dgoss run ${{ matrix.tag }}
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          append: true
-          message: |
-            - [X] Docker Test `${{ matrix.platform }}`
 
   docker-dive:
     needs:
@@ -223,12 +209,6 @@ jobs:
         with:
           image: ${{ matrix.tag }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          append: true
-          message: |
-            - [X] Docker Dive `${{ matrix.platform }}`
 
   docker-push:
     needs:
@@ -261,12 +241,6 @@ jobs:
             docker tag $LOCAL_NAME $PUSH_NAME
             docker push $PUSH_NAME
           done;
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          append: true
-          message: |
-            - [X] Docker Push `${{ matrix.platform }}`
 
   docker-multiarch:
     needs:
@@ -291,13 +265,17 @@ jobs:
         run: |
           docker manifest create ${{ matrix.name }} ${{ join(matrix.images, ' ') }}
           docker manifest push ${{ matrix.name }}
+      - uses: jwalton/gh-find-current-pr@v1
+        id: find-pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.find-pr.outputs.pr }}
           append: true
           message: |
-
             ## Published `${{ matrix.name }}`
             ```json
-              ${{ toJSON(matrix) }}
+            ${{ toJSON(matrix) }}
             ```
