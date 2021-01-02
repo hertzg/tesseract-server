@@ -66,6 +66,7 @@ Options:
   --http.input.optionsField                 Multipart field name containing OCR Options                                            [string] [default: "options"]
   --http.input.fileField                    Multipart field name containing OCR file                                                  [string] [default: "file"]
   --http.output.jsonSpaces                  Enable json pretty printing and set number of spaces to use for indentation                    [number] [default: 0]
+  --processor.lineEndings                   Set line ending policy                                    [string] [choices: "auto", "lf", "crlf"] [default: "auto"]
 
 Examples:
   tesseract-server --http.output.jsonSpaces 2                                       Enable JSON pretty printing

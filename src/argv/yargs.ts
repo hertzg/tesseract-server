@@ -1,5 +1,6 @@
 import Yargs, { terminalWidth } from 'yargs';
 import { tmpdir } from 'os';
+import { ProcessorSettingsLineEndings } from '../processor';
 
 export const createYargs = (argv: readonly string[], cwd?: string) =>
   Yargs(argv, cwd)
@@ -70,6 +71,16 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
           'Enable json pretty printing and set number of spaces to use for indentation',
         default: 0,
         type: 'number',
+      },
+      'processor.lineEndings': {
+        description: 'Set line ending policy',
+        type: 'string',
+        default: 'auto',
+        choices: [
+          ProcessorSettingsLineEndings.AUTO,
+          ProcessorSettingsLineEndings.LF,
+          ProcessorSettingsLineEndings.CRLF,
+        ],
       },
     })
     .example([
