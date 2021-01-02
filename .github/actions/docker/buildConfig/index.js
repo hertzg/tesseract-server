@@ -121,9 +121,10 @@ const builds = matrixBuilder.builds(imagesInfo, gitSha);
 const manifests = matrixBuilder.manifests(builds, imagesInfo.publishAs);
 
 const outputs = {
+  config: imagesInfo,
   builds: ghaMatrix(builds),
   manifests: ghaMatrix(manifests),
 };
 
-writeInfo(JSON.stringify({ imagesInfo, ...outputs }, null, 2));
+writeInfo(JSON.stringify({ ...outputs }, null, 2));
 setOutputs(outputs);
