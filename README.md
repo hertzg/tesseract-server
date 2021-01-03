@@ -22,7 +22,7 @@ You can use the service by sending `multipart` http requests containing
 <!-- prettier-ignore-start -->
 ```shell script
 # Run OCR using english language on file sample.jpg in current directory
-$ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/
+$ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/tesseract
 
 {
   "data": {
@@ -139,7 +139,7 @@ After starting the container the new language will be automatically available.
 
 There are a few endpoints exposed this section describes each one.
 
-### OCR Endpoint - `/`
+### OCR Endpoint - `/tesseract`
 
 This endpoint performs OCR on provided `file`, You can control the OCR process
 by providing `options` field with `JSON` object containing the configuration.

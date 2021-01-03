@@ -1,4 +1,4 @@
-POST http://localhost:8884/
+POST http://localhost:8884/tesseract
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -16,7 +16,7 @@ Content-Disposition: form-data; name="file"; filename="sample.jpg"
 
 ###
 
-POST http://localhost:8884/
+POST http://localhost:8884/tesseract
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -35,7 +35,7 @@ Content-Disposition: form-data; name="file"; filename="sample.jpg"
 ###
 
 
-POST http://localhost:8884/
+POST http://localhost:8884/tesseract
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -57,7 +57,7 @@ Content-Disposition: form-data; name="file"; filename="sample.jpg"
 
 ###
 
-POST http://localhost:8884/
+POST http://localhost:8884/tesseract
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary

@@ -33,7 +33,7 @@ class HTTPProvider implements IProvider {
     private readonly health: HealthChecker,
   ) {
     this.app.post(
-      '/',
+      '/tesseract',
       this.upload.single(argv['http.input.fileField']),
       this._onPost,
     );
