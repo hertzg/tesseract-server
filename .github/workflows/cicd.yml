@@ -18,7 +18,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
       - run: yarn lint
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
@@ -67,7 +67,7 @@ jobs:
           retention-days: 7
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
@@ -82,7 +82,7 @@ jobs:
         continue-on-error: true
 
   docker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       config: ${{ steps.generate.outputs.config }}
       builds: ${{ steps.generate.outputs.builds }}
@@ -123,7 +123,7 @@ jobs:
     needs:
       - docker
       - build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -179,7 +179,7 @@ jobs:
     needs:
       - docker
       - docker-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -199,7 +199,7 @@ jobs:
     needs:
       - docker
       - docker-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -217,7 +217,7 @@ jobs:
       - test
       - docker
       - docker-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -248,7 +248,7 @@ jobs:
     needs:
       - docker
       - docker-push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
       fail-fast: false
