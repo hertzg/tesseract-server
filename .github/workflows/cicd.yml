@@ -97,10 +97,13 @@ jobs:
             ghcr.io/hertzg/tesseract-server
             hertzg/tesseract-server
           platforms: |
+            linux/386
             linux/amd64
             linux/arm64/v8
             linux/arm/v7
             linux/arm/v6
+            linux/ppc64le
+            linux/s390x
       - uses: jwalton/gh-find-current-pr@v1
         id: find-pr
         with:
