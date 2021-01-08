@@ -97,7 +97,6 @@ jobs:
             ghcr.io/hertzg/tesseract-server
             hertzg/tesseract-server
           platforms: |
-            linux/386
             linux/amd64
             linux/arm64/v8
             linux/arm/v7
