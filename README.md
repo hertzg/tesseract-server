@@ -84,7 +84,7 @@ References:
 
 Docker images are multi-arch images based on `alpine` variant of official `node`
 docker images supporting `linux/amd64`, `linux/arm/v6`, `linux/arm/v7`,
-`linux/arm64/v8` platforms.
+`linux/arm64/v8`, `linux/ppc64le` and `linux/s390x` platforms.
 
 ## Raspberry Pi support
 
