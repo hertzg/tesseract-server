@@ -103,8 +103,8 @@ class HTTPProvider implements IProvider {
 
   start(): Promise<void> {
     return new Promise<void>(resolve => {
-      this.app.listen(8884, () => {
-        console.log('Listening...');
+      const srv = this.app.listen(8884, () => {
+        console.log('Listening @ %j', srv.address());
         resolve();
       });
     });
