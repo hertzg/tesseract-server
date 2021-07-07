@@ -58,6 +58,14 @@ class HTTPProvider implements IProvider {
     this.tess.status().then(status => {
       res.status(200).json({
         data: {
+          host: {
+            hostname: OS.hostname(),
+            platform: OS.platform(),
+            arch: OS.arch(),
+            uptime: OS.uptime(),
+            release: OS.release(),
+            loadavg: OS.loadavg(),
+          },
           processor: status,
         },
       });
