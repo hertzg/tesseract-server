@@ -114,7 +114,6 @@ class Tesseract implements ITesseract {
   }
 
   public execute = (input: Readable): Promise<TesseractResult> => {
-    console.log('execute on pid %j', this._proc.pid);
     this._kickoff(input);
     return this._promise;
   };

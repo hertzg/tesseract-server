@@ -114,7 +114,6 @@ class Processor implements IProcessor {
       const settings: GenericPoolSettings = {
         ...this.settings.pool,
       };
-      console.log('worker: new pool %j with %j', key, settings);
       const pool = createWorkerPool(options, settings);
       this.pools.set(key, pool);
     }
