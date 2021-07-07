@@ -12,6 +12,7 @@ import argv from '../../argv';
 import { Readable } from 'stream';
 import { IProvider, IProviderFactory } from '../types';
 import { asOptions } from './decoders';
+import OS from 'os';
 
 export const createHttpProvider: IProviderFactory = ({
   processor,
