@@ -9,6 +9,37 @@ All notable changes to this project will be documented in this file. See [standa
 
 All unreleased changes scheduled for the next release are in [CHANGELOG-next.md](./CHANGELOG-next.md)
 
+## [2.1.0](https://github.com/hertzg/tesseract-server/compare/v2.0.0...v2.1.0) (2021-07-07)
+
+
+### 📖 Documentation Updates
+
+* update readme mentioning new platforms ([c408712](https://github.com/hertzg/tesseract-server/commit/c408712f3e28b9117763df4818d7497ca7543968))
+
+
+### 🚆 Pipeline Improvements
+
+* migrate to ubuntu-20.04 as runner virtualenv ([#20](https://github.com/hertzg/tesseract-server/issues/20)) ([c75ff9d](https://github.com/hertzg/tesseract-server/commit/c75ff9dcc8c7e32835a65f30c411da181769dd7b))
+
+
+### 🛠️ General Chores
+
+* drop useless test ([#21](https://github.com/hertzg/tesseract-server/issues/21)) ([a6f3c7c](https://github.com/hertzg/tesseract-server/commit/a6f3c7cc70c2a9cb5208d55feb26faead2ce0f65))
+* **changelog:** generate CHANGELOG-next.md ([d73932c](https://github.com/hertzg/tesseract-server/commit/d73932c805455ed99cd2b0def986630caed190ed))
+
+
+### 🐛 Bug Fixes
+
+* **logging:** remove useless logging ([05686bf](https://github.com/hertzg/tesseract-server/commit/05686bf553ff1a05992029cc21df1f1da511f194))
+
+
+### 🚀 Features
+
+* **logging:** log listening address on startup ([3440fda](https://github.com/hertzg/tesseract-server/commit/3440fda142fe27f939a2490f3a78218347bd894e))
+* **status:** include host info ([a02f34a](https://github.com/hertzg/tesseract-server/commit/a02f34aed992c491a349a1978d8e94467b1aaf40))
+* **status:** include host info ([67ce2de](https://github.com/hertzg/tesseract-server/commit/67ce2de951f21b14778b6400f51898a43bb5ccab))
+* introduce ppc64 and s390x platform support in docker ([#19](https://github.com/hertzg/tesseract-server/issues/19)) ([56407c8](https://github.com/hertzg/tesseract-server/commit/56407c8fe16b03923e75c36b0ad8097f838071e7))
+
 ## [2.0.0](https://github.com/hertzg/tesseract-server/compare/v1.2.0...v2.0.0) (2021-01-03)
 
 
