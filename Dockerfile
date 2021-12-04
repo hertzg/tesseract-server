@@ -1,4 +1,4 @@
-FROM node:14.18.2-alpine3.14 AS base
+FROM node:17.2.0-alpine3.14 AS base
 RUN apk add --no-cache tini #curl
 WORKDIR /app
 COPY ./package.json /yarn.lock ./
