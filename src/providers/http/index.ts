@@ -58,6 +58,7 @@ class HTTPProvider implements IProvider {
     this.tess.status().then(status => {
       res.status(200).json({
         data: {
+          version: process.env?.npm_package_version || 'unknown',
           host: {
             hostname: OS.hostname(),
             platform: OS.platform(),

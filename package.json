@@ -5,6 +5,7 @@
   "typings": "dist/index.d.ts",
   "module": "dist/tesseract-server.esm.js",
   "scripts": {
+    "run": "node ./dist",
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",

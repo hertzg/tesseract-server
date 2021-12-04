@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 set -e
-set -- node "./dist/" "$@"
+set -- yarn run run "$@"
 exec "$@"
