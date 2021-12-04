@@ -1,25 +1,25 @@
 file:
   /docker-entrypoint.sh:
     exists: true
-    mode: "0755"
+    mode: '0755'
     filetype: file
     contains: []
   /sbin/tini:
     exists: true
-    mode: "0755"
+    mode: '0755'
     filetype: file
     contains: []
 package:
   tesseract-ocr:
     installed: true
     versions:
-    - 4.1.0-r0
+      - 4.1.1-r5
   tesseract-ocr-data-*:
     installed: true
     versions:
-    - tesseract-ocr-data-rus-4.1.0-r0
-    - tesseract-ocr-data-pol-4.1.0-r0
-    - tesseract-ocr-data-deu-4.1.0-r0
+      - tesseract-ocr-data-rus-4.1.1-r5
+      - tesseract-ocr-data-pol-4.1.1-r5
+      - tesseract-ocr-data-deu-4.1.1-r5
 process:
   tini:
     running: true
