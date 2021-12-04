@@ -9,6 +9,27 @@ All notable changes to this project will be documented in this file. See [standa
 
 All unreleased changes scheduled for the next release are in [CHANGELOG-next.md](./CHANGELOG-next.md)
 
+## [2.2.0](https://github.com/hertzg/tesseract-server/compare/v2.1.0...v2.2.0) (2021-12-04)
+
+
+### 🛠️ General Chores
+
+* **changelog:** clear CHANGELOG-next.md ([6131ebc](https://github.com/hertzg/tesseract-server/commit/6131ebcf42433b403dfd1fb6f78c35737fd7890d))
+* **ci:** fix permissions ([fef489a](https://github.com/hertzg/tesseract-server/commit/fef489a7c703e5af189df2b9dc8c0b98b6159800))
+
+
+### 🚀 Features
+
+* **docker:** pin version to 14.18.2-alpine3.14 ([ce4316d](https://github.com/hertzg/tesseract-server/commit/ce4316db09e39bb725aa94e2f25160ccc233513c))
+* **tesseract:** update tesseract-ocr* to 4.1.1-r5 ([b8f7c67](https://github.com/hertzg/tesseract-server/commit/b8f7c6747de2458c5903ac216124b87144152db7))
+* include version in status ([b0fa3a9](https://github.com/hertzg/tesseract-server/commit/b0fa3a9d6042cf5c9d4cea87a621db1fbed79bf1))
+
+
+### 🐛 Bug Fixes
+
+* **ghcr:** fix build & push permissions ([fe1d8ea](https://github.com/hertzg/tesseract-server/commit/fe1d8ea48a199b09ec330000ef31946e991fa710))
+* **ghcr:** fix multi-arch push permissions ([b7a2aa5](https://github.com/hertzg/tesseract-server/commit/b7a2aa5def3118c77b5d004ff3051f1bc993e250))
+
 ## [2.1.0](https://github.com/hertzg/tesseract-server/compare/v2.0.0...v2.1.0) (2021-07-07)
 
 
