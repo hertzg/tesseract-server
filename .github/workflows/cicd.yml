@@ -124,6 +124,8 @@ jobs:
       - docker
       - build
     runs-on: ubuntu-20.04
+    permissions:
+      packages: write
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -138,7 +140,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
@@ -234,7 +236,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - env:
           LOCAL_NAME: ${{ matrix.tag }}
           PUSH_NAMES: ${{ join(matrix.push, ' ') }}
@@ -261,7 +263,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - env:
           DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
