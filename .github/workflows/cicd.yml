@@ -83,6 +83,8 @@ jobs:
 
   docker:
     runs-on: ubuntu-20.04
+    permissions:
+      pull-requests: write
     outputs:
       config: ${{ steps.generate.outputs.config }}
       builds: ${{ steps.generate.outputs.builds }}
@@ -254,6 +256,7 @@ jobs:
       - docker-push
     runs-on: ubuntu-20.04
     permissions:
+      pull-requests: write
       packages: write
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
@@ -279,7 +282,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.find-pr.outputs.pr }}
           append: true
           message: |
