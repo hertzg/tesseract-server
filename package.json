@@ -51,7 +51,7 @@
     "yargs": "^16.2.0"
   },
   "resolutions": {
-    "**/@typescript-eslint/eslint-plugin": "^4.1.1",
+    "**/@typescript-eslint/eslint-plugin": "^5.0.0",
     "**/@typescript-eslint/parser": "^4.1.1"
   },
   "files": [
