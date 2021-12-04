@@ -125,7 +125,7 @@ jobs:
       - build
     runs-on: ubuntu-20.04
     permissions:
-      packages: write
+      packages: read
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -220,6 +220,8 @@ jobs:
       - docker
       - docker-test
     runs-on: ubuntu-20.04
+    permissions:
+      packages: write
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
