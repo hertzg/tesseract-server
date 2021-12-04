@@ -253,6 +253,8 @@ jobs:
       - docker
       - docker-push
     runs-on: ubuntu-20.04
+    permissions:
+      packages: write
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
       fail-fast: false
