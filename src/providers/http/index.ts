@@ -78,8 +78,8 @@ class HTTPProvider implements IProvider {
   };
 
   private _getReadable = async (req: Request): Promise<Readable> => {
-    if (!req.file) {
-      throw new Error('No file provided');
+    if (!req.file || !req.file.size) {
+      throw new Error('No or empty file provided');
     }
 
     return FS.createReadStream(req.file.path);
