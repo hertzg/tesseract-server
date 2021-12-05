@@ -5,7 +5,6 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-    command: node dist/index.js
     image: tesseract-server:dev
     ports:
       - 8884:8884

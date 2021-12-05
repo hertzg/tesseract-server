@@ -1,6 +1,7 @@
 FROM node:16.13.1-alpine3.14 AS base
 RUN apk add --no-cache tini #curl
 WORKDIR /app
+COPY ./public/ ./public/
 COPY ./package.json /yarn.lock ./
 
 FROM base AS deps_prod

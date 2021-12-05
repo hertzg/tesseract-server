@@ -63,6 +63,7 @@ Options:
   --http.upload.tmpDir                      Path to where temp uploads are saved to                                                   [string] [default: "/tmp"]
   --http.endpoint.status.enable             Enable /status endpoint                                                                    [boolean] [default: true]
   --http.endpoint.health.enable             Enable /.well-known/health/* endpoints and health checkers                                 [boolean] [default: true]
+  --http.endpoint.webui.enable              Enable Web UI at /                                                                         [boolean] [default: true]
   --http.input.optionsField                 Multipart field name containing OCR Options                                            [string] [default: "options"]
   --http.input.fileField                    Multipart field name containing OCR file                                                  [string] [default: "file"]
   --http.output.jsonSpaces                  Enable json pretty printing and set number of spaces to use for indentation                    [number] [default: 0]

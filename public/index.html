@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tesseract-server</title>
+  </head>
+  <body style="max-width: 300px; margin:0 auto;">
+    <h1>OCR Document</h1>
+    <form method="post" action="/tesseract" enctype="multipart/form-data">
+      <div
+        style="display: flex;flex-direction: column;align-items: stretch;align-content: stretch;"
+      >
+        <div><input type="file" name="file" /></div>
+        <textarea name="options" rows="10">
+{
+  "languages": ["deu","eng"],
+  "configParams": {
+  }
+}</textarea
+        >
+        <button type="submit">Upload</button>
+      </div>
+    </form>
+  </body>
+</html>
