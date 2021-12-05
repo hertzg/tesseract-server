@@ -52,6 +52,10 @@ class HTTPProvider implements IProvider {
       this.app.use('/.well-known/health/live', LivenessEndpoint(this.health));
       this.app.use('/.well-known/health/ready', ReadinessEndpoint(this.health));
     }
+
+    if (argv['http.endpoint.webui.enable']) {
+      this.app.use(express.static('public'));
+    }
   }
 
   private _onStatus = (req: Request, res: Response) => {

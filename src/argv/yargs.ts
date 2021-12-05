@@ -56,6 +56,11 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
         default: true,
         type: 'boolean',
       },
+      'http.endpoint.webui.enable': {
+        description: 'Enable Web UI at /',
+        default: true,
+        type: 'boolean',
+      },
       'http.input.optionsField': {
         description: 'Multipart field name containing OCR Options',
         default: 'options',
