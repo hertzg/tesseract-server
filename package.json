@@ -22,7 +22,7 @@
   "peerDependencies": {},
   "devDependencies": {
     "@types/async": "^3.2.5",
-    "@types/bl": "^2.1.0",
+    "@types/bl": "^5.0.0",
     "@types/event-loop-lag": "^1.0.30",
     "@types/express": "^4.17.9",
     "@types/generic-pool": "^3.1.9",
@@ -42,7 +42,7 @@
   "dependencies": {
     "@cloudnative/health-connect": "^2.1.0",
     "async": "^3.2.0",
-    "bl": "^4.0.3",
+    "bl": "^5.0.0",
     "decoders": "^1.23.3",
     "event-loop-lag": "^1.4.0",
     "express": "^4.17.1",
