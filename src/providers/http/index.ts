@@ -35,7 +35,7 @@ class HTTPProvider implements IProvider {
   ) {
     this.app.post(
       '/tesseract',
-      this.upload.single(argv['http.input.fileField']),
+      this.upload.single(argv['http.input.fileField']) as any,
       this._onPost,
     );
 
@@ -78,6 +78,10 @@ class HTTPProvider implements IProvider {
   };
 
   private _getReadable = async (req: Request): Promise<Readable> => {
+    if (!req.file) {
+      throw new Error('No file provided');
+    }
+
     return FS.createReadStream(req.file.path);
   };
 
