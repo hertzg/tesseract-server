@@ -1,4 +1,4 @@
-FROM node:16.13.1-alpine3.14 AS base
+FROM node:16.13.2-alpine3.14 AS base
 RUN apk add --no-cache tini #curl
 WORKDIR /app
 COPY ./public/ ./public/
