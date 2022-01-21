@@ -1,4 +1,4 @@
-FROM node:16.13.2-alpine3.14 AS base
+FROM node:16.13.2-alpine3.15 AS base
 RUN apk add --no-cache tini #curl
 WORKDIR /app
 COPY ./public/ ./public/
@@ -10,7 +10,7 @@ RUN env && ls -lah /usr/local/bin
 RUN /usr/local/bin/yarn install --production
 
 FROM base AS base_prod
-RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-deu tesseract-ocr-data-pol tesseract-ocr-data-rus
+RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-deu tesseract-ocr-data-kat tesseract-ocr-data-fra tesseract-ocr-data-spa tesseract-ocr-data-pol tesseract-ocr-data-rus
 COPY --from=deps_prod /app/node_modules/ ./dist/node_modules/
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh

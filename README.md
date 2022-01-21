@@ -120,6 +120,8 @@ The container by default installs tesseract and 3 datapacks:
 
 - `tesseract-ocr` - English (included)
 - `tesseract-ocr-data-deu` - German
+- `tesseract-ocr-data-fra` - French
+- `tesseract-ocr-data-kat` - Georgia
 - `tesseract-ocr-data-pol` - Polish
 - `tesseract-ocr-data-rus` - Russian
 
