@@ -9,6 +9,18 @@ All notable changes to this project will be documented in this file. See [standa
 
 All unreleased changes scheduled for the next release are in [CHANGELOG-next.md](./CHANGELOG-next.md)
 
+## [2.4.0](https://github.com/hertzg/tesseract-server/compare/v2.3.0...v2.4.0) (2022-01-21)
+
+
+### 🛠️ General Chores
+
+* **deps:** update node docker tag to v16.13.2 ([#40](https://github.com/hertzg/tesseract-server/issues/40)) ([c4f6d60](https://github.com/hertzg/tesseract-server/commit/c4f6d60c8318e3878214bbd68439b6b19277ac3c))
+
+
+### 🚀 Features
+
+* bump base & include more datapacks ([#41](https://github.com/hertzg/tesseract-server/issues/41)) ([2cfe254](https://github.com/hertzg/tesseract-server/commit/2cfe254cc216cda3a3a283263394591c55bebb8f))
+
 ## [2.3.0](https://github.com/hertzg/tesseract-server/compare/v2.2.0...v2.3.0) (2021-12-05)
 
 
