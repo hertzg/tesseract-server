@@ -3748,13 +3748,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debrief@npm:^1.4.0":
-  version: 1.4.3
-  resolution: "debrief@npm:1.4.3"
-  checksum: f79c96d459ec8366249a397755658dc22ea0ee890c53c01b178021275dd57fb47b76c4c7a79f6774d6d3c0475c9e43da706318b860830902d355a7063eda011f
-  languageName: node
-  linkType: hard
-
 "debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -3821,13 +3814,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decoders@npm:^1.23.3":
-  version: 1.23.3
-  resolution: "decoders@npm:1.23.3"
-  dependencies:
-    debrief: ^1.4.0
-    lemons: ^1.4.0
-  checksum: 244f7629f0036435177a042d49c930a25f25906564547bb4d145f498c513a1d6d981c6e0ae090e8416a6650f32bf8a8322d4c326ac40ae4898eb95c6ccb91cdf
+"decoders@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "decoders@npm:2.0.0"
+  checksum: 8c4220a0bdda196bc4ced747d45e460eaf1448f3ad9e9536424889c379de333217936c3e35d8eaac1f49d029846e89925c5a5c9b5da09809c08f17e62e1d279d
   languageName: node
   linkType: hard
 
@@ -6890,13 +6880,6 @@ __metadata:
   dependencies:
     language-subtag-registry: ~0.3.2
   checksum: c81b5d8b9f5f9cfd06ee71ada6ddfe1cf83044dd5eeefcd1e420ad491944da8957688db4a0a9bc562df4afdc2783425cbbdfd152c01d93179cf86888903123cf
-  languageName: node
-  linkType: hard
-
-"lemons@npm:^1.4.0":
-  version: 1.6.0
-  resolution: "lemons@npm:1.6.0"
-  checksum: 6b6359cf791a05159f2b1599a0d8f656e221de995ac2be834da19f693ec55b19174bd6494366259a2cfaa92972f9f0a43394602c7e1ee3100a15a7ca26605189
   languageName: node
   linkType: hard
 
@@ -10181,7 +10164,7 @@ __metadata:
     bl: ^5.0.0
     conventional-changelog-cli: ^2.1.1
     conventional-changelog-conventionalcommits: ^4.5.0
-    decoders: ^1.23.3
+    decoders: ^2.0.0
     event-loop-lag: ^1.4.0
     express: ^4.17.1
     generic-pool: ^3.7.1
