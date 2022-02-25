@@ -22,7 +22,7 @@ jobs:
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           check-latest: true
           node-version: '16.x'
@@ -43,7 +43,7 @@ jobs:
             '**/*.lock', 'tsconfig.json') }}
 
       - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           check-latest: true
           node-version: '16.x'
@@ -71,7 +71,7 @@ jobs:
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           check-latest: true
           node-version: '16.x'
