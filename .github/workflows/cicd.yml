@@ -55,12 +55,12 @@ jobs:
       - run: |
           tar -cvf dist.tar dist/
           tar -cvf dist.prod.tar dist/index.js dist/*.production.*.js
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: dist.prod
           path: dist.prod.tar
           retention-days: 7
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist.tar
