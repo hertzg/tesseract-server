@@ -2,6 +2,9 @@ import Yargs, { terminalWidth } from 'yargs';
 import { tmpdir } from 'os';
 import { ProcessorSettingsLineEndings } from '../processor';
 
+const _port = parseInt(process.env.PORT || '');
+const HTTP_LISTEN_PORT = Number.isInteger(_port) ? _port : 8884;
+
 export const createYargs = (argv: readonly string[], cwd?: string) =>
   Yargs(argv, cwd)
     .parserConfiguration({
@@ -38,6 +41,16 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
       'pool.default.evictionRunIntervalMillis': {
         description: 'Time interval (in milliseconds) between eviction checks',
         default: 5000,
+        type: 'number',
+      },
+      'http.listen.address': {
+        description: 'Set http listen address',
+        default: process.env.HOST || '0.0.0.0',
+        type: 'string',
+      },
+      'http.listen.port': {
+        description: 'Set http listen port',
+        default: HTTP_LISTEN_PORT,
         type: 'number',
       },
       'http.upload.tmpDir': {
