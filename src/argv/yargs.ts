@@ -2,9 +2,6 @@ import Yargs, { terminalWidth } from 'yargs';
 import { tmpdir } from 'os';
 import { ProcessorSettingsLineEndings } from '../processor';
 
-const _port = parseInt(process.env.PORT || '');
-const HTTP_LISTEN_PORT = Number.isInteger(_port) ? _port : 8884;
-
 export const createYargs = (argv: readonly string[], cwd?: string) =>
   Yargs(argv, cwd)
     .parserConfiguration({
@@ -45,12 +42,12 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
       },
       'http.listen.address': {
         description: 'Set http listen address',
-        default: process.env.HOST || '0.0.0.0',
+        default: process.env.HOST != null ? process.env.HOST : '0.0.0.0',
         type: 'string',
       },
       'http.listen.port': {
         description: 'Set http listen port',
-        default: HTTP_LISTEN_PORT,
+        default: process.env.PORT != null ? Number(process.env.PORT) : 8884,
         type: 'number',
       },
       'http.upload.tmpDir': {
