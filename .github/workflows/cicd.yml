@@ -114,7 +114,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.find-pr.outputs.pr }}
           message: |
             # Docker build request
