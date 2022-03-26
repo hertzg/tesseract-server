@@ -14,6 +14,10 @@ import { IProvider, IProviderFactory } from '../types';
 import { asOptions } from './decoders';
 import OS from 'os';
 
+const _port = parseInt(process.env.PORT || '');
+const PORT = Number.isInteger(_port) ? _port : 8884;
+const HOST = process.env.HOST || '0.0.0.0';
+
 export const createHttpProvider: IProviderFactory = ({
   processor,
   healthChecker,
@@ -121,7 +125,7 @@ class HTTPProvider implements IProvider {
 
   start(): Promise<void> {
     return new Promise<void>(resolve => {
-      const srv = this.app.listen(8884, () => {
+      const srv = this.app.listen(PORT, HOST, () => {
         console.log('Listening @ %j', srv.address());
         resolve();
       });
