@@ -109,12 +109,13 @@ jobs:
             linux/ppc64le
             linux/s390x
       - uses: jwalton/gh-find-current-pr@v1
+        if: ${{ github.event_name != 'pull_request' }}
         id: find-pr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: marocchino/sticky-pull-request-comment@v2
+        if: ${{ github.event_name != 'pull_request' }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.find-pr.outputs.pr }}
           message: |
             # Docker build request
@@ -283,10 +284,12 @@ jobs:
           docker manifest create ${{ matrix.name }} ${{ join(matrix.images, ' ') }}
           docker manifest push ${{ matrix.name }}
       - uses: jwalton/gh-find-current-pr@v1
+        if: ${{ github.event_name != 'pull_request' }}
         id: find-pr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: marocchino/sticky-pull-request-comment@v2
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           number: ${{ steps.find-pr.outputs.pr }}
           append: true

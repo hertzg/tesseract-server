@@ -27,9 +27,11 @@ const refTypeTag = (refType, parsedRef, branchPrefix) => {
       return 'master';
     case REF_TYPE.NON_MASTER_BRANCH:
       return `${branchPrefix}${asTag(parsedRef[1])}`;
+    case REF_TYPE.PULL_REQUEST:
+      return `pr-${asTag(parsedRef[1])}`
   }
 
-  throw new Error('Unable to determine refTypeTag');
+  throw new Error(`Unable to determine refTypeTag for ${JSON.stringify(parsedRef)} of type ${refType}`);
 };
 
 const latestTag = refType =>
