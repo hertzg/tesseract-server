@@ -1,5 +1,8 @@
 name: CICD
 on:
+  pull_request:
+    branches: 
+      - master
   push:
     branches: []
     tags: 'v*'
@@ -34,7 +37,7 @@ jobs:
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: cache
         with:
           path: dist/
@@ -135,15 +138,17 @@ jobs:
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/rtl_433_docker' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - uses: docker/login-action@v1
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/rtl_433_docker' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key:
@@ -217,6 +222,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   docker-push:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/rtl_433_docker' }}
     needs:
       - test
       - docker
