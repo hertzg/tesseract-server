@@ -60,7 +60,7 @@ Options:
   --pool.default.max                        Maximum number of processes to spawn for each pool after which requests are queued             [number] [default: 2]
   --pool.default.idleTimeoutMillis          Time (in milliseconds) a processes can stay idle in queue before eviction                   [number] [default: 5000]
   --pool.default.evictionRunIntervalMillis  Time interval (in milliseconds) between eviction checks                                     [number] [default: 5000]
-  --http.listen.address                     Set http listen address                                                                [string] [default: "0.0.0.0"]
+  --http.listen.address                     Set http listen address                                                              [string] [default: "127.0.0.1"]
   --http.listen.port                        Set http listen port                                                                        [number] [default: 8884]
   --http.upload.tmpDir                      Path to where temp uploads are saved to                                                   [string] [default: "/tmp"]
   --http.endpoint.status.enable             Enable /status endpoint                                                                    [boolean] [default: true]
