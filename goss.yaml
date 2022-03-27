@@ -29,7 +29,7 @@ process:
   node:
     running: true
 http:
-  http:/0.0.0.0:8884/status:
+  http://127.0.0.1:8884/status:
     status: 200
     allow-insecure: false
     no-follow-redirects: false

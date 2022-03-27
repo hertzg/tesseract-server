@@ -1,5 +1,3 @@
 port:
-  tcp:8884:
+  tcp6:8884:
     listening: true
-    ip:
-      - 0.0.0.0
