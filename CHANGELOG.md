@@ -9,6 +9,26 @@ All notable changes to this project will be documented in this file. See [standa
 
 All unreleased changes scheduled for the next release are in [CHANGELOG-next.md](./CHANGELOG-next.md)
 
+## [2.5.0](https://github.com/hertzg/tesseract-server/compare/v2.4.0...v2.5.0) (2022-03-30)
+
+
+### 🛠️ General Chores
+
+* **ci:** allow actions on pull requests ([#54](https://github.com/hertzg/tesseract-server/issues/54)) ([fa803d5](https://github.com/hertzg/tesseract-server/commit/fa803d5ebf9bd47c5072dcec4535eb0793fd56cd))
+* **ci:** allow builds from forks ([bc12764](https://github.com/hertzg/tesseract-server/commit/bc12764df933752a6c0ab09afccf3219974a1350))
+* **deps:** update actions/cache action to v3 ([#51](https://github.com/hertzg/tesseract-server/issues/51)) ([fe43725](https://github.com/hertzg/tesseract-server/commit/fe43725964d0c6fec1ac63ee61521d000cbb7ce6))
+* bump docker image to 16-alpine3.15 ([#50](https://github.com/hertzg/tesseract-server/issues/50)) ([88c45ea](https://github.com/hertzg/tesseract-server/commit/88c45ea379a4c6609b4f4a8e3b078ffcba585015))
+* **deps:** update actions/checkout action to v3 ([#46](https://github.com/hertzg/tesseract-server/issues/46)) ([cccea47](https://github.com/hertzg/tesseract-server/commit/cccea4768665b13215bbd4da5abcdfc91b0eca1a))
+* **deps:** update actions/download-artifact action to v3 ([#47](https://github.com/hertzg/tesseract-server/issues/47)) ([717e410](https://github.com/hertzg/tesseract-server/commit/717e41057c77dc3387861dd57acf38719ff5539a))
+* **deps:** update actions/setup-node action to v3 ([#45](https://github.com/hertzg/tesseract-server/issues/45)) ([16ab652](https://github.com/hertzg/tesseract-server/commit/16ab652dbe9e187c51e7d513e95982b35a308c88))
+* **deps:** update actions/upload-artifact action to v3 ([#48](https://github.com/hertzg/tesseract-server/issues/48)) ([3314465](https://github.com/hertzg/tesseract-server/commit/3314465838a48837023199b8ed916539226a0782))
+* **deps:** update node docker tag to v16.14.0 ([#43](https://github.com/hertzg/tesseract-server/issues/43)) ([0e0773a](https://github.com/hertzg/tesseract-server/commit/0e0773af0b183968b198f19f7409355191fbcc9c))
+
+
+### 🚀 Features
+
+* **http:** allow http port and address config via cli & env ([#52](https://github.com/hertzg/tesseract-server/issues/52)) ([afbe586](https://github.com/hertzg/tesseract-server/commit/afbe586c93cd81e6cdbf928ad9f894bbd4c64eb6))
+
 ## [2.4.0](https://github.com/hertzg/tesseract-server/compare/v2.3.0...v2.4.0) (2022-01-21)
 
 
