@@ -40,6 +40,16 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
         default: 5000,
         type: 'number',
       },
+      'http.listen.address': {
+        description: 'Set http listen address',
+        default: process.env.HOST != null ? process.env.HOST : '127.0.0.1',
+        type: 'string',
+      },
+      'http.listen.port': {
+        description: 'Set http listen port',
+        default: process.env.PORT != null ? Number(process.env.PORT) : 8884,
+        type: 'number',
+      },
       'http.upload.tmpDir': {
         description: 'Path to where temp uploads are saved to',
         default: tmpdir(),

@@ -121,7 +121,7 @@ class HTTPProvider implements IProvider {
 
   start(): Promise<void> {
     return new Promise<void>(resolve => {
-      const srv = this.app.listen(8884, () => {
+      const srv = this.app.listen(argv['http.listen.port'], argv['http.listen.address'], () => {
         console.log('Listening @ %j', srv.address());
         resolve();
       });
