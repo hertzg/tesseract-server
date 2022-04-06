@@ -9,6 +9,18 @@ All notable changes to this project will be documented in this file. See [standa
 
 All unreleased changes scheduled for the next release are in [CHANGELOG-next.md](./CHANGELOG-next.md)
 
+### [2.5.1](https://github.com/hertzg/tesseract-server/compare/v2.5.0...v2.5.1) (2022-04-06)
+
+
+### 🛠️ General Chores
+
+* **deps:** update codecov/codecov-action action to v3 ([#57](https://github.com/hertzg/tesseract-server/issues/57)) ([f56993c](https://github.com/hertzg/tesseract-server/commit/f56993c211b9380c5e74138cab7c8fda33d668fb))
+
+
+### 🐛 Bug Fixes
+
+* listen on any address by default ([#58](https://github.com/hertzg/tesseract-server/issues/58)) ([37934fc](https://github.com/hertzg/tesseract-server/commit/37934fcbd96edfedd91fa8ca9754d1565d029be3))
+
 ## [2.5.0](https://github.com/hertzg/tesseract-server/compare/v2.4.0...v2.5.0) (2022-03-30)
 
 
