@@ -42,7 +42,7 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
       },
       'http.listen.address': {
         description: 'Set http listen address',
-        default: process.env.HOST != null ? process.env.HOST : '127.0.0.1',
+        default: process.env.HOST != null ? process.env.HOST : '0.0.0.0',
         type: 'string',
       },
       'http.listen.port': {
