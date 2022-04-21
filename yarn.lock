@@ -1830,10 +1830,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.0.0":
-  version: 16.11.11
-  resolution: "@types/node@npm:16.11.11"
-  checksum: 1c472bd63f23ca0e4effc96e6e0c693b83b027f613a1f41b6d1bd7791f65ce171a351e0a5c92575cb59e84ad0a930875397bfbbb91a7c925ddbbb558f7461af8
+"@types/node@npm:^17.0.0":
+  version: 17.0.25
+  resolution: "@types/node@npm:17.0.25"
+  checksum: 6a820bd624e69ea772f52a6cdb326484eff5829443dc981939373929ade109f58c21698b9f0a831bd6ceea799e722a75dc49c5fa7a6bc32a81e1cbdfc6507b64
   languageName: node
   linkType: hard
 
@@ -10175,7 +10175,7 @@ __metadata:
     "@types/express": ^4.17.13
     "@types/generic-pool": ^3.1.9
     "@types/multer": ^1.4.7
-    "@types/node": ^16.0.0
+    "@types/node": ^17.0.0
     "@types/yargs": ^17.0.7
     async: ^3.2.0
     bl: ^5.0.0
