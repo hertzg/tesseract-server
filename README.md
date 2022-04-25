@@ -240,3 +240,7 @@ requests, and liveness should be used to denote whether an application is "live"
 The combined health endpoint is designed for cloud technologies, such as Cloud
 Foundry which only support a single endpoint for both liveness and readiness
 checking.
+
+## Deployment Guides
+
+- [Heroku](./docs/heroku-deploy.md)
