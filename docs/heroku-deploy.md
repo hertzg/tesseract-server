@@ -1,5 +1,32 @@
 # Heroku Deploy
 
+Before creating the Heroku project, we must add the `Aptfile` and `Procfile` files.
+
+Fork this project. And add the `Aptfile` and `Procfile` files. 
+
+### Aptfile
+
+```
+# https://stackoverflow.com/questions/66087588/tesseract-error-while-loading-shared-libraries-libarchive-so-13-python
+*libarchive13*
+# tesseract dependencies
+tesseract-ocr
+tesseract-ocr-deu
+tesseract-ocr-fra
+tesseract-ocr-kat
+tesseract-ocr-pol
+tesseract-ocr-rus
+# tesseract-ocr-all
+```
+
+### Procfile
+
+```
+web: yarn run build && yarn run run
+```
+
+# Create Heroku Project
+
 ```shell
 $ heroku create <heroku-app-name>
 $ heroku stack:set heroku-20
