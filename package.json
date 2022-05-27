@@ -29,7 +29,7 @@
     "@types/node": "^16.0.0",
     "@types/yargs": "^17.0.7",
     "conventional-changelog-cli": "^2.1.1",
-    "conventional-changelog-conventionalcommits": "^4.5.0",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
     "remark": "^13.0.0",
     "standard-version": "^9.0.0",
     "tsdx": "^0.14.1",
