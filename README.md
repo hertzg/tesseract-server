@@ -13,7 +13,7 @@ The easiest way to get started is using
 (multi-arch)
 
 ```shell script
-$ docker -p 8884:8884 hertzg/tesseract-server:latest
+$ docker run -p 8884:8884 hertzg/tesseract-server:latest
 ```
 
 You can use the service by sending `multipart` http requests containing
