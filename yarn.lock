@@ -3405,14 +3405,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"conventional-changelog-conventionalcommits@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "conventional-changelog-conventionalcommits@npm:5.0.0"
+"conventional-changelog-conventionalcommits@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "conventional-changelog-conventionalcommits@npm:6.0.0"
   dependencies:
     compare-func: ^2.0.0
-    lodash: ^4.17.15
-    q: ^1.5.1
-  checksum: b67d12e4e0fdde5baa32c3d77af472de38646a18657b26f5543eecce041a318103092fbfcef247e2319a16957c9ac78c6ea78acc11a5db6acf74be79a28c561f
+  checksum: 40b9c731bc3d2e1c9d0c66c793768afa6d99826de24c458e527f1e189641d916b0dc5a195f10f4a5e974bf64b2919a5966b9818003ba0a32f723dfa292ad13cd
   languageName: node
   linkType: hard
 
@@ -10233,7 +10231,7 @@ __metadata:
     async: ^3.2.0
     bl: ^6.0.0
     conventional-changelog-cli: ^2.1.1
-    conventional-changelog-conventionalcommits: ^5.0.0
+    conventional-changelog-conventionalcommits: ^6.0.0
     decoders: ^1.23.3
     event-loop-lag: ^1.4.0
     express: ^4.17.1
