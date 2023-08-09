@@ -21,7 +21,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
@@ -33,7 +33,7 @@ jobs:
       - run: echo yarn lint # disable for now
 
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
@@ -70,7 +70,7 @@ jobs:
           retention-days: 7
 
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
@@ -85,7 +85,7 @@ jobs:
         continue-on-error: true
 
   docker:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
     outputs:
@@ -129,7 +129,7 @@ jobs:
     needs:
       - docker
       - build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     strategy:
@@ -189,7 +189,7 @@ jobs:
     needs:
       - docker
       - docker-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -209,7 +209,7 @@ jobs:
     needs:
       - docker
       - docker-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -228,7 +228,7 @@ jobs:
       - test
       - docker
       - docker-test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: write
     strategy:
@@ -261,7 +261,7 @@ jobs:
     needs:
       - docker
       - docker-push
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
       packages: write
