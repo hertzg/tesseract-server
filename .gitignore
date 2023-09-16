@@ -4,9 +4,8 @@
 node_modules
 dist
 coverage/
-yarn plugin import interactive-tools
 .yarn/*
-!.yarn/cache
+#!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
