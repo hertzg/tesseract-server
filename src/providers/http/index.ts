@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, RequestHandler, Response } from 'express';
 import {
   HealthChecker,
   HealthEndpoint,
@@ -58,7 +58,7 @@ class HTTPProvider implements IProvider {
     }
   }
 
-  private _onStatus = (req: Request, res: Response) => {
+  private _onStatus: RequestHandler = (req, res) => {
     this.tess.status().then(status => {
       res.status(200).json({
         data: {
@@ -77,11 +77,15 @@ class HTTPProvider implements IProvider {
     });
   };
 
-  private _getOptions = async (req: Request): Promise<Options> => {
+  private _getOptions = async (
+    req: Parameters<RequestHandler>[0],
+  ): Promise<Options> => {
     return asOptions(JSON.parse(req.body[argv['http.input.optionsField']]));
   };
 
-  private _getReadable = async (req: Request): Promise<Readable> => {
+  private _getReadable = async (
+    req: Parameters<RequestHandler>[0],
+  ): Promise<Readable> => {
     if (!req.file || !req.file.size) {
       throw new Error('No or empty file provided');
     }
@@ -89,7 +93,7 @@ class HTTPProvider implements IProvider {
     return FS.createReadStream(req.file.path);
   };
 
-  private _onPost = (req: Request, res: Response) => {
+  private _onPost: RequestHandler = (req, res) => {
     Promise.all([this._getOptions(req), this._getReadable(req)])
       .catch(reason => {
         res.status(400).json({
@@ -121,10 +125,14 @@ class HTTPProvider implements IProvider {
 
   start(): Promise<void> {
     return new Promise<void>(resolve => {
-      const srv = this.app.listen(argv['http.listen.port'], argv['http.listen.address'], () => {
-        console.log('Listening @ %j', srv.address());
-        resolve();
-      });
+      const srv = this.app.listen(
+        argv['http.listen.port'],
+        argv['http.listen.address'],
+        () => {
+          console.log('Listening @ %j', srv.address());
+          resolve();
+        },
+      );
     });
   }
 }

@@ -1,6 +1,5 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { parse } from 'url';
 
 const RESOLVED_REGEX = /^\s+resolved\s(.*)$/g;
 
@@ -14,7 +13,7 @@ describe('yarn.lock', () => {
     matches
       .map(match => match[1]?.trim())
       .filter(url => url?.trim())
-      .map(url => parse(url))
+      .map(url => new URL(url))
       .forEach(url => {
         expect(url.hostname).toBe('registry.npmjs.org');
       });

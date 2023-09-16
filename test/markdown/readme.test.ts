@@ -30,10 +30,7 @@ describe('README.md tests', () => {
     const maybeMarkdownNode = await usageFromReadme();
     expect(maybeMarkdownNode).toBeTruthy();
 
-    const node = maybeMarkdownNode as Exclude<
-      typeof maybeMarkdownNode,
-      undefined
-    >;
+    const node = maybeMarkdownNode as any;
     const usageFromMarkdown = node.value as string;
 
     const columns = Number(getTestParam(node.meta as string, 'columns'));
