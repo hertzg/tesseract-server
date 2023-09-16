@@ -26,6 +26,7 @@
     "@types/node": "^20.6.2",
     "conventional-changelog-cli": "^4.1.0",
     "conventional-changelog-conventionalcommits": "^7.0.2",
+    "prettier": "^3.0.3",
     "remark": "^13.0.0",
     "standard-version": "^9.5.0",
     "tsdx": "^0.14.1",

@@ -44,7 +44,10 @@ class Tesseract implements ITesseract {
   private _resolve: (data: TesseractResult) => void = () => {};
   private _reject: (err: Error) => void = () => {};
 
-  constructor(private readonly args: string[], private readonly cwd: string) {
+  constructor(
+    private readonly args: string[],
+    private readonly cwd: string,
+  ) {
     this._proc = spawnTesseract(this.args, this.cwd);
 
     this._promise = new Promise<TesseractResult>((resolve, reject) => {
