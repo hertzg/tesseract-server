@@ -1,12 +1,15 @@
-import { parse } from 'remark';
-import { selectAll } from 'unist-util-select';
-import { readFile } from 'fs/promises';
+import { parse } from "remark";
+import { selectAll } from "unist-util-select";
+import { readFile } from "fs/promises";
 
 export const findByTestId = (ast: ReturnType<typeof parse>, id: string) =>
   id.length
-    ? selectAll('code[meta]', ast).find(node =>
-        (node.meta as string | null | undefined)?.includes(`test-id="${id}"`),
-      )
+    ? selectAll("code[meta]", ast).find((node) => {
+      return ((node as unknown as any).meta as string | null | undefined)
+        ?.includes(
+          `test-id="${id}"`,
+        );
+    })
     : undefined;
 
 const TEST_PARAM_REGEXP = /test-param-([^=]*)="([^"]*)"/g;

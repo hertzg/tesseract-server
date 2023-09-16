@@ -1,6 +1,7 @@
-import { ChildProcessWithoutNullStreams } from 'child_process';
-import BufferList from 'bl';
-import Async, { AsyncFunction } from 'async';
+import { ChildProcessWithoutNullStreams } from "child_process";
+import BufferList from "bl";
+import Async, { AsyncFunction } from "async";
+import BufferListStream from "bl";
 
 export interface Streams {
   [key: string]: NodeJS.ReadableStream;
@@ -9,7 +10,7 @@ export interface Streams {
 const blStream = (
   stream: NodeJS.ReadableStream,
   callback: (err: Error, buffer: Buffer) => void,
-): BufferList => stream.pipe(new BufferList(callback));
+): BufferList => stream.pipe<any>(new BufferList(callback));
 
 const mapObjectEntries = <TMapped, TValue>(
   obj: { [key: string]: TValue },
@@ -25,12 +26,12 @@ const mapObjectEntries = <TMapped, TValue>(
 const taskify = (streams: Streams): { [key: string]: AsyncFunction<Buffer> } =>
   mapObjectEntries(streams, ([name, stream]) => [
     name,
-    done => blStream(stream, done),
+    (done) => blStream(stream, done),
   ]);
 
 export const blStreams = (
   streams: Streams,
-  callback?: (
+  callback: (
     err: Error | undefined,
     bld: { [key: string]: Buffer | undefined },
   ) => void,
