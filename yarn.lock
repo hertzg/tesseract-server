@@ -1784,9 +1784,9 @@ __metadata:
   linkType: hard
 
 "@types/async@npm:^3.2.20":
-  version: 3.2.21
-  resolution: "@types/async@npm:3.2.21"
-  checksum: 8c547e0f9c28d95687f04eac65332607e7c16ec231ce75e6a7273816c32d9d09c6fe14c0205eb577f2310b5d02bd55a9752f9fc7d7fba5957169a31c76aacc92
+  version: 3.2.22
+  resolution: "@types/async@npm:3.2.22"
+  checksum: 2b3371563b1a87ec8c3d3b79c20e114260440460ead8636d5e937d1e670464229d9a73ff22c2c3c5077e842ae5bf4102b33c90853cde159961f5705bc9b3accb
   languageName: node
   linkType: hard
 
@@ -1872,9 +1872,9 @@ __metadata:
   linkType: hard
 
 "@types/event-loop-lag@npm:^1.0.30":
-  version: 1.0.31
-  resolution: "@types/event-loop-lag@npm:1.0.31"
-  checksum: feeb93c0bd40ce026d2b73e3342e9b5b5828bd3989690a3752776ee438ff97f461cc4751536853bfcd44510f462c1f2783e4dd8f1dd491b15d3004c9500e27bc
+  version: 1.0.32
+  resolution: "@types/event-loop-lag@npm:1.0.32"
+  checksum: 03dd0161580ec8040605d4daf5c88829faeae2a187ed50af9262614bafe805f5a5e854b7538e4f54b6bae03a0500612108a480992a6956b9a3bbc862b95a7a60
   languageName: node
   linkType: hard
 
