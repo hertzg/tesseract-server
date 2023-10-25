@@ -2950,13 +2950,13 @@ __metadata:
   linkType: hard
 
 "bl@npm:^6.0.7":
-  version: 6.0.7
-  resolution: "bl@npm:6.0.7"
+  version: 6.0.8
+  resolution: "bl@npm:6.0.8"
   dependencies:
     buffer: ^6.0.3
     inherits: ^2.0.4
     readable-stream: ^4.2.0
-  checksum: 2cbd0eded8483fcdd24262d66595fb17062702b3e3c415f27edad231c7f9ae9700418dd5f30bb46690cb00f46539f561d9c1e1f73fc13c20a1f02eb7bcfb3056
+  checksum: 0ff8484abe01b83e516ec8e8bf0764356817bc4c73dbd14d43e04a0ad868faa0f6d9f5c4e2917eefd201675d832ebfad87371647b4bbbd4baf13b36130568b75
   languageName: node
   linkType: hard
 
