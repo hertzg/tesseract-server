@@ -11405,8 +11405,8 @@ __metadata:
   linkType: hard
 
 "unified@npm:^11.0.0":
-  version: 11.0.3
-  resolution: "unified@npm:11.0.3"
+  version: 11.0.4
+  resolution: "unified@npm:11.0.4"
   dependencies:
     "@types/unist": ^3.0.0
     bail: ^2.0.0
@@ -11415,7 +11415,7 @@ __metadata:
     is-plain-obj: ^4.0.0
     trough: ^2.0.0
     vfile: ^6.0.0
-  checksum: 402d6b397b98f8966993faca0e1480f5f1825cc44df6a5236b75ab099f14b10ed808e578155c3f535e60676c12ee3f52346ca08d64343a72181d7a6b4d32011d
+  checksum: cfb023913480ac2bd5e787ffb8c27782c43e6be4a55f8f1c288233fce46a7ebe7718ccc5adb80bf8d56b7ef85f5fc32239c7bfccda006f9f2382e0cc2e2a77e4
   languageName: node
   linkType: hard
 
