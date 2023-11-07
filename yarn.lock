@@ -1872,9 +1872,9 @@ __metadata:
   linkType: hard
 
 "@types/event-loop-lag@npm:^1.0.30":
-  version: 1.0.32
-  resolution: "@types/event-loop-lag@npm:1.0.32"
-  checksum: 03dd0161580ec8040605d4daf5c88829faeae2a187ed50af9262614bafe805f5a5e854b7538e4f54b6bae03a0500612108a480992a6956b9a3bbc862b95a7a60
+  version: 1.0.33
+  resolution: "@types/event-loop-lag@npm:1.0.33"
+  checksum: ec84f4f6cdc3f9a1329e95690e45c240acdb876c71d64ddbc256325935849e88e698088ec819fb68f52308c20b9fa5b0589fc346655c63526676fb818b7ee6e4
   languageName: node
   linkType: hard
 
