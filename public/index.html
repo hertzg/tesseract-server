@@ -61,7 +61,7 @@
       <button type="submit" class="submit-btn">Upload</button>
     </form>
     <div>
-      <h3>Preview</h3>
+      <h2>Preview</h2>
       <div style="height: 300px; overflow: auto">
         <div
           style="display: flex; align-items: center; justify-content: center"
@@ -83,13 +83,62 @@
     <script src="/vendor/monaco-editor/min/vs/editor/editor.main.js"></script>
     <script>
       const init = () => {
-        const editor = monaco.editor.create(document.getElementById('editor'), {
-          value:
-            '{\n  "languages": ["deu", "eng"],\n  "configParams": {\n  }\n}',
-          language: 'json',
-          minimap: { enabled: false },
-          automaticLayout: true,
+        monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+          schemas: [{
+            uri: "inmemory://inmemory/foo-schema.json",
+            fileMatch: ['options.json'],
+            schema: {
+              type: "object",
+              properties: {
+                languages: {
+                  type: "array",
+                  items: {
+                    type: "string"
+                  }
+                },
+                dpi: {
+                  type: "number"
+                },
+                pageSegmentationMethod: {
+                  type: "number",
+                  enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                },
+                ocrEngineMode: {
+                  type: "number",
+                  enum: [0, 1, 2, 3]
+                },
+                tessDataDir: {
+                  type: "string"
+                },
+                userPatternsFile: {
+                  type: "string"
+                },
+                userWordsFile: {
+                  type: "string"
+                },
+                configParams: {
+                  type: "object",
+                  properties: {
+                    
+                  }
+                }
+              }
+            }
+          }]
         });
+
+
+        const editor = (() => {
+          return monaco.editor.create(document.getElementById('editor'), {
+            model: monaco.editor.createModel(
+              '{\n  "languages": ["eng"],\n  "configParams": {\n  }\n}',
+              'json',
+              monaco.Uri.parse('inmemory://inmemory/options.json'),
+            ),
+            minimap: { enabled: false },
+            automaticLayout: true,
+          });
+        })();
 
         const output = monaco.editor.create(document.getElementById('output'), {
           value: '',
