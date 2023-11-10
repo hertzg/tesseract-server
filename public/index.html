@@ -1,24 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <title>tesseract-server</title>
+    <style>
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .title {
+        text-align: center;
+      }
+      .form {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        align-content: stretch;
+      }
+      .form-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+      }
+      .form-row input[type='file'] {
+        margin-top: 10px;
+      }
+      .editor {
+        min-height: 300px;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+      }
+      .output {
+        min-height: 300px;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+      }
+      .submit-btn {
+        margin-top: 10px;
+      }
+    </style>
   </head>
-  <body style="max-width: 300px; margin:0 auto;">
-    <h1>OCR Document</h1>
-    <form method="post" action="/tesseract" enctype="multipart/form-data">
-      <div
-        style="display: flex;flex-direction: column;align-items: stretch;align-content: stretch;"
-      >
-        <div><input type="file" name="file" /></div>
-        <textarea name="options" rows="10">
-{
-  "languages": ["deu","eng"],
-  "configParams": {
-  }
-}</textarea
-        >
-        <button type="submit">Upload</button>
+  <body class="container" onload="init()">
+    <h1 class="title">OCR Document</h1>
+    <form
+      id="form"
+      class="form"
+      method="post"
+      action="/tesseract"
+      enctype="multipart/form-data"
+    >
+      <div class="form-row">
+        <input
+          type="file"
+          name="file"
+          required
+          onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0]);"
+        />
       </div>
+      <div class="editor" id="editor"></div>
+      <button type="submit" class="submit-btn">Upload</button>
     </form>
+    <div>
+      <h2>Preview</h2>
+      <div style="height: 300px; overflow: auto">
+        <div
+          style="display: flex; align-items: center; justify-content: center"
+        >
+          <img id="preview" />
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2>Output</h2>
+      <div class="output" id="output"></div>
+    </div>
+
+    <script>
+      var require = { paths: { vs: '/vendor/monaco-editor/min/vs' } };
+    </script>
+    <script src="/vendor/monaco-editor/min/vs/loader.js"></script>
+    <script src="/vendor/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+    <script src="/vendor/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script>
+      const init = () => {
+        monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+          schemas: [{
+            uri: "inmemory://inmemory/foo-schema.json",
+            fileMatch: ['options.json'],
+            schema: {
+              type: "object",
+              properties: {
+                languages: {
+                  type: "array",
+                  items: {
+                    type: "string"
+                  }
+                },
+                dpi: {
+                  type: "number"
+                },
+                pageSegmentationMethod: {
+                  type: "number",
+                  enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                },
+                ocrEngineMode: {
+                  type: "number",
+                  enum: [0, 1, 2, 3]
+                },
+                tessDataDir: {
+                  type: "string"
+                },
+                userPatternsFile: {
+                  type: "string"
+                },
+                userWordsFile: {
+                  type: "string"
+                },
+                configParams: {
+                  type: "object",
+                  properties: {
+                    
+                  }
+                }
+              }
+            }
+          }]
+        });
+
+
+        const editor = (() => {
+          return monaco.editor.create(document.getElementById('editor'), {
+            model: monaco.editor.createModel(
+              '{\n  "languages": ["eng"],\n  "configParams": {\n  }\n}',
+              'json',
+              monaco.Uri.parse('inmemory://inmemory/options.json'),
+            ),
+            minimap: { enabled: false },
+            automaticLayout: true,
+          });
+        })();
+
+        const output = monaco.editor.create(document.getElementById('output'), {
+          value: '',
+          language: 'json',
+          minimap: { enabled: false },
+          automaticLayout: true,
+          wordWrap: 'on',
+        });
+
+        const form = document.getElementById('form');
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+
+          const formData = new FormData(form);
+          formData.append('options', editor.getModel().getValue());
+
+          fetch(form.action, {
+            method: 'POST',
+            body: formData,
+          })
+            .then(response => response.text())
+            .then(data => {
+              output.getModel().setValue(data);
+              output.getAction('editor.action.formatDocument').run();
+            })
+            .catch(console.error);
+        });
+      };
+    </script>
   </body>
 </html>

@@ -55,6 +55,11 @@ class HTTPProvider implements IProvider {
 
     if (argv['http.endpoint.webui.enable']) {
       this.app.use(express.static('public'));
+      console.log('webui enabled');
+      this.app.use(
+        '/vendor/monaco-editor/min',
+        express.static('node_modules/monaco-editor/min'),
+      );
     }
   }
 
