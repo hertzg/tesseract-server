@@ -9,6 +9,63 @@ All notable changes to this project will be documented in this file. See [standa
 
 All unreleased changes scheduled for the next release are in [CHANGELOG-next.md](./CHANGELOG-next.md)
 
+## [2.6.0](https://github.com/hertzg/tesseract-server/compare/v2.5.1...v2.6.0) (2023-11-10)
+
+
+### 🛠️ General Chores
+
+* bump to node 18 ([b64fb73](https://github.com/hertzg/tesseract-server/commit/b64fb73f5dd0d1442efdfce67e178e46557ff42f))
+* bumping versions ([#94](https://github.com/hertzg/tesseract-server/issues/94)) ([d2c1efa](https://github.com/hertzg/tesseract-server/commit/d2c1efa82dfab33999b1e2ea7ddf50be8e29b346))
+* **deps:** update actions/checkout action to v4 ([#88](https://github.com/hertzg/tesseract-server/issues/88)) ([8604d22](https://github.com/hertzg/tesseract-server/commit/8604d22ac163cb9f4a59774ab9d85032e53857bf))
+* **deps:** update actions/setup-node action to v4 ([#110](https://github.com/hertzg/tesseract-server/issues/110)) ([6246410](https://github.com/hertzg/tesseract-server/commit/6246410543881e4dcd228f1b9773833345c523ad))
+* **deps:** update all non-major dependencies ([#108](https://github.com/hertzg/tesseract-server/issues/108)) ([a1e55be](https://github.com/hertzg/tesseract-server/commit/a1e55be3bc6d5ac59baa6da3a41556d64b0cd985))
+* **deps:** update all non-major dependencies ([#109](https://github.com/hertzg/tesseract-server/issues/109)) ([db3f259](https://github.com/hertzg/tesseract-server/commit/db3f2595e2ce584045a10d26e4fcb09fb9a9c50e))
+* **deps:** update all non-major dependencies ([#113](https://github.com/hertzg/tesseract-server/issues/113)) ([515c25e](https://github.com/hertzg/tesseract-server/commit/515c25e4404e940bc39a86e2ee8b381630fe1739))
+* **deps:** update all non-major dependencies ([#97](https://github.com/hertzg/tesseract-server/issues/97)) ([330dfc6](https://github.com/hertzg/tesseract-server/commit/330dfc676a14d83c24276ea00e0d4fe0f104e14c))
+* **deps:** update dependency @types/async to v3.2.21 ([#96](https://github.com/hertzg/tesseract-server/issues/96)) ([32705f6](https://github.com/hertzg/tesseract-server/commit/32705f612874504ac21708bad0f774964fb19bc9))
+* **deps:** update dependency @types/async to v3.2.23 ([#117](https://github.com/hertzg/tesseract-server/issues/117)) ([2f150fe](https://github.com/hertzg/tesseract-server/commit/2f150fe05b275bc519ec9bff24684c244c1e65a1))
+* **deps:** update dependency @types/multer to v1.4.8 ([#100](https://github.com/hertzg/tesseract-server/issues/100)) ([64cddb7](https://github.com/hertzg/tesseract-server/commit/64cddb7c897d1a3f3bac65002c54cd6591b41fcd))
+* **deps:** update dependency @types/node to v20.6.3 ([#85](https://github.com/hertzg/tesseract-server/issues/85)) ([d63d9d6](https://github.com/hertzg/tesseract-server/commit/d63d9d68d523e625bdc36e91cb3cb5bef3a3c5b1))
+* **deps:** update dependency @types/node to v20.7.0 ([#98](https://github.com/hertzg/tesseract-server/issues/98)) ([377c51f](https://github.com/hertzg/tesseract-server/commit/377c51f785b2b19a1e36ca0b81c34bc4f5fa19ba))
+* **deps:** update dependency @types/node to v20.7.2 ([#101](https://github.com/hertzg/tesseract-server/issues/101)) ([fdb88d3](https://github.com/hertzg/tesseract-server/commit/fdb88d3867502441dd10a8834cc371177ba199b8))
+* **deps:** update dependency @types/node to v20.8.0 ([#102](https://github.com/hertzg/tesseract-server/issues/102)) ([a211b38](https://github.com/hertzg/tesseract-server/commit/a211b38f41447cba50497abd462dd66a8e36bc1d))
+* **deps:** update dependency @types/node to v20.8.10 ([#115](https://github.com/hertzg/tesseract-server/issues/115)) ([9117e6b](https://github.com/hertzg/tesseract-server/commit/9117e6b9f55c10ddbb5ca3aa6cf9c78e27b951be))
+* **deps:** update dependency @types/node to v20.8.2 ([#103](https://github.com/hertzg/tesseract-server/issues/103)) ([8f6e151](https://github.com/hertzg/tesseract-server/commit/8f6e151fd0b76e9b31a669debdefeb0c9f368657))
+* **deps:** update dependency @types/node to v20.8.3 ([#104](https://github.com/hertzg/tesseract-server/issues/104)) ([e5b298a](https://github.com/hertzg/tesseract-server/commit/e5b298ae24eb9d0a577ce6ba46ab6cc5b0c6fda4))
+* **deps:** update dependency @types/node to v20.8.4 ([#105](https://github.com/hertzg/tesseract-server/issues/105)) ([865ecc7](https://github.com/hertzg/tesseract-server/commit/865ecc762cf94201182894ee57d434f6476636ef))
+* **deps:** update dependency @types/node to v20.8.5 ([#106](https://github.com/hertzg/tesseract-server/issues/106)) ([b4636ba](https://github.com/hertzg/tesseract-server/commit/b4636ba38f1bf940e7ff47ae67c8628e4f0c48d5))
+* **deps:** update dependency @types/node to v20.8.6 ([#107](https://github.com/hertzg/tesseract-server/issues/107)) ([894cfa3](https://github.com/hertzg/tesseract-server/commit/894cfa3de99b1e849f323f8684414ab49fd2ccac))
+* **deps:** update dependency @types/node to v20.8.8 ([#111](https://github.com/hertzg/tesseract-server/issues/111)) ([c1d0675](https://github.com/hertzg/tesseract-server/commit/c1d0675f96d8f9a5ddf67f8e89cc1c6255feaf5f))
+* **deps:** update dependency async to v3.2.5 ([#116](https://github.com/hertzg/tesseract-server/issues/116)) ([7ffa46b](https://github.com/hertzg/tesseract-server/commit/7ffa46bf16268b2867ee79838fc9b032a49c0eed))
+* **deps:** update dependency bl to v6 ([#71](https://github.com/hertzg/tesseract-server/issues/71)) ([58ac095](https://github.com/hertzg/tesseract-server/commit/58ac0957134d2cb315027a23d4b22946b9d6cc91))
+* **deps:** update dependency bl to v6.0.8 ([#112](https://github.com/hertzg/tesseract-server/issues/112)) ([a88c1a2](https://github.com/hertzg/tesseract-server/commit/a88c1a22638e035c8f4ac5034d86000cf014fd04))
+* **deps:** update dependency conventional-changelog-cli to v3 ([#81](https://github.com/hertzg/tesseract-server/issues/81)) ([8cd4b41](https://github.com/hertzg/tesseract-server/commit/8cd4b41398dc7662a0c86250ca47dbd7a0b901c2))
+* **deps:** update dependency conventional-changelog-cli to v4 ([#86](https://github.com/hertzg/tesseract-server/issues/86)) ([1753372](https://github.com/hertzg/tesseract-server/commit/17533728f6059aa620dd1d4bd802a0281c8091ab))
+* **deps:** update dependency conventional-changelog-conventionalcommits to v5 ([#66](https://github.com/hertzg/tesseract-server/issues/66)) ([ed79b24](https://github.com/hertzg/tesseract-server/commit/ed79b244df2800f254a4d67c724241ff0e9a23aa))
+* **deps:** update dependency conventional-changelog-conventionalcommits to v6 ([#80](https://github.com/hertzg/tesseract-server/issues/80)) ([6b4b0ff](https://github.com/hertzg/tesseract-server/commit/6b4b0ffe2f3556cc5a058c4c4120183c931c1d65))
+* **deps:** update dependency conventional-changelog-conventionalcommits to v7 ([#87](https://github.com/hertzg/tesseract-server/issues/87)) ([73041d2](https://github.com/hertzg/tesseract-server/commit/73041d224e8f01cb743db30d3967eb816ad91e17))
+* **deps:** update dependency ubuntu to v22 ([#83](https://github.com/hertzg/tesseract-server/issues/83)) ([06d1df2](https://github.com/hertzg/tesseract-server/commit/06d1df2be99917e01ed589ff2b0070297c2a762e))
+* **deps:** update dependency unified to v11 ([#84](https://github.com/hertzg/tesseract-server/issues/84)) ([f72d0f0](https://github.com/hertzg/tesseract-server/commit/f72d0f099ab1a00eda4717147e393c8dff4472ba))
+* **deps:** update dependency unified to v11.0.4 ([#114](https://github.com/hertzg/tesseract-server/issues/114)) ([9a11244](https://github.com/hertzg/tesseract-server/commit/9a11244cfecfa41bc6d3373be7ae1d3874c67e33))
+* **deps:** update docker/build-push-action action to v3 ([#62](https://github.com/hertzg/tesseract-server/issues/62)) ([148d945](https://github.com/hertzg/tesseract-server/commit/148d9454bd49db2744c035894244fbc6b9669a39))
+* **deps:** update docker/build-push-action action to v4 ([#78](https://github.com/hertzg/tesseract-server/issues/78)) ([5b81277](https://github.com/hertzg/tesseract-server/commit/5b812778ff12064ddda4c3332c795120add14f18))
+* **deps:** update docker/build-push-action action to v5 ([#89](https://github.com/hertzg/tesseract-server/issues/89)) ([01a6464](https://github.com/hertzg/tesseract-server/commit/01a6464eec4b2f2ccea1408fc132d474970b7e9d))
+* **deps:** update docker/login-action action to v2 ([#63](https://github.com/hertzg/tesseract-server/issues/63)) ([f10bcb0](https://github.com/hertzg/tesseract-server/commit/f10bcb08a6dca48d2109e3aca50a05d910aacaab))
+* **deps:** update docker/login-action action to v3 ([#90](https://github.com/hertzg/tesseract-server/issues/90)) ([94fd9fa](https://github.com/hertzg/tesseract-server/commit/94fd9fa6825a497db1c107324ac15c33d332e823))
+* **deps:** update docker/setup-buildx-action action to v2 ([#64](https://github.com/hertzg/tesseract-server/issues/64)) ([c2b1b28](https://github.com/hertzg/tesseract-server/commit/c2b1b28338abfc5f6444009cffd54913cbbd4a44))
+* **deps:** update docker/setup-buildx-action action to v3 ([#91](https://github.com/hertzg/tesseract-server/issues/91)) ([87db08d](https://github.com/hertzg/tesseract-server/commit/87db08dfa08ab756168895d8b5015ad58ce37548))
+* **deps:** update docker/setup-qemu-action action to v2 ([#65](https://github.com/hertzg/tesseract-server/issues/65)) ([0fee82d](https://github.com/hertzg/tesseract-server/commit/0fee82d3bd7ea49afd86503a48fedfa9f167e0d7))
+* **deps:** update docker/setup-qemu-action action to v3 ([#92](https://github.com/hertzg/tesseract-server/issues/92)) ([0646af5](https://github.com/hertzg/tesseract-server/commit/0646af5d70a56b4d038b1f5de363f5c07536718a))
+* **deps:** update e1himself/goss-installation-action action to v1.1.0 ([#69](https://github.com/hertzg/tesseract-server/issues/69)) ([d510ac5](https://github.com/hertzg/tesseract-server/commit/d510ac5dacd34db93f0299fc3642e6f155b6c431))
+* **docs:** Heroku deployment guide ([#53](https://github.com/hertzg/tesseract-server/issues/53)) ([3cf7025](https://github.com/hertzg/tesseract-server/commit/3cf70258128c72d71896b84688b9b06df7b8d53f))
+* drop ppc and ibmzsys ([fea54f9](https://github.com/hertzg/tesseract-server/commit/fea54f931dd16a59c45715046ddaebab26914d97))
+* ignore zero install ([db178cc](https://github.com/hertzg/tesseract-server/commit/db178cc5a113b484506d3489f2db4e0b5e2caabb))
+
+
+### 🚀 Features
+
+* add monaco editor and preview in ui ([#119](https://github.com/hertzg/tesseract-server/issues/119)) ([dd33154](https://github.com/hertzg/tesseract-server/commit/dd331549b2090f8b2edb1c8a136811cd9c0fd305))
+
 ### [2.5.1](https://github.com/hertzg/tesseract-server/compare/v2.5.0...v2.5.1) (2022-04-06)
 
 
