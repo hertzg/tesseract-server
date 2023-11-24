@@ -1784,9 +1784,9 @@ __metadata:
   linkType: hard
 
 "@types/async@npm:^3.2.20":
-  version: 3.2.23
-  resolution: "@types/async@npm:3.2.23"
-  checksum: f637a1ca6080b5e44d8b619b1121e61cde086d516c93a1cebf0d9d50674db3f11ebafcb4e1f8bd40512e2f16a54794cab808e1c7a0575676bf9b0582e00fbfe4
+  version: 3.2.24
+  resolution: "@types/async@npm:3.2.24"
+  checksum: e52ee5e9b6e4354aba709551f1777080b16c07d91632ef2d3d6542ea838c84fae5a2811015327dd908ce7dc810daacc564ab99b9a5bc22e4f3f86819461e0970
   languageName: node
   linkType: hard
 
@@ -1999,20 +1999,20 @@ __metadata:
   linkType: hard
 
 "@types/multer@npm:^1.4.7":
-  version: 1.4.10
-  resolution: "@types/multer@npm:1.4.10"
+  version: 1.4.11
+  resolution: "@types/multer@npm:1.4.11"
   dependencies:
     "@types/express": "*"
-  checksum: 8a1ebabe865b8cc7a5823de2a9b5769bc09e9ef1f9345dedff34bfaf76351bdcebee94cd44e70b45cc765e20e8c1eb47d1f97c6bac92e5100de9d7a1d5524d89
+  checksum: 3d80b2acdfbc9f3e9027d4467e948925810b67e5622a3017f42f58a3598d34b25376890801e55d0c03973ccc34573abf5218af334e8292ec455832f4ade3e5f5
   languageName: node
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:^20.6.2":
-  version: 20.9.2
-  resolution: "@types/node@npm:20.9.2"
+  version: 20.10.0
+  resolution: "@types/node@npm:20.10.0"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 5bbb8fb2248fc5c5c4071d9809fb9af85997677c07124d65665202b53283a3b7bdff26fb844e9ee407e3847dfce6399c2b01e3329ea44a4b720647b1b987c678
+  checksum: face395140d6f2f1755b91fdd3b697cf56aeb9e2514529ce88d56e56f261ad65be7269d863520a9406d73c338699ea68b418e8677584de0c1efeed09539b6f97
   languageName: node
   linkType: hard
 
