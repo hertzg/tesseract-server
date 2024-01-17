@@ -37,7 +37,7 @@ jobs:
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: cache
         with:
           path: dist/
@@ -153,7 +153,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key:
