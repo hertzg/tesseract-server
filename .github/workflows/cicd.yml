@@ -80,7 +80,7 @@ jobs:
           node-version: '18.x'
       - uses: bahmutov/npm-install@v1
       - run: yarn test --ci --coverage --maxWorkers=2
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         if: ${{ success() }}
         continue-on-error: true
 
