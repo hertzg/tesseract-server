@@ -2051,6 +2051,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/readable-stream@npm:^4.0.0":
+  version: 4.0.10
+  resolution: "@types/readable-stream@npm:4.0.10"
+  dependencies:
+    "@types/node": "*"
+    safe-buffer: ~5.1.1
+  checksum: dc7cb95be737d442770fcaf1fbe3860c011f5f024c6f09c8b032f95b7ef9cce0031302715afe13e18d264b3a162e5838ce78873ec8d63eb238db49bc70906a21
+  languageName: node
+  linkType: hard
+
 "@types/resolve@npm:1.17.1":
   version: 1.17.1
   resolution: "@types/resolve@npm:1.17.1"
@@ -2950,13 +2960,14 @@ __metadata:
   linkType: hard
 
 "bl@npm:^6.0.7":
-  version: 6.0.10
-  resolution: "bl@npm:6.0.10"
+  version: 6.0.11
+  resolution: "bl@npm:6.0.11"
   dependencies:
+    "@types/readable-stream": ^4.0.0
     buffer: ^6.0.3
     inherits: ^2.0.4
     readable-stream: ^4.2.0
-  checksum: 3aa89407420402c7d7862a84901e90d4ae92d0efb98fe63985c1574008c6de81dd42e6ef29494207e251a6bbb662db5f55e221f44b226a97eecfc787d8604b3f
+  checksum: 9a36e632ac60b53c89322b7e35c6aa412715ba576d646105b32ebbacc904130ac6a058ea3bb3877347a8ea2ab4eb7c61490d44996c2fa346d4502cc4c74d5249
   languageName: node
   linkType: hard
 
