@@ -8244,10 +8244,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.45.0":
-  version: 0.45.0
-  resolution: "monaco-editor@npm:0.45.0"
-  checksum: 7c70aeea8b81bc8dbda4b962fa8236d41fd2a3d07bcc2843ea7f1756ad95d701da5ef71e67d787595567aeec247ceb6bf4e3451abdf4895fe7819a8b9ef76231
+"monaco-editor@npm:^0.46.0":
+  version: 0.46.0
+  resolution: "monaco-editor@npm:0.46.0"
+  checksum: be7aaa2747b8d3a3537f56c9353ebe779b188eb1480f6453fa1e346d8ccdd27068cb4508c8f6f3b8cc07ac0f792a3d6df36168d54cd6e074742182525115be86
   languageName: node
   linkType: hard
 
@@ -10854,7 +10854,7 @@ __metadata:
     event-loop-lag: ^1.4.0
     express: ^4.18.2
     generic-pool: ^3.9.0
-    monaco-editor: ^0.45.0
+    monaco-editor: ^0.46.0
     multer: ^1.4.5-lts.1
     prettier: ^3.0.3
     remark: ^13.0.0
