@@ -2008,11 +2008,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:^20.6.2":
-  version: 20.11.24
-  resolution: "@types/node@npm:20.11.24"
+  version: 20.11.27
+  resolution: "@types/node@npm:20.11.27"
   dependencies:
     undici-types: ~5.26.4
-  checksum: b11a650e09e254f4725c94f226752b69949a9ac4a5e004e98f109437ac50b02df3ab4d12b2086722fedf2cb62e68b9e723abd3f358a7d7d90d741a0d3bee90c2
+  checksum: 24a134a3c18e7261b6d6385c2b7714b6cf93663f30d5df8ca95c649f9cef917a422d77bfd4a18b2c7d190d3a39f445b345ecd9ef6f994e61c7e92f400ecbe80f
   languageName: node
   linkType: hard
 
@@ -2960,14 +2960,14 @@ __metadata:
   linkType: hard
 
 "bl@npm:^6.0.7":
-  version: 6.0.11
-  resolution: "bl@npm:6.0.11"
+  version: 6.0.12
+  resolution: "bl@npm:6.0.12"
   dependencies:
     "@types/readable-stream": ^4.0.0
     buffer: ^6.0.3
     inherits: ^2.0.4
     readable-stream: ^4.2.0
-  checksum: 9a36e632ac60b53c89322b7e35c6aa412715ba576d646105b32ebbacc904130ac6a058ea3bb3877347a8ea2ab4eb7c61490d44996c2fa346d4502cc4c74d5249
+  checksum: 10cdc8264a7f3c53f62ec6942ace2f9fa8c1437ea3d466606ad9dc2585f6f08405907875f7ab454af79453efaafa0e0f53e382dad95b7d4b288ef912e53e6125
   languageName: node
   linkType: hard
 
@@ -8244,10 +8244,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.46.0":
-  version: 0.46.0
-  resolution: "monaco-editor@npm:0.46.0"
-  checksum: be7aaa2747b8d3a3537f56c9353ebe779b188eb1480f6453fa1e346d8ccdd27068cb4508c8f6f3b8cc07ac0f792a3d6df36168d54cd6e074742182525115be86
+"monaco-editor@npm:^0.47.0":
+  version: 0.47.0
+  resolution: "monaco-editor@npm:0.47.0"
+  checksum: a1c5fe6a0d71214aa2fd4fd635f89a7df6ad599e4e01492a268eb70a456e7a29dfa301324e00b577eaf9fa69813b8a28924980ab8457d89faf14d13fcbbc2d6e
   languageName: node
   linkType: hard
 
@@ -10854,7 +10854,7 @@ __metadata:
     event-loop-lag: ^1.4.0
     express: ^4.18.2
     generic-pool: ^3.9.0
-    monaco-editor: ^0.46.0
+    monaco-editor: ^0.47.0
     multer: ^1.4.5-lts.1
     prettier: ^3.0.3
     remark: ^13.0.0
