@@ -13,7 +13,7 @@ The easiest way to get started is using
 (multi-arch)
 
 ```shell script
-$ docker run -p 8884:8884 hertzg/tesseract-server:latest
+docker run -p 8884:8884 hertzg/tesseract-server:latest
 ```
 
 You can use the service by sending `multipart` http requests containing
@@ -22,7 +22,7 @@ You can use the service by sending `multipart` http requests containing
 <!-- prettier-ignore-start -->
 ```shell script
 # Run OCR using english language on file sample.jpg in current directory
-$ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/tesseract
+curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/tesseract
 
 {
   "data": {
