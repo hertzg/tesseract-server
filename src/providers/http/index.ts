@@ -58,7 +58,9 @@ class HTTPProvider implements IProvider {
       console.log('webui enabled');
       this.app.use(
         '/vendor/monaco-editor/min',
-        express.static('node_modules/monaco-editor/min'),
+        process.env.NODE_ENV === 'production'
+          ? express.static('dist/node_modules/monaco-editor/min')
+          : express.static('node_modules/monaco-editor/min'),
       );
     }
   }
