@@ -3663,6 +3663,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"conventional-changelog-conventionalcommits@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "conventional-changelog-conventionalcommits@npm:8.0.0"
+  dependencies:
+    compare-func: ^2.0.0
+  checksum: af80a3294ec833b6ca6b13874c275952391319dd0ebb771dbcf0b837a2f8504c197e894a3fc5def44574a04daa038a94cae8d00f8222e843bc788b6911a1eff4
+  languageName: node
+  linkType: hard
+
 "conventional-changelog-core@npm:^4.2.1":
   version: 4.2.4
   resolution: "conventional-changelog-core@npm:4.2.4"
@@ -10849,7 +10858,7 @@ __metadata:
     async: ^3.2.4
     bl: ^6.0.7
     conventional-changelog-cli: ^4.1.0
-    conventional-changelog-conventionalcommits: ^7.0.2
+    conventional-changelog-conventionalcommits: ^8.0.0
     decoders: ^1.25.5
     event-loop-lag: ^1.4.0
     express: ^4.18.2

@@ -25,7 +25,7 @@
     "@types/multer": "^1.4.7",
     "@types/node": "^20.6.2",
     "conventional-changelog-cli": "^4.1.0",
-    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
     "prettier": "^3.0.3",
     "remark": "^13.0.0",
     "standard-version": "^9.5.0",
