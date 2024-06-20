@@ -1,79 +1,56 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>tesseract-server</title>
-    <style>
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-      .title {
-        text-align: center;
-      }
-      .form {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        align-content: stretch;
-      }
-      .form-row {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
-        align-items: center;
-      }
-      .form-row input[type='file'] {
-        margin-top: 10px;
-      }
-      .editor {
-        min-height: 300px;
-        border: 1px solid #ccc;
-        margin-top: 10px;
-      }
-      .output {
-        min-height: 300px;
-        border: 1px solid #ccc;
-        margin-top: 10px;
-      }
-      .submit-btn {
-        margin-top: 10px;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="container" onload="init()">
-    <h1 class="title">OCR Document</h1>
+  <body class="bg-gray-100" onload="init()">
     <form
       id="form"
-      class="form"
       method="post"
       action="/tesseract"
       enctype="multipart/form-data"
     >
-      <div class="form-row">
-        <input
-          type="file"
-          name="file"
-          required
-          onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0]);"
-        />
-      </div>
-      <div class="editor" id="editor"></div>
-      <button type="submit" class="submit-btn">Upload</button>
-    </form>
-    <div>
-      <h2>Preview</h2>
-      <div style="height: 300px; overflow: auto">
-        <div
-          style="display: flex; align-items: center; justify-content: center"
-        >
-          <img id="preview" />
+      <div class="container m-auto py-4">
+        <div class="flex flex-col gap-4 bg-white rounded-xl p-4 shadow-lg mb-4">
+          <div class="flex justify-between gap-4 min-h-80">
+            <div class="flex-initial flex flex-col" style="min-width: 340px">
+              <strong>File</strong>
+              <div class="flex-1">
+                <input type="file" name="file" required />
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col">
+              <strong>Options</strong>
+              <div class="flex-1" id="editor"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div id="status"></div>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col bg-white rounded-xl p-4 shadow-lg">
+          <strong>Result</strong>
+          <div class="flex-initial flex">
+            <div
+              class="flex-initial h-full overflow-auto"
+              style="min-width: 340px"
+            >
+              <img id="preview" src="" alt="Preview" />
+            </div>
+            <div class="flex-1 text-normal" id="output"></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div>
-      <h2>Output</h2>
-      <div class="output" id="output"></div>
-    </div>
+    </form>
 
     <script>
       var require = { paths: { vs: '/vendor/monaco-editor/min/vs' } };
@@ -84,49 +61,48 @@
     <script>
       const init = () => {
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-          schemas: [{
-            uri: "inmemory://inmemory/foo-schema.json",
-            fileMatch: ['options.json'],
-            schema: {
-              type: "object",
-              properties: {
-                languages: {
-                  type: "array",
-                  items: {
-                    type: "string"
-                  }
+          schemas: [
+            {
+              uri: 'inmemory://inmemory/foo-schema.json',
+              fileMatch: ['options.json'],
+              schema: {
+                type: 'object',
+                properties: {
+                  languages: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                  },
+                  dpi: {
+                    type: 'number',
+                  },
+                  pageSegmentationMethod: {
+                    type: 'number',
+                    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                  },
+                  ocrEngineMode: {
+                    type: 'number',
+                    enum: [0, 1, 2, 3],
+                  },
+                  tessDataDir: {
+                    type: 'string',
+                  },
+                  userPatternsFile: {
+                    type: 'string',
+                  },
+                  userWordsFile: {
+                    type: 'string',
+                  },
+                  configParams: {
+                    type: 'object',
+                    properties: {},
+                  },
                 },
-                dpi: {
-                  type: "number"
-                },
-                pageSegmentationMethod: {
-                  type: "number",
-                  enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-                },
-                ocrEngineMode: {
-                  type: "number",
-                  enum: [0, 1, 2, 3]
-                },
-                tessDataDir: {
-                  type: "string"
-                },
-                userPatternsFile: {
-                  type: "string"
-                },
-                userWordsFile: {
-                  type: "string"
-                },
-                configParams: {
-                  type: "object",
-                  properties: {
-                    
-                  }
-                }
-              }
-            }
-          }]
+              },
+            },
+          ],
         });
-
 
         const editor = (() => {
           return monaco.editor.create(document.getElementById('editor'), {
@@ -148,6 +124,17 @@
           wordWrap: 'on',
         });
 
+        const fileEl = document.querySelector('input[type="file"]');
+        fileEl.addEventListener('change', e => {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = e => {
+            document.getElementById('preview').src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+
+        const status = document.getElementById('status');
         const form = document.getElementById('form');
         form.addEventListener('submit', e => {
           e.preventDefault();
@@ -155,6 +142,8 @@
           const formData = new FormData(form);
           formData.append('options', editor.getModel().getValue());
 
+          const ms = new Date().getTime();
+          status.innerText = 'Processing...';
           fetch(form.action, {
             method: 'POST',
             body: formData,
@@ -164,7 +153,10 @@
               output.getModel().setValue(data);
               output.getAction('editor.action.formatDocument').run();
             })
-            .catch(console.error);
+            .catch(console.error)
+            .then(() => {
+              status.innerText = `Done in ${Math.round((new Date().getTime() - ms) / 1000)}s`;
+            });
         });
       };
     </script>
