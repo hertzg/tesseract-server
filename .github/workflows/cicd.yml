@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           check-latest: true
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/cache@v4
         id: cache
         with:
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           check-latest: true
@@ -94,7 +94,7 @@ jobs:
       manifests: ${{ steps.generate.outputs.manifests }}
     steps:
       - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: generate
         uses: ./.github/actions/docker/buildConfig
         with:
@@ -163,7 +163,7 @@ jobs:
             ${{ runner.os }}-buildx-v2-
 
       # Build the container
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v3
         id: download
         with:
@@ -206,7 +206,7 @@ jobs:
       - uses: e1himself/goss-installation-action@v1.2.1
         with:
           version: v0.3.16
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: dgoss run ${{ matrix.tag }}
 
   docker-dive:
