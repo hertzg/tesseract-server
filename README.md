@@ -90,8 +90,8 @@ References:
 
 ## Docker
 
-Docker images are multi-arch images based on `debian:bookworm-slim`
-supporting `linux/amd64` and `linux/arm64/v8` platforms.
+Docker images are multi-arch images based on `debian:bookworm-slim` supporting
+`linux/amd64` and `linux/arm64/v8` platforms.
 
 ## Raspberry Pi support
 
