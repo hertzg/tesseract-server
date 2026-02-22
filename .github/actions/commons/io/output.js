@@ -1,4 +1,3 @@
-import process from "node:process";
 const { EOL } = require("os");
 
 const sanitize = (input) => {
