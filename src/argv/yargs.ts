@@ -1,6 +1,7 @@
 import Yargs from 'yargs';
 import { tmpdir } from 'node:os';
 import { ProcessorSettingsLineEndings } from '../processor/index.ts';
+import process from "node:process";
 
 export const createYargs = (argv: readonly string[], cwd?: string) =>
   Yargs(argv, cwd)

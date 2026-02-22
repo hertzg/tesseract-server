@@ -2,7 +2,8 @@ import { ChildProcessWithoutNullStreams } from 'node:child_process';
 import { spawnTesseract } from './spawnTesseract.ts';
 import { Readable } from 'node:stream';
 import { bufferOutputs } from './buffer.ts';
-import Assert from 'node:assert';
+import { Buffer } from "node:buffer";
+import { setImmediate } from "node:timers";
 
 export enum ProcessState {
   WAITING = 0,

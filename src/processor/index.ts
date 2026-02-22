@@ -77,12 +77,14 @@ class Processor implements IProcessor {
 
   constructor(private settings: ProcessorSettings) {}
 
-  status = async (): Promise<ProcessorStatus> => {
+  status = (): ProcessorStatus => {
     return {
       pools: Array.from(this.pools.entries()).map(([args, pool]) => {
+        // deno-lint-ignore no-explicit-any
         const p = pool as any;
         return {
           args,
+          // deno-lint-ignore no-explicit-any
           resources: Array.from(p._allObjects as Set<any>).map(resource => {
             return {
               pid: resource.obj._proc.pid,
@@ -108,9 +110,9 @@ class Processor implements IProcessor {
     };
   };
 
-  private _getPool = async (
+  private _getPool = (
     options: Options,
-  ): Promise<GenericPool<IWorker>> => {
+  ): GenericPool<IWorker> => {
     const key = optionsToArgs(options).join(' ');
     if (!this.pools.has(key)) {
       const settings: GenericPoolSettings = {
@@ -120,7 +122,7 @@ class Processor implements IProcessor {
       this.pools.set(key, pool);
     }
 
-    return this.pools.get(key) as any;
+    return this.pools.get(key)!;
   };
 
   private _treatLineEndings = (result: TesseractResult) => {
@@ -144,7 +146,7 @@ class Processor implements IProcessor {
     options: Options,
     input: Readable,
   ): Promise<TesseractResult> => {
-    const pool = await this._getPool(options);
+    const pool = this._getPool(options);
     const instance = await pool.acquire();
     const result = await instance.execute(input);
     await pool.release(instance);

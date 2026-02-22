@@ -1,4 +1,5 @@
 import { ChildProcessWithoutNullStreams } from 'node:child_process';
+import { Buffer } from "node:buffer";
 
 const collectStream = (stream: NodeJS.ReadableStream): Promise<Buffer> =>
   new Promise((resolve, reject) => {

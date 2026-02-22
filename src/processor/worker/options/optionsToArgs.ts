@@ -11,6 +11,7 @@ import {
 type OptionFormatterMap = {
   [key in keyof Options]: (value: Exclude<Options[key], undefined>) => string[];
 } & {
+  // deno-lint-ignore no-explicit-any
   [key: string]: (value: any) => string[];
 };
 

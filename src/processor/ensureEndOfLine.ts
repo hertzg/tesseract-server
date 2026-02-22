@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 export enum LineEnding {
   LF = '\n',
   CRLF = '\r\n',

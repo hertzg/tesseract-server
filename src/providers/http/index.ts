@@ -1,4 +1,4 @@
-import express, { Request, RequestHandler, Response } from 'express';
+import express, { RequestHandler } from 'express';
 import {
   HealthChecker,
   HealthEndpoint,
@@ -57,6 +57,7 @@ class HTTPProvider implements IProvider {
   ) {
     this.app.post(
       '/tesseract',
+      // deno-lint-ignore no-explicit-any
       this.upload.single(argv['http.input.fileField']) as any,
       this._onPost,
     );
@@ -85,7 +86,7 @@ class HTTPProvider implements IProvider {
     }
   }
 
-  private _onStatus: RequestHandler = (req, res) => {
+  private _onStatus: RequestHandler = (_req, res) => {
     this.tess.status().then(status => {
       res.status(200).json({
         data: {
@@ -104,15 +105,15 @@ class HTTPProvider implements IProvider {
     });
   };
 
-  private _getOptions = async (
+  private _getOptions = (
     req: Parameters<RequestHandler>[0],
-  ): Promise<Options> => {
+  ): Options => {
     return asOptions(JSON.parse(req.body[argv['http.input.optionsField']]));
   };
 
-  private _getReadable = async (
+  private _getReadable = (
     req: Parameters<RequestHandler>[0],
-  ): Promise<Readable> => {
+  ): Readable => {
     if (!req.file || !req.file.size) {
       throw new Error('No or empty file provided');
     }

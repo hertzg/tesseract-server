@@ -10,13 +10,13 @@ export const createWorkerPool = (
 ) => {
   return createGenericPool<IWorker>(
     {
-      create: async () => {
+      create: () => {
         return createWorker(options);
       },
-      validate: async (worker: IWorker) => {
+      validate: (worker: IWorker) => {
         return worker.validate();
       },
-      destroy: async (worker: IWorker) => {
+      destroy: (worker: IWorker) => {
         worker.destroy();
       },
     },

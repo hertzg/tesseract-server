@@ -1,3 +1,4 @@
+import process from "node:process";
 const { fail } = require('./output');
 
 const getRawInput = name =>

@@ -3,6 +3,7 @@ import {
   ensureEndOfLine,
   LineEnding,
 } from '../../src/processor/ensureEndOfLine.ts';
+import { Buffer } from "node:buffer";
 
 Deno.test('ensureEndOfLine - should ensure LF line endings', () => {
   assertEquals(

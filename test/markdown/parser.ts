@@ -6,6 +6,7 @@ export const findByTestId = (ast: ReturnType<typeof parse>, id: string) =>
   id.length
     ? selectAll('code[meta]', ast).find(node => {
         return (
+          // deno-lint-ignore no-explicit-any
           (node as unknown as any).meta as string | null | undefined
         )?.includes(`test-id="${id}"`);
       })

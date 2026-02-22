@@ -3,7 +3,7 @@ const { REF_TYPE, getRefType } = require('./helpers');
 const { createHash } = require('crypto');
 
 const asTag = tag => {
-  let sanitized = tag
+  const sanitized = tag
     .replace(/([^a-z0-9_.-])/gi, '_') // invalid to _
     .replace(/(_+)/g, '_'); // remove consecutive _ chars
 

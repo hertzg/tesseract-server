@@ -1,5 +1,6 @@
 import { createTesseract, ITesseract } from './process/index.ts';
 import { Options, optionsToArgs } from './options/index.ts';
+import process from "node:process";
 
 export interface IWorker extends ITesseract {}
 

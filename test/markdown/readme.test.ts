@@ -17,7 +17,7 @@ const usageFromReadme = async () =>
     '--help',
   );
 
-const usageActual = async (columns: number) =>
+const usageActual = (columns: number) =>
   new Promise(
     resolve =>
       createYargs([])
@@ -36,6 +36,7 @@ Deno.test('README.md - should have usage match actual --help output', async () =
     const maybeMarkdownNode = await usageFromReadme();
     assert(maybeMarkdownNode);
 
+    // deno-lint-ignore no-explicit-any
     const node = maybeMarkdownNode as any;
     const usageFromMarkdown = node.value as string;
 

@@ -1,4 +1,5 @@
 import { spawnWithWorkingDirectory } from './spawnWithWorkingDirectory.ts';
+import process from "node:process";
 
 const detectTesseract = () => 'tesseract';
 export const spawnTesseract = (
