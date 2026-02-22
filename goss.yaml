@@ -22,3 +22,14 @@ http:
     no-follow-redirects: false
     timeout: 5000
     body: []
+  http://127.0.0.1:8884/:
+    status: 200
+    timeout: 5000
+    body:
+      - "monaco-editor"
+  http://127.0.0.1:8884/vendor/monaco-editor/min/vs/loader.js:
+    status: 200
+    timeout: 5000
+  http://127.0.0.1:8884/vendor/monaco-editor/min/vs/editor/editor.main.js:
+    status: 200
+    timeout: 5000
