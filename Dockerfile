@@ -2,7 +2,7 @@ FROM denoland/deno:alpine AS compiler
 WORKDIR /app
 COPY deno.json deno.lock* ./
 COPY src/ ./src/
-RUN deno compile --allow-all --output tesseract-server src/index.ts
+RUN deno compile --no-check --allow-all --output tesseract-server src/index.ts
 
 FROM scratch AS builder
 COPY --from=compiler /app/tesseract-server /tesseract-server
