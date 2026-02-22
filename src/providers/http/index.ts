@@ -1,4 +1,4 @@
-import express, { RequestHandler } from "express";
+import express, { Request, RequestHandler, Response } from "express";
 import {
   HealthChecker,
   HealthEndpoint,
@@ -86,7 +86,7 @@ class HTTPProvider implements IProvider {
     }
   }
 
-  private _onStatus: RequestHandler = (_req, res) => {
+  private _onStatus: RequestHandler = (_req: Request, res: Response) => {
     this.tess.status().then((status) => {
       res.status(200).json({
         data: {
@@ -106,22 +106,28 @@ class HTTPProvider implements IProvider {
   };
 
   private _getOptions = (
-    req: Parameters<RequestHandler>[0],
+    req: Request,
   ): Options => {
-    return asOptions(JSON.parse(req.body[argv["http.input.optionsField"]]));
+    // deno-lint-ignore no-explicit-any
+    const body = (req as any).body;
+    return asOptions(
+      JSON.parse(body[argv["http.input.optionsField"]]),
+    );
   };
 
   private _getReadable = (
-    req: Parameters<RequestHandler>[0],
+    req: Request,
   ): Readable => {
-    if (!req.file || !req.file.size) {
+    // deno-lint-ignore no-explicit-any
+    const file = (req as any).file;
+    if (!file || !file.size) {
       throw new Error("No or empty file provided");
     }
 
-    return FS.createReadStream(req.file.path);
+    return FS.createReadStream(file.path);
   };
 
-  private _onPost: RequestHandler = (req, res) => {
+  private _onPost: RequestHandler = (req: Request, res: Response) => {
     Promise.all([this._getOptions(req), this._getReadable(req)])
       .catch((reason) => {
         res.status(400).json({
