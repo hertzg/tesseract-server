@@ -52,7 +52,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno compile --no-check --allow-all --target ${{ matrix.target }} --output tesseract-server src/index.ts
+      - run: deno compile --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --target ${{ matrix.target }} --output tesseract-server src/index.ts
       - uses: actions/upload-artifact@v4
         with:
           name: tesseract-server-${{ matrix.target }}

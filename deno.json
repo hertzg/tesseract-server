@@ -6,7 +6,7 @@
     "test": "deno test --allow-all",
     "lint": "deno lint",
     "fmt": "deno fmt",
-    "compile": "deno compile --allow-all --output tesseract-server src/index.ts"
+    "compile": "deno compile --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --output tesseract-server src/index.ts"
   },
   "imports": {
     "express": "npm:express@^5.0.0",
