@@ -2,7 +2,7 @@
   "version": "2.6.1",
   "tasks": {
     "dev": "deno run --allow-all src/index.ts",
-    "test": "deno test",
+    "test": "deno test --allow-all",
     "lint": "deno lint",
     "fmt": "deno fmt",
     "compile": "deno compile --allow-all --output tesseract-server src/index.ts"
