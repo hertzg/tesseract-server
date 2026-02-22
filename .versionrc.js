@@ -27,6 +27,6 @@ module.exports = {
   ],
   commitAll: true,
   scripts: {
-    postchangelog: "yarn run changelog:next:clean",
+    postchangelog: "node scripts/changelog/clean.js",
   },
 };
