@@ -37,6 +37,26 @@ jobs:
           deno-version: v2.x
       - run: deno test --allow-all
 
+  compile:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            target: x86_64-unknown-linux-gnu
+          - platform: linux/arm64/v8
+            target: aarch64-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno compile --allow-all --target ${{ matrix.target }} --output tesseract-server src/index.ts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tesseract-server-${{ matrix.target }}
+          path: tesseract-server
+
   docker:
     runs-on: ubuntu-24.04
     permissions:
@@ -77,6 +97,7 @@ jobs:
   docker-build:
     needs:
       - docker
+      - compile
     runs-on: ${{ matrix.platform == 'linux/arm64/v8' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
     permissions:
       packages: read
@@ -112,6 +133,17 @@ jobs:
             ${{ runner.os }}-buildx-v2-
 
       - uses: actions/checkout@v6
+      - name: Map platform to deno target
+        id: target
+        run: |
+          case "${{ matrix.platform }}" in
+            linux/amd64) echo "name=x86_64-unknown-linux-gnu" >> $GITHUB_OUTPUT ;;
+            linux/arm64/v8) echo "name=aarch64-unknown-linux-gnu" >> $GITHUB_OUTPUT ;;
+          esac
+      - uses: actions/download-artifact@v4
+        with:
+          name: tesseract-server-${{ steps.target.outputs.name }}
+          path: ./compiled/
       - name: Build
         uses: docker/build-push-action@v6
         with:
@@ -123,6 +155,8 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ matrix.tag }}
+          build-contexts: |
+            builder=./compiled/
       - uses: ishworkh/container-image-artifact-upload@v2.0.0
         with:
           image: ${{ matrix.tag }}
