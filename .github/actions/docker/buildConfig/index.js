@@ -2,22 +2,22 @@ const {
   formatImageName,
   createBuildImageFormatter,
   escapeImageTag,
-} = require('./utils');
-const { parseRef } = require('../../commons/git-ref');
-const { getTags } = require('../../commons/tags');
+} = require("./utils");
+const { parseRef } = require("../../commons/git-ref");
+const { getTags } = require("../../commons/tags");
 const {
   getInput,
   getInputLines,
   setOutputs,
   writeInfo,
-} = require('../../commons/io');
-const { ghaMatrix } = require('../../commons/github');
+} = require("../../commons/io");
+const { ghaMatrix } = require("../../commons/github");
 
-const parseRepository = repo => {
-  const split = repo.split('/');
+const parseRepository = (repo) => {
+  const split = repo.split("/");
   const [imageMaybeWithTag, group, ...rest] = split.reverse();
-  const [image, maybeTag] = imageMaybeWithTag.split(':');
-  const registry = rest.reverse().join('/');
+  const [image, maybeTag] = imageMaybeWithTag.split(":");
+  const registry = rest.reverse().join("/");
   return {
     repo,
     registry: registry || undefined,
@@ -31,14 +31,14 @@ const stringifyRepository = ({ registry, group, image, tag }) =>
   [
     ...(registry ? [registry] : []),
     ...(group ? [group] : []),
-    [image, ...(tag ? [tag] : [])].join(':'),
-  ].join('/');
+    [image, ...(tag ? [tag] : [])].join(":"),
+  ].join("/");
 
 const createImageCombinations = (repos, tags) =>
-  repos.flatMap(repo =>
-    tags.map(tag => ({
+  repos.flatMap((repo) =>
+    tags.map((tag) => ({
       ...parseRepository(formatImageName({ repo, tag })),
-    })),
+    }))
   );
 
 const createImageInfo = (
@@ -70,18 +70,18 @@ const createMatrixBuilder = ({ buildTagPrefix }) => {
   const buildImage = createBuildImageFormatter(buildTagPrefix);
 
   const createBuildMatrices = ({ build, publishAs }, sha) => {
-    return build.platforms.map(platform => {
+    return build.platforms.map((platform) => {
       return {
         name: `docker-${escapeImageTag(platform)}`,
         platform,
         tag: buildImage.name(build.as, sha, platform),
         push: [
           ...new Set(
-            publishAs.map(repo =>
+            publishAs.map((repo) =>
               stringifyRepository({
                 ...repo,
                 tag: buildImage.tag(sha, platform),
-              }),
+              })
             ),
           ),
         ],
@@ -90,14 +90,14 @@ const createMatrixBuilder = ({ buildTagPrefix }) => {
   };
 
   const createManifestMatrices = (builds, publishAs) =>
-    publishAs.map(repo => {
+    publishAs.map((repo) => {
       return {
         name: repo.repo,
-        images: builds.map(build =>
+        images: builds.map((build) =>
           stringifyRepository({
             ...repo,
             tag: parseRepository(build.tag).tag,
-          }),
+          })
         ),
       };
     });
@@ -108,13 +108,13 @@ const createMatrixBuilder = ({ buildTagPrefix }) => {
   };
 };
 
-const BRANCH_PREFIX = 'branch-';
-const BUILD_TAG_PREFIX = 'git-';
+const BRANCH_PREFIX = "branch-";
+const BUILD_TAG_PREFIX = "git-";
 
-const gitRef = getInput('git-ref');
-const gitSha = getInput('git-sha');
-const repositories = getInputLines('repositories');
-const platforms = getInputLines('platforms');
+const gitRef = getInput("git-ref");
+const gitSha = getInput("git-sha");
+const repositories = getInputLines("repositories");
+const platforms = getInputLines("platforms");
 
 const matrixBuilder = createMatrixBuilder({
   buildTagPrefix: BUILD_TAG_PREFIX,

@@ -1,12 +1,12 @@
 file:
   /usr/local/bin/tesseract-server:
     exists: true
-    mode: '0755'
+    mode: "0755"
     filetype: file
     contains: []
   /sbin/tini:
     exists: true
-    mode: '0755'
+    mode: "0755"
     filetype: file
     contains: []
 package:

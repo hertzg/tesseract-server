@@ -1,8 +1,8 @@
-const escapeImageTag = s => s.replace(/[^0-9a-z\-._]+/gi, '-');
+const escapeImageTag = (s) => s.replace(/[^0-9a-z\-._]+/gi, "-");
 
 const formatImageName = ({ repo, tag }) => `${repo}:${tag}`;
 
-const createBuildImageFormatter = prefix => {
+const createBuildImageFormatter = (prefix) => {
   const formatBuildImageName = (repo, sha, platform) =>
     formatImageName({ repo, tag: formatBuildImageTag(sha, platform) });
 

@@ -20,6 +20,7 @@ You can use the service by sending `multipart` http requests containing
 `options` and `file` fields.
 
 <!-- prettier-ignore-start -->
+
 ```shell script
 # Run OCR using english language on file sample.jpg in current directory
 $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/tesseract
@@ -35,6 +36,7 @@ $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0
   }
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 ## Usage
@@ -44,10 +46,12 @@ descriptions, types and defaults including some usage examples can be seen using
 `--help` flag.
 
 <!-- prettier-ignore-start -->
+
 ```shell script
 # Using Docker
 $ docker hertzg/tesseract-server:latest --help
 ```
+
 ```text test-id="--help" test-param-columns="160"
 tesseract-server [options]
 
@@ -81,6 +85,7 @@ References:
   Discussions: https://github.com/hertzg/tesseract-server/discussions
   Issues: https://github.com/hertzg/tesseract-server/issues
 ```
+
 <!-- prettier-ignore-end -->
 
 ## Docker
@@ -132,10 +137,12 @@ To add more languages you can extend this image and install one or more
 with the package manager:
 
 <!-- prettier-ignore-start -->
+
 ```Dockerfile
 FROM hertzg/tesseract-server:latest
 RUN apk add --no-cache tesseract-ocr-data-spa tesseract-ocr-data-ara # and so on
 ```
+
 <!-- prettier-ignore-end -->
 
 After starting the container the new language will be automatically available.
@@ -156,6 +163,7 @@ The `options` json object fields directly relate to the CLI options of
 `tesseract` command.
 
 <!-- prettier-ignore-start -->
+
 ```json5
 {
   "languages": ['eng'],               // -l LANG[+LANG]        Specify language(s) used for OCR.
@@ -170,11 +178,13 @@ The `options` json object fields directly relate to the CLI options of
   },
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 The returned response has the following shape
 
 <!-- prettier-ignore-start -->
+
 ```json5
 {
   "exit": {
@@ -185,6 +195,7 @@ The returned response has the following shape
   "stdout":  "..."                     // Tesseract output that contains the result
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 ### Status Endpoint - `/status`
@@ -199,6 +210,7 @@ pool will be created and then re-used. This endpoint also shows detailed
 information about each pool including process pids and eviction flags.
 
 <!-- prettier-ignore-start -->
+
 ```json5
 {
   data: {
@@ -222,6 +234,7 @@ information about each pool including process pids and eviction flags.
   },
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 ### Health Endpoints

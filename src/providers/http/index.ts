@@ -1,38 +1,38 @@
-import express, { RequestHandler } from 'express';
+import express, { RequestHandler } from "express";
 import {
   HealthChecker,
   HealthEndpoint,
   LivenessEndpoint,
   ReadinessEndpoint,
-} from '@cloudnative/health-connect';
-import FS from 'node:fs';
-import Path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import multer from 'multer';
-import { IProcessor, Options } from '../../processor/index.ts';
-import argv from '../../argv/index.ts';
-import { Readable } from 'node:stream';
-import { IProvider, IProviderFactory } from '../types.ts';
-import { asOptions } from './decoders.ts';
-import OS from 'node:os';
+} from "@cloudnative/health-connect";
+import FS from "node:fs";
+import Path from "node:path";
+import { fileURLToPath } from "node:url";
+import multer from "multer";
+import { IProcessor, Options } from "../../processor/index.ts";
+import argv from "../../argv/index.ts";
+import { Readable } from "node:stream";
+import { IProvider, IProviderFactory } from "../types.ts";
+import { asOptions } from "./decoders.ts";
+import OS from "node:os";
 
 const getVersion = (): string => {
   try {
-    const denoJsonPath = Path.resolve('deno.json');
-    const denoJson = JSON.parse(FS.readFileSync(denoJsonPath, 'utf-8'));
-    return denoJson.version || 'unknown';
+    const denoJsonPath = Path.resolve("deno.json");
+    const denoJson = JSON.parse(FS.readFileSync(denoJsonPath, "utf-8"));
+    return denoJson.version || "unknown";
   } catch {
-    return 'unknown';
+    return "unknown";
   }
 };
 
 const getMonacoPath = (): string => {
   try {
-    const resolved = import.meta.resolve('monaco-editor');
+    const resolved = import.meta.resolve("monaco-editor");
     const monacoDir = Path.dirname(fileURLToPath(resolved));
-    return Path.join(monacoDir, 'min');
+    return Path.join(monacoDir, "min");
   } catch {
-    return 'node_modules/monaco-editor/min';
+    return "node_modules/monaco-editor/min";
   }
 };
 
@@ -47,7 +47,7 @@ class HTTPProvider implements IProvider {
   private readonly app = express();
   private readonly upload = multer({
     storage: multer.diskStorage({
-      destination: argv['http.upload.tmpDir'],
+      destination: argv["http.upload.tmpDir"],
     }),
   });
 
@@ -56,38 +56,38 @@ class HTTPProvider implements IProvider {
     private readonly health: HealthChecker,
   ) {
     this.app.post(
-      '/tesseract',
+      "/tesseract",
       // deno-lint-ignore no-explicit-any
-      this.upload.single(argv['http.input.fileField']) as any,
+      this.upload.single(argv["http.input.fileField"]) as any,
       this._onPost,
     );
 
-    if (argv['http.output.jsonSpaces'] && argv['http.output.jsonSpaces'] > 0) {
-      this.app.set('json spaces', argv['http.output.jsonSpaces']);
+    if (argv["http.output.jsonSpaces"] && argv["http.output.jsonSpaces"] > 0) {
+      this.app.set("json spaces", argv["http.output.jsonSpaces"]);
     }
 
-    if (argv['http.endpoint.status.enable']) {
-      this.app.get('/status', this._onStatus);
+    if (argv["http.endpoint.status.enable"]) {
+      this.app.get("/status", this._onStatus);
     }
 
-    if (argv['http.endpoint.health.enable']) {
-      this.app.use('/.well-known/health/healthy', HealthEndpoint(this.health));
-      this.app.use('/.well-known/health/live', LivenessEndpoint(this.health));
-      this.app.use('/.well-known/health/ready', ReadinessEndpoint(this.health));
+    if (argv["http.endpoint.health.enable"]) {
+      this.app.use("/.well-known/health/healthy", HealthEndpoint(this.health));
+      this.app.use("/.well-known/health/live", LivenessEndpoint(this.health));
+      this.app.use("/.well-known/health/ready", ReadinessEndpoint(this.health));
     }
 
-    if (argv['http.endpoint.webui.enable']) {
-      this.app.use(express.static('public'));
-      console.log('webui enabled');
+    if (argv["http.endpoint.webui.enable"]) {
+      this.app.use(express.static("public"));
+      console.log("webui enabled");
       this.app.use(
-        '/vendor/monaco-editor/min',
+        "/vendor/monaco-editor/min",
         express.static(getMonacoPath()),
       );
     }
   }
 
   private _onStatus: RequestHandler = (_req, res) => {
-    this.tess.status().then(status => {
+    this.tess.status().then((status) => {
       res.status(200).json({
         data: {
           version: getVersion(),
@@ -108,14 +108,14 @@ class HTTPProvider implements IProvider {
   private _getOptions = (
     req: Parameters<RequestHandler>[0],
   ): Options => {
-    return asOptions(JSON.parse(req.body[argv['http.input.optionsField']]));
+    return asOptions(JSON.parse(req.body[argv["http.input.optionsField"]]));
   };
 
   private _getReadable = (
     req: Parameters<RequestHandler>[0],
   ): Readable => {
     if (!req.file || !req.file.size) {
-      throw new Error('No or empty file provided');
+      throw new Error("No or empty file provided");
     }
 
     return FS.createReadStream(req.file.path);
@@ -123,41 +123,41 @@ class HTTPProvider implements IProvider {
 
   private _onPost: RequestHandler = (req, res) => {
     Promise.all([this._getOptions(req), this._getReadable(req)])
-      .catch(reason => {
+      .catch((reason) => {
         res.status(400).json({
-          error: 'Request input validation failed',
+          error: "Request input validation failed",
           reason: String(reason),
         });
         throw reason;
       })
       .then(([options, readable]) => this.tess.execute(options, readable))
-      .catch(reason => {
+      .catch((reason) => {
         res
           .status(500)
-          .json({ error: 'error processing input', reason: String(reason) });
+          .json({ error: "error processing input", reason: String(reason) });
         throw reason;
       })
-      .then(data => {
+      .then((data) => {
         res.status(200).json({
           data: {
             ...data,
-            stdout: data.stdout.toString('utf8'),
-            stderr: data.stderr.toString('utf8'),
+            stdout: data.stdout.toString("utf8"),
+            stderr: data.stderr.toString("utf8"),
           },
         });
       })
       .catch(() => {
-        console.log('Error processing http request');
+        console.log("Error processing http request");
       });
   };
 
   start(): Promise<void> {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve) => {
       const srv = this.app.listen(
-        argv['http.listen.port'],
-        argv['http.listen.address'],
+        argv["http.listen.port"],
+        argv["http.listen.address"],
         () => {
-          console.log('Listening @ %j', srv.address());
+          console.log("Listening @ %j", srv.address());
           resolve();
         },
       );

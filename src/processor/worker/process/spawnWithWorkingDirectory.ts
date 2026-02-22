@@ -1,4 +1,6 @@
-import ChildProcess, { ChildProcessWithoutNullStreams } from 'node:child_process';
+import ChildProcess, {
+  ChildProcessWithoutNullStreams,
+} from "node:child_process";
 
 export const spawnWithWorkingDirectory = (
   command: string,

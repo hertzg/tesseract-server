@@ -1,59 +1,59 @@
 import process from "node:process";
-const { EOL } = require('os');
+const { EOL } = require("os");
 
-const sanitize = input => {
+const sanitize = (input) => {
   if (input === null || input === undefined) {
-    return '';
-  } else if (typeof input === 'string' || input instanceof String) {
+    return "";
+  } else if (typeof input === "string" || input instanceof String) {
     return input;
   }
   return JSON.stringify(input);
 };
 
-const escapeData = s =>
+const escapeData = (s) =>
   sanitize(s)
-    .replace(/%/g, '%25')
-    .replace(/\r/g, '%0D')
-    .replace(/\n/g, '%0A');
+    .replace(/%/g, "%25")
+    .replace(/\r/g, "%0D")
+    .replace(/\n/g, "%0A");
 
-const escapeProperty = s =>
+const escapeProperty = (s) =>
   sanitize(s)
-    .replace(/%/g, '%25')
-    .replace(/\r/g, '%0D')
-    .replace(/\n/g, '%0A')
-    .replace(/:/g, '%3A')
-    .replace(/,/g, '%2C');
+    .replace(/%/g, "%25")
+    .replace(/\r/g, "%0D")
+    .replace(/\n/g, "%0A")
+    .replace(/:/g, "%3A")
+    .replace(/,/g, "%2C");
 
 const formatCommand = (name, value, props = {}) =>
   `::${name} ${formatProperties(props)}::${escapeData(value)}`;
 
-const formatProperties = props =>
+const formatProperties = (props) =>
   Object.entries(props)
     .map(([key, prop]) => `${key}=${escapeProperty(prop)}`)
-    .join(',');
+    .join(",");
 
-const writeLine = line => process.stdout.write(`${line}${EOL}`);
+const writeLine = (line) => process.stdout.write(`${line}${EOL}`);
 
 const setOutput = (name, data) =>
-  writeLine(formatCommand('set-output', data, { name }));
+  writeLine(formatCommand("set-output", data, { name }));
 
-const setOutputs = obj =>
+const setOutputs = (obj) =>
   Object.entries(obj).forEach(([k, v]) => setOutput(k, v));
 
-const writeDebug = message => writeLine(formatCommand('debug', message));
+const writeDebug = (message) => writeLine(formatCommand("debug", message));
 
-const writeInfo = message => writeLine(message);
+const writeInfo = (message) => writeLine(message);
 
-const ensureString = reason =>
+const ensureString = (reason) =>
   reason instanceof Error ? reason.toString() : reason;
 
-const writeWarning = message =>
-  writeLine(formatCommand('warning', ensureString(message)));
+const writeWarning = (message) =>
+  writeLine(formatCommand("warning", ensureString(message)));
 
-const writeError = message =>
-  writeLine(formatCommand('error', ensureString(message)));
+const writeError = (message) =>
+  writeLine(formatCommand("error", ensureString(message)));
 
-const fail = reason => {
+const fail = (reason) => {
   writeError(reason);
   process.exit(1);
 };

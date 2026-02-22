@@ -11,5 +11,5 @@ export interface Options {
   };
 }
 
-export * from './constants.ts';
-export * from './optionsToArgs.ts';
+export * from "./constants.ts";
+export * from "./optionsToArgs.ts";

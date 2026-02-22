@@ -1,16 +1,16 @@
-import remark from 'remark';
-import { selectAll } from 'unist-util-select';
-import { readFile } from 'node:fs/promises';
+import remark from "remark";
+import { selectAll } from "unist-util-select";
+import { readFile } from "node:fs/promises";
 
 // deno-lint-ignore no-explicit-any
 export const findByTestId = (ast: any, id: string) =>
   id.length
-    ? selectAll('code[meta]', ast).find(node => {
-        return (
-          // deno-lint-ignore no-explicit-any
-          (node as unknown as any).meta as string | null | undefined
-        )?.includes(`test-id="${id}"`);
-      })
+    ? selectAll("code[meta]", ast).find((node) => {
+      return (
+        // deno-lint-ignore no-explicit-any
+        (node as unknown as any).meta as string | null | undefined
+      )?.includes(`test-id="${id}"`);
+    })
     : undefined;
 
 const TEST_PARAM_REGEXP = /test-param-([^=]*)="([^"]*)"/g;

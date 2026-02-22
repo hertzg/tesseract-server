@@ -5,17 +5,17 @@ on:
       - master
   push:
     branches: []
-    tags: 'v*'
+    tags: "v*"
     paths:
-      - 'src/**/*'
-      - 'test/**/*'
-      - '.github/action/**/*'
-      - '.github/workflows/**/*'
-      - 'deno.json'
-      - 'deno.lock'
-      - 'Dockerfile'
-      - '.dockerignore'
-      - 'goss*.yaml'
+      - "src/**/*"
+      - "test/**/*"
+      - ".github/action/**/*"
+      - ".github/workflows/**/*"
+      - "deno.json"
+      - "deno.lock"
+      - "Dockerfile"
+      - ".dockerignore"
+      - "goss*.yaml"
 
 jobs:
   lint:

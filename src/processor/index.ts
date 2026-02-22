@@ -1,21 +1,15 @@
-import type {
-  IWorker,
-  Options,
-} from './worker/index.ts';
-import {
-  OCREngineMode,
-  PageSegmentationMethod,
-} from './worker/index.ts';
+import type { IWorker, Options } from "./worker/index.ts";
+import { OCREngineMode, PageSegmentationMethod } from "./worker/index.ts";
 import {
   Options as GenericPoolSettings,
   Pool as GenericPool,
-} from 'generic-pool';
-import { Readable } from 'node:stream';
-import { optionsToArgs } from './worker/options/index.ts';
-import { TesseractResult } from './worker/process/index.ts';
-import { createWorkerPool } from './createWorkerPool.ts';
-import argv from '../argv/index.ts';
-import { ensureEndOfLine, LineEnding } from './ensureEndOfLine.ts';
+} from "generic-pool";
+import { Readable } from "node:stream";
+import { optionsToArgs } from "./worker/options/index.ts";
+import { TesseractResult } from "./worker/process/index.ts";
+import { createWorkerPool } from "./createWorkerPool.ts";
+import argv from "../argv/index.ts";
+import { ensureEndOfLine, LineEnding } from "./ensureEndOfLine.ts";
 
 export interface ProcessorOptions {
   pool?: {
@@ -26,14 +20,14 @@ export interface ProcessorOptions {
 
 export const createProcessor = (options: ProcessorOptions): IProcessor => {
   return new Processor({
-    lineEndings: argv['processor.lineEndings'] as ProcessorSettingsLineEndings,
+    lineEndings: argv["processor.lineEndings"] as ProcessorSettingsLineEndings,
     pool: {
       min: options?.pool?.min || 0,
       max: options?.pool?.max || 2,
       testOnBorrow: true,
       testOnReturn: true,
-      idleTimeoutMillis: argv['pool.default.idleTimeoutMillis'],
-      evictionRunIntervalMillis: argv['pool.default.evictionRunIntervalMillis'],
+      idleTimeoutMillis: argv["pool.default.idleTimeoutMillis"],
+      evictionRunIntervalMillis: argv["pool.default.evictionRunIntervalMillis"],
     },
   });
 };
@@ -62,9 +56,9 @@ export interface PoolStatus {
 }
 
 export enum ProcessorSettingsLineEndings {
-  AUTO = 'auto',
-  LF = 'lf',
-  CRLF = 'crlf',
+  AUTO = "auto",
+  LF = "lf",
+  CRLF = "crlf",
 }
 
 export interface ProcessorSettings {
@@ -86,7 +80,7 @@ class Processor implements IProcessor {
         return {
           args,
           // deno-lint-ignore no-explicit-any
-          resources: Array.from(p._allObjects as Set<any>).map(resource => {
+          resources: Array.from(p._allObjects as Set<any>).map((resource) => {
             return {
               pid: resource.obj._proc.pid,
               killed: resource.obj._proc.killed,
@@ -114,7 +108,7 @@ class Processor implements IProcessor {
   private _getPool = (
     options: Options,
   ): GenericPool<IWorker> => {
-    const key = optionsToArgs(options).join(' ');
+    const key = optionsToArgs(options).join(" ");
     if (!this.pools.has(key)) {
       const settings: GenericPoolSettings = {
         ...this.settings.pool,

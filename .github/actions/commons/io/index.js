@@ -1,4 +1,4 @@
-const { getInput, getInputLines } = require('./input');
+const { getInput, getInputLines } = require("./input");
 const {
   writeDebug,
   writeInfo,
@@ -7,7 +7,7 @@ const {
   setOutput,
   setOutputs,
   fail,
-} = require('./output');
+} = require("./output");
 
 module.exports = {
   getInput,

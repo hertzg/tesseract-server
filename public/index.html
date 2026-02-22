@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -53,49 +53,66 @@
     </form>
 
     <script>
-      var require = { paths: { vs: '/vendor/monaco-editor/min/vs' } };
+      var require = { paths: { vs: "/vendor/monaco-editor/min/vs" } };
     </script>
     <script src="/vendor/monaco-editor/min/vs/loader.js"></script>
-    <script src="/vendor/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+    <script
+      src="/vendor/monaco-editor/min/vs/editor/editor.main.nls.js"
+    ></script>
     <script src="/vendor/monaco-editor/min/vs/editor/editor.main.js"></script>
     <script>
       const init = () => {
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
           schemas: [
             {
-              uri: 'inmemory://inmemory/foo-schema.json',
-              fileMatch: ['options.json'],
+              uri: "inmemory://inmemory/foo-schema.json",
+              fileMatch: ["options.json"],
               schema: {
-                type: 'object',
+                type: "object",
                 properties: {
                   languages: {
-                    type: 'array',
+                    type: "array",
                     items: {
-                      type: 'string',
+                      type: "string",
                     },
                   },
                   dpi: {
-                    type: 'number',
+                    type: "number",
                   },
                   pageSegmentationMethod: {
-                    type: 'number',
-                    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                    type: "number",
+                    enum: [
+                      0,
+                      1,
+                      2,
+                      3,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      9,
+                      10,
+                      11,
+                      12,
+                      13,
+                    ],
                   },
                   ocrEngineMode: {
-                    type: 'number',
+                    type: "number",
                     enum: [0, 1, 2, 3],
                   },
                   tessDataDir: {
-                    type: 'string',
+                    type: "string",
                   },
                   userPatternsFile: {
-                    type: 'string',
+                    type: "string",
                   },
                   userWordsFile: {
-                    type: 'string',
+                    type: "string",
                   },
                   configParams: {
-                    type: 'object',
+                    type: "object",
                     properties: {},
                   },
                 },
@@ -105,57 +122,65 @@
         });
 
         const editor = (() => {
-          return monaco.editor.create(document.getElementById('editor'), {
-            model: monaco.editor.createModel(
-              '{\n  "languages": ["eng"],\n  "configParams": {\n  }\n}',
-              'json',
-              monaco.Uri.parse('inmemory://inmemory/options.json'),
-            ),
-            minimap: { enabled: false },
-            automaticLayout: true,
-          });
+          return monaco.editor.create(
+            document.getElementById("editor"),
+            {
+              model: monaco.editor.createModel(
+                '{\n  "languages": ["eng"],\n  "configParams": {\n  }\n}',
+                "json",
+                monaco.Uri.parse("inmemory://inmemory/options.json"),
+              ),
+              minimap: { enabled: false },
+              automaticLayout: true,
+            },
+          );
         })();
 
-        const output = monaco.editor.create(document.getElementById('output'), {
-          value: '',
-          language: 'json',
-          minimap: { enabled: false },
-          automaticLayout: true,
-          wordWrap: 'on',
-        });
+        const output = monaco.editor.create(
+          document.getElementById("output"),
+          {
+            value: "",
+            language: "json",
+            minimap: { enabled: false },
+            automaticLayout: true,
+            wordWrap: "on",
+          },
+        );
 
         const fileEl = document.querySelector('input[type="file"]');
-        fileEl.addEventListener('change', e => {
+        fileEl.addEventListener("change", (e) => {
           const file = e.target.files[0];
           const reader = new FileReader();
-          reader.onload = e => {
-            document.getElementById('preview').src = e.target.result;
+          reader.onload = (e) => {
+            document.getElementById("preview").src = e.target.result;
           };
           reader.readAsDataURL(file);
         });
 
-        const status = document.getElementById('status');
-        const form = document.getElementById('form');
-        form.addEventListener('submit', e => {
+        const status = document.getElementById("status");
+        const form = document.getElementById("form");
+        form.addEventListener("submit", (e) => {
           e.preventDefault();
 
           const formData = new FormData(form);
-          formData.append('options', editor.getModel().getValue());
+          formData.append("options", editor.getModel().getValue());
 
           const ms = new Date().getTime();
-          status.innerText = 'Processing...';
+          status.innerText = "Processing...";
           fetch(form.action, {
-            method: 'POST',
+            method: "POST",
             body: formData,
           })
-            .then(response => response.text())
-            .then(data => {
+            .then((response) => response.text())
+            .then((data) => {
               output.getModel().setValue(data);
-              output.getAction('editor.action.formatDocument').run();
+              output.getAction("editor.action.formatDocument").run();
             })
             .catch(console.error)
             .then(() => {
-              status.innerText = `Done in ${Math.round((new Date().getTime() - ms) / 1000)}s`;
+              status.innerText = `Done in ${
+                Math.round((new Date().getTime() - ms) / 1000)
+              }s`;
             });
         });
       };

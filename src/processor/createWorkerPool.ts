@@ -1,8 +1,8 @@
-import { createWorker, Options, IWorker } from './worker/index.ts';
+import { createWorker, IWorker, Options } from "./worker/index.ts";
 import {
   createPool as createGenericPool,
   Options as GenericPoolSettings,
-} from 'generic-pool';
+} from "generic-pool";
 
 export const createWorkerPool = (
   options: Options,
@@ -23,7 +23,6 @@ export const createWorkerPool = (
         worker.destroy();
       },
     },
-
     settings,
   );
 };

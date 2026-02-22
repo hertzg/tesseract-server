@@ -1,8 +1,9 @@
 # Heroku Deploy
 
-Before creating the Heroku project, we must add the `Aptfile` and `Procfile` files.
+Before creating the Heroku project, we must add the `Aptfile` and `Procfile`
+files.
 
-Fork this project. And add the `Aptfile` and `Procfile` files. 
+Fork this project. And add the `Aptfile` and `Procfile` files.
 
 ### Aptfile
 

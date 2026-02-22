@@ -1,18 +1,18 @@
-const { parseRef } = require('./git-ref');
-const { REF_TYPE, getRefType } = require('./helpers');
-const { createHash } = require('crypto');
+const { parseRef } = require("./git-ref");
+const { REF_TYPE, getRefType } = require("./helpers");
+const { createHash } = require("crypto");
 
-const asTag = tag => {
+const asTag = (tag) => {
   const sanitized = tag
-    .replace(/([^a-z0-9_.-])/gi, '_') // invalid to _
-    .replace(/(_+)/g, '_'); // remove consecutive _ chars
+    .replace(/([^a-z0-9_.-])/gi, "_") // invalid to _
+    .replace(/(_+)/g, "_"); // remove consecutive _ chars
 
   // Replace with hash if longer than 80 chars
   // 80 chars is arbitrary just to allow
   if (sanitized.length > 80) {
-    const hash = createHash('sha1')
+    const hash = createHash("sha1")
       .update(tag)
-      .digest('hex');
+      .digest("hex");
     return `${hash}`;
   }
 
@@ -24,18 +24,22 @@ const refTypeTag = (refType, parsedRef, branchPrefix) => {
     case REF_TYPE.VERSION_TAG:
       return asTag(parsedRef[1]);
     case REF_TYPE.MASTER_BRANCH:
-      return 'master';
+      return "master";
     case REF_TYPE.NON_MASTER_BRANCH:
       return `${branchPrefix}${asTag(parsedRef[1])}`;
     case REF_TYPE.PULL_REQUEST:
-      return `pr-${asTag(parsedRef[1])}`
+      return `pr-${asTag(parsedRef[1])}`;
   }
 
-  throw new Error(`Unable to determine refTypeTag for ${JSON.stringify(parsedRef)} of type ${refType}`);
+  throw new Error(
+    `Unable to determine refTypeTag for ${
+      JSON.stringify(parsedRef)
+    } of type ${refType}`,
+  );
 };
 
-const latestTag = refType =>
-  refType === REF_TYPE.VERSION_TAG ? ['latest'] : [];
+const latestTag = (refType) =>
+  refType === REF_TYPE.VERSION_TAG ? ["latest"] : [];
 
 const getTags = (parsedRef, branchPrefix) => {
   const refType = getRefType(parsedRef);
@@ -44,7 +48,7 @@ const getTags = (parsedRef, branchPrefix) => {
 
 const combine = (imageNames, tags) =>
   tags
-    .flatMap(tag => imageNames.map(image => [image, tag]))
+    .flatMap((tag) => imageNames.map((image) => [image, tag]))
     .map(([image, tag]) => `${image}:${tag}`);
 
 const getTagMatrix = (ref, imageNames, branchPrefix) => {

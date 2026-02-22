@@ -1,23 +1,26 @@
-import { assertEquals, assertThrows } from '@std/assert';
-import { asOptions } from '../src/providers/http/decoders.ts';
-import { OCREngineMode, PageSegmentationMethod } from '../src/processor/index.ts';
+import { assertEquals, assertThrows } from "@std/assert";
+import { asOptions } from "../src/providers/http/decoders.ts";
+import {
+  OCREngineMode,
+  PageSegmentationMethod,
+} from "../src/processor/index.ts";
 
-Deno.test('http decoders - should throw on invalid values', () => {
+Deno.test("http decoders - should throw on invalid values", () => {
   assertThrows(() => asOptions(undefined));
   assertThrows(() => asOptions(null));
-  assertThrows(() => asOptions(''));
+  assertThrows(() => asOptions(""));
   assertThrows(() => asOptions(1));
   assertThrows(() => asOptions([]));
 });
 
-Deno.test('http decoders - should throw on invalid dpi values', () => {
+Deno.test("http decoders - should throw on invalid dpi values", () => {
   assertThrows(() => asOptions({ dpi: -100 }));
   assertThrows(() => asOptions({ dpi: 0 }));
   asOptions({ dpi: 300 });
   asOptions({ dpi: 600 });
 });
 
-Deno.test('http decoders - should throw on wrong psm and oem options', () => {
+Deno.test("http decoders - should throw on wrong psm and oem options", () => {
   assertThrows(() => asOptions({ pageSegmentationMethod: 99999 }));
   assertThrows(() => asOptions({ pageSegmentationMethod: -1 }));
   asOptions({
@@ -30,7 +33,7 @@ Deno.test('http decoders - should throw on wrong psm and oem options', () => {
   asOptions({ ocrEngineMode: OCREngineMode.AUTO });
 });
 
-Deno.test('http decoders - should throw on non string config option values', () => {
+Deno.test("http decoders - should throw on non string config option values", () => {
   assertThrows(() => asOptions({ configParams: { nullKey: null } }));
   assertThrows(() => asOptions({ configParams: { undefinedKey: undefined } }));
   assertThrows(() => asOptions({ configParams: { numKey: 999 } }));
@@ -39,10 +42,10 @@ Deno.test('http decoders - should throw on non string config option values', () 
   assertThrows(() => asOptions({ configParams: { objKey: {} } }));
 });
 
-Deno.test('http decoders - should pass language options', () => {
-  const result1 = asOptions({ languages: ['eng'] });
-  assertEquals(result1.languages, ['eng']);
+Deno.test("http decoders - should pass language options", () => {
+  const result1 = asOptions({ languages: ["eng"] });
+  assertEquals(result1.languages, ["eng"]);
 
-  const result2 = asOptions({ languages: ['eng', 'deu'] });
-  assertEquals(result2.languages, ['eng', 'deu']);
+  const result2 = asOptions({ languages: ["eng", "deu"] });
+  assertEquals(result2.languages, ["eng", "deu"]);
 });

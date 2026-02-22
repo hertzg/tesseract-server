@@ -1,4 +1,4 @@
-import { Options, optionsToArgs } from './options/index.ts';
+import { Options, optionsToArgs } from "./options/index.ts";
 
 export const cliArguments = (
   input: string,

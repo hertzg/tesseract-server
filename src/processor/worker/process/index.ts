@@ -1,7 +1,7 @@
-import { ChildProcessWithoutNullStreams } from 'node:child_process';
-import { spawnTesseract } from './spawnTesseract.ts';
-import { Readable } from 'node:stream';
-import { bufferOutputs } from './buffer.ts';
+import { ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawnTesseract } from "./spawnTesseract.ts";
+import { Readable } from "node:stream";
+import { bufferOutputs } from "./buffer.ts";
 import { Buffer } from "node:buffer";
 import { setImmediate } from "node:timers";
 
@@ -56,8 +56,8 @@ class Tesseract implements ITesseract {
       this._reject = reject;
     });
 
-    this._proc.once('error', this._onError);
-    this._proc.once('exit', this._onExit);
+    this._proc.once("error", this._onError);
+    this._proc.once("exit", this._onExit);
     bufferOutputs(this._proc).then(({ stdout, stderr }) => {
       this._buffData = { stdout, stderr };
     }).catch((err) => {
@@ -119,6 +119,6 @@ class Tesseract implements ITesseract {
   };
 
   public destroy = () => {
-    this._proc.kill('SIGINT');
+    this._proc.kill("SIGINT");
   };
 }
