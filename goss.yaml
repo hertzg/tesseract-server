@@ -15,8 +15,6 @@ package:
 process:
   tini:
     running: true
-  tesseract-server:
-    running: true
 http:
   http://127.0.0.1:8884/status:
     status: 200
