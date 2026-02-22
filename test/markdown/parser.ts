@@ -1,8 +1,9 @@
-import { parse } from 'remark';
+import remark from 'remark';
 import { selectAll } from 'unist-util-select';
 import { readFile } from 'node:fs/promises';
 
-export const findByTestId = (ast: ReturnType<typeof parse>, id: string) =>
+// deno-lint-ignore no-explicit-any
+export const findByTestId = (ast: any, id: string) =>
   id.length
     ? selectAll('code[meta]', ast).find(node => {
         return (
@@ -22,5 +23,5 @@ export const getTestParam = (meta: string, attribute: string) => {
 };
 
 export const parseMarkdown = async (path: string) => {
-  return parse(await readFile(path));
+  return remark().parse(await readFile(path));
 };

@@ -1,6 +1,5 @@
 import Yargs from 'yargs';
 import { tmpdir } from 'node:os';
-import { ProcessorSettingsLineEndings } from '../processor/index.ts';
 import process from "node:process";
 
 export const createYargs = (argv: readonly string[], cwd?: string) =>
@@ -92,11 +91,7 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
         description: 'Set line ending policy',
         type: 'string',
         default: 'auto',
-        choices: [
-          ProcessorSettingsLineEndings.AUTO,
-          ProcessorSettingsLineEndings.LF,
-          ProcessorSettingsLineEndings.CRLF,
-        ],
+        choices: ['auto', 'lf', 'crlf'],
       },
     })
     .example([

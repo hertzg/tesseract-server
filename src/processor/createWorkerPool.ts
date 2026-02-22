@@ -10,13 +10,16 @@ export const createWorkerPool = (
 ) => {
   return createGenericPool<IWorker>(
     {
-      create: () => {
+      // deno-lint-ignore require-await
+      create: async () => {
         return createWorker(options);
       },
-      validate: (worker: IWorker) => {
+      // deno-lint-ignore require-await
+      validate: async (worker: IWorker) => {
         return worker.validate();
       },
-      destroy: (worker: IWorker) => {
+      // deno-lint-ignore require-await
+      destroy: async (worker: IWorker) => {
         worker.destroy();
       },
     },

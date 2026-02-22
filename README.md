@@ -73,8 +73,8 @@ Options:
 
 Examples:
   tesseract-server --http.output.jsonSpaces 2                                       Enable JSON pretty printing
-  tesseract-server --http.endpoint.status.enable false                              Disable Status and Health endpoints
-  --http.endpoint.health.enable false
+  tesseract-server --http.endpoint.status.enable false --http.endpoint.health.enab  Disable Status and Health endpoints
+  le false
 
 References:
   GitHub: https://github.com/hertzg/tesseract-server

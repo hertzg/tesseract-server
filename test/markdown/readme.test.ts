@@ -1,9 +1,10 @@
 import { assert, assertEquals } from '@std/assert';
 import { createYargs } from '../../src/argv/yargs.ts';
-import { join, dirname, fromFileUrl } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { findByTestId, getTestParam, parseMarkdown } from './parser.ts';
 
-const __dirname = dirname(fromFileUrl(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const RELATIVE_PATH_TO_README_MD = '../../README.md';
 
 // Override tmpdir to /tmp for deterministic help output
@@ -23,7 +24,7 @@ const usageActual = (columns: number) =>
       createYargs([])
         .wrap(columns)
         .exitProcess(false)
-        .showHelp(s => resolve(s)).argv,
+        .showHelp((s: string) => resolve(s)).argv,
   );
 
 Deno.test('README.md - should have usage match actual --help output', async () => {

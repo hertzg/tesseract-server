@@ -77,7 +77,8 @@ class Processor implements IProcessor {
 
   constructor(private settings: ProcessorSettings) {}
 
-  status = (): ProcessorStatus => {
+  // deno-lint-ignore require-await
+  status = async (): Promise<ProcessorStatus> => {
     return {
       pools: Array.from(this.pools.entries()).map(([args, pool]) => {
         // deno-lint-ignore no-explicit-any
