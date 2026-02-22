@@ -221,10 +221,11 @@ jobs:
       - uses: ishworkh/container-image-artifact-download@v2.1.0
         with:
           image: ${{ matrix.tag }}
-      - uses: yuichielectric/dive-action@0.0.4
-        with:
-          image: ${{ matrix.tag }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Analyze image with dive
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            wagoodman/dive:v0.13 ${{ matrix.tag }} --ci
 
   docker-push:
     if:
