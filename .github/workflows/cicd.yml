@@ -84,47 +84,7 @@ jobs:
           message: |
             # 🐳 Docker Pipeline
 
-            | Stage | Status |
-            |-------|--------|
-            | 🔨 Compile | ⏳ in progress |
-            | 🏗️ Build | ⏳ waiting |
-            | 🧪 Test | ⏳ waiting |
-            | 🔍 Dive | ⏳ waiting |
-            | 📤 Push | ⏳ waiting |
-            | 🌐 Multi-arch | ⏳ waiting |
-
-  compile-report:
-    needs: [docker, compile]
-    if: ${{ always() && needs.docker.result == 'success' && needs.docker.outputs.pr-number }}
-    runs-on: ubuntu-24.04
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Get artifact URLs
-        id: artifacts
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          AMD64_ID=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" --jq '.artifacts[] | select(.name == "tesseract-server-x86_64-unknown-linux-gnu") | .id' 2>/dev/null || echo "")
-          ARM64_ID=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" --jq '.artifacts[] | select(.name == "tesseract-server-aarch64-unknown-linux-gnu") | .id' 2>/dev/null || echo "")
-          if [ -n "$AMD64_ID" ]; then
-            echo "amd64-url=${RUN_URL}/artifacts/${AMD64_ID}" >> "$GITHUB_OUTPUT"
-          fi
-          if [ -n "$ARM64_ID" ]; then
-            echo "arm64-url=${RUN_URL}/artifacts/${ARM64_ID}" >> "$GITHUB_OUTPUT"
-          fi
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          number: ${{ needs.docker.outputs.pr-number }}
-          append: true
-          message: |
-            ${{ needs.compile.result == 'success' && '✅' || '❌' }} **Compile** — ${{ needs.compile.result }}
-
-            | Target | Artifact |
-            |--------|----------|
-            | `x86_64-unknown-linux-gnu` | ${{ steps.artifacts.outputs.amd64-url && format('[📦 download]({0})', steps.artifacts.outputs.amd64-url) || '⚠️ not available' }} |
-            | `aarch64-unknown-linux-gnu` | ${{ steps.artifacts.outputs.arm64-url && format('[📦 download]({0})', steps.artifacts.outputs.arm64-url) || '⚠️ not available' }} |
+            ⏳ In progress...
 
   docker-build:
     needs:
@@ -167,25 +127,6 @@ jobs:
         with:
           image: ${{ matrix.tag }}
 
-  docker-build-report:
-    needs: [docker, docker-build]
-    if: ${{ always() && needs.docker.result == 'success' && needs.docker.outputs.pr-number }}
-    runs-on: ubuntu-24.04
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          number: ${{ needs.docker.outputs.pr-number }}
-          append: true
-          message: |
-            ${{ needs.docker-build.result == 'success' && '✅' || '❌' }} **Build** — ${{ needs.docker-build.result }}
-
-            | Platform | Image | Runner |
-            |----------|-------|--------|
-            | `linux/amd64` | `tesseract-server:git-${{ github.sha }}-linux-amd64` | `ubuntu-22.04` |
-            | `linux/arm64/v8` | `tesseract-server:git-${{ github.sha }}-linux-arm64-v8` | `ubuntu-22.04-arm` |
-
   docker-test:
     needs:
       - docker
@@ -205,20 +146,6 @@ jobs:
       - uses: actions/checkout@v6
       - run: dgoss run ${{ matrix.tag }}
 
-  docker-test-report:
-    needs: [docker, docker-test]
-    if: ${{ always() && needs.docker.result == 'success' && needs.docker.outputs.pr-number }}
-    runs-on: ubuntu-24.04
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          number: ${{ needs.docker.outputs.pr-number }}
-          append: true
-          message: |
-            ${{ needs.docker-test.result == 'success' && '✅' || '❌' }} **Test** — ${{ needs.docker-test.result == 'success' && 'passed' || 'failed' }}
-
   docker-dive:
     needs:
       - docker
@@ -236,20 +163,6 @@ jobs:
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             wagoodman/dive:v0.13 ${{ matrix.tag }} --ci
-
-  docker-dive-report:
-    needs: [docker, docker-dive]
-    if: ${{ always() && needs.docker.result == 'success' && needs.docker.outputs.pr-number }}
-    runs-on: ubuntu-24.04
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          number: ${{ needs.docker.outputs.pr-number }}
-          append: true
-          message: |
-            ${{ needs.docker-dive.result == 'success' && '✅' || '❌' }} **Dive** — ${{ needs.docker-dive.result == 'success' && 'passed' || 'failed' }}
 
   docker-push:
     if:
@@ -289,41 +202,14 @@ jobs:
             docker push "$PUSH_NAME"
           done;
 
-  docker-push-report:
-    needs: [docker, docker-push]
-    if: ${{ always() && needs.docker.result == 'success' && needs.docker.outputs.pr-number }}
-    runs-on: ubuntu-24.04
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          number: ${{ needs.docker.outputs.pr-number }}
-          append: true
-          message: |
-            ${{ needs.docker-push.result == 'success' && '✅' || '❌' }} **Push** — ${{ needs.docker-push.result }}
-
-            | Registry | `linux/amd64` | `linux/arm64/v8` |
-            |----------|---------------|------------------|
-            | GHCR | `ghcr.io/hertzg/tesseract-server:git-${{ github.sha }}-linux-amd64` | `ghcr.io/hertzg/tesseract-server:git-${{ github.sha }}-linux-arm64-v8` |
-            | Docker Hub | `hertzg/tesseract-server:git-${{ github.sha }}-linux-amd64` | `hertzg/tesseract-server:git-${{ github.sha }}-linux-arm64-v8` |
-
   docker-multiarch:
     needs:
       - docker
       - docker-push
     runs-on: ubuntu-24.04
     permissions:
-      pull-requests: write
       packages: write
     steps:
-      - uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ needs.docker.outputs.pr-number }}
-        with:
-          number: ${{ needs.docker.outputs.pr-number }}
-          append: true
-          message: |
-            🌐 Creating multi-arch manifests...
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -362,14 +248,154 @@ jobs:
             docker manifest create "$TAG" "${SOURCES[@]}"
             docker manifest push "$TAG"
           done
+
+  pipeline-report:
+    needs: [docker, compile, docker-build, docker-test, docker-dive, docker-push, docker-multiarch]
+    if: ${{ always() && needs.docker.outputs.pr-number }}
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Get artifact URLs
+        id: artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          AMD64_ID=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" --jq '.artifacts[] | select(.name == "tesseract-server-x86_64-unknown-linux-gnu") | .id' 2>/dev/null || echo "")
+          ARM64_ID=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" --jq '.artifacts[] | select(.name == "tesseract-server-aarch64-unknown-linux-gnu") | .id' 2>/dev/null || echo "")
+          if [ -n "$AMD64_ID" ]; then
+            echo "amd64-url=${RUN_URL}/artifacts/${AMD64_ID}" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -n "$ARM64_ID" ]; then
+            echo "arm64-url=${RUN_URL}/artifacts/${ARM64_ID}" >> "$GITHUB_OUTPUT"
+          fi
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/hertzg/tesseract-server
+            hertzg/tesseract-server
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=branch
+            type=ref,event=pr
+      - name: Build report
+        env:
+          COMPILE_RESULT: ${{ needs.compile.result }}
+          BUILD_RESULT: ${{ needs.docker-build.result }}
+          TEST_RESULT: ${{ needs.docker-test.result }}
+          DIVE_RESULT: ${{ needs.docker-dive.result }}
+          PUSH_RESULT: ${{ needs.docker-push.result }}
+          MULTIARCH_RESULT: ${{ needs.docker-multiarch.result }}
+          AMD64_URL: ${{ steps.artifacts.outputs.amd64-url }}
+          ARM64_URL: ${{ steps.artifacts.outputs.arm64-url }}
+          SHA: ${{ github.sha }}
+          META_TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          status_icon() {
+            case "$1" in
+              success) echo "✅" ;;
+              skipped) echo "⏭️" ;;
+              *) echo "❌" ;;
+            esac
+          }
+
+          {
+            echo "# 🐳 Docker Pipeline"
+            echo ""
+
+            # Compile
+            ICON=$(status_icon "$COMPILE_RESULT")
+            if [ "$COMPILE_RESULT" = "success" ]; then
+              echo "<details>"
+              echo "<summary>🔨 Compile — ${ICON} ${COMPILE_RESULT}</summary>"
+              echo ""
+              echo "| Target | Artifact |"
+              echo "|--------|----------|"
+              if [ -n "${AMD64_URL:-}" ]; then
+                echo "| \`x86_64-unknown-linux-gnu\` | [📦 download](${AMD64_URL}) |"
+              else
+                echo "| \`x86_64-unknown-linux-gnu\` | ⚠️ not available |"
+              fi
+              if [ -n "${ARM64_URL:-}" ]; then
+                echo "| \`aarch64-unknown-linux-gnu\` | [📦 download](${ARM64_URL}) |"
+              else
+                echo "| \`aarch64-unknown-linux-gnu\` | ⚠️ not available |"
+              fi
+              echo ""
+              echo "</details>"
+            else
+              echo "${ICON} **Compile** — ${COMPILE_RESULT}"
+            fi
+
+            echo ""
+
+            # Build
+            ICON=$(status_icon "$BUILD_RESULT")
+            if [ "$BUILD_RESULT" = "success" ]; then
+              echo "<details>"
+              echo "<summary>🏗️ Build — ${ICON} ${BUILD_RESULT}</summary>"
+              echo ""
+              echo "| Platform | Image |"
+              echo "|----------|-------|"
+              echo "| \`linux/amd64\` | \`tesseract-server:git-${SHA}-linux-amd64\` |"
+              echo "| \`linux/arm64/v8\` | \`tesseract-server:git-${SHA}-linux-arm64-v8\` |"
+              echo ""
+              echo "</details>"
+            else
+              echo "${ICON} **Build** — ${BUILD_RESULT}"
+            fi
+
+            echo ""
+
+            # Test
+            ICON=$(status_icon "$TEST_RESULT")
+            echo "${ICON} **Test** — ${TEST_RESULT}"
+
+            echo ""
+
+            # Dive
+            ICON=$(status_icon "$DIVE_RESULT")
+            echo "${ICON} **Dive** — ${DIVE_RESULT}"
+
+            echo ""
+
+            # Push
+            ICON=$(status_icon "$PUSH_RESULT")
+            if [ "$PUSH_RESULT" = "success" ]; then
+              echo "<details>"
+              echo "<summary>📤 Push — ${ICON} ${PUSH_RESULT}</summary>"
+              echo ""
+              echo "| Registry | \`linux/amd64\` | \`linux/arm64/v8\` |"
+              echo "|----------|---------------|------------------|"
+              echo "| GHCR | \`ghcr.io/hertzg/tesseract-server:git-${SHA}-linux-amd64\` | \`ghcr.io/hertzg/tesseract-server:git-${SHA}-linux-arm64-v8\` |"
+              echo "| Docker Hub | \`hertzg/tesseract-server:git-${SHA}-linux-amd64\` | \`hertzg/tesseract-server:git-${SHA}-linux-arm64-v8\` |"
+              echo ""
+              echo "</details>"
+            else
+              echo "${ICON} **Push** — ${PUSH_RESULT}"
+            fi
+
+            echo ""
+
+            # Multi-arch
+            ICON=$(status_icon "$MULTIARCH_RESULT")
+            if [ "$MULTIARCH_RESULT" = "success" ] && [ -n "${META_TAGS:-}" ]; then
+              echo "<details>"
+              echo "<summary>🌐 Multi-arch — ${ICON} published</summary>"
+              echo ""
+              echo '```'
+              echo "$META_TAGS"
+              echo '```'
+              echo ""
+              echo "</details>"
+            else
+              echo "${ICON} **Multi-arch** — ${MULTIARCH_RESULT}"
+            fi
+          } > report.md
       - uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ always() && needs.docker.outputs.pr-number }}
         with:
           number: ${{ needs.docker.outputs.pr-number }}
-          append: true
-          message: |
-            ${{ job.status == 'success' && '✅' || '❌' }} **Multi-arch** — ${{ job.status == 'success' && 'published' || 'failed' }}
-
-            ```
-            ${{ steps.meta.outputs.tags }}
-            ```
+          path: report.md
