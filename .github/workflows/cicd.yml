@@ -144,6 +144,7 @@ jobs:
         with:
           name: tesseract-server-${{ steps.target.outputs.name }}
           path: ./compiled/
+      - run: chmod +x ./compiled/tesseract-server
       - name: Build
         uses: docker/build-push-action@v6
         with:
