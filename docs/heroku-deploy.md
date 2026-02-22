@@ -1,5 +1,8 @@
 # Heroku Deploy
 
+> **Note:** This project has migrated from Node.js/yarn to Deno. The
+> instructions below reflect the updated setup using a compiled Deno binary.
+
 Before creating the Heroku project, we must add the `Aptfile` and `Procfile`
 files.
 
@@ -23,23 +26,22 @@ tesseract-ocr-rus
 ### Procfile
 
 ```
-web: yarn run build && yarn run run
+web: deno task compile && ./tesseract-server
 ```
 
 # Create Heroku Project
 
 ```shell
 $ heroku create <heroku-app-name>
-$ heroku stack:set heroku-20
+$ heroku stack:set heroku-22
 # For Aptfile
 $ heroku buildpacks:add --index 1 heroku-community/apt
-$ heroku buildpacks:add heroku/nodejs
+$ heroku buildpacks:add https://github.com/nickvdyck/heroku-buildpack-deno.git
 $ heroku config:set TESSDATA_PREFIX=/app/.apt/usr/share/tesseract-ocr/4.00/tessdata
-$ heroku config:set NODE_OPTIONS=--max-old-space-size=8192
 $ heroku buildpacks
 === <heroku-app-name> Buildpack URLs
 1. heroku-community/apt
-2. heroku/nodejs
+2. https://github.com/nickvdyck/heroku-buildpack-deno.git
 $ git push heroku main
 $ heroku open
 ```
