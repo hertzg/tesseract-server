@@ -90,9 +90,8 @@ References:
 
 ## Docker
 
-Docker images are multi-arch images based on `alpine` variant of official `node`
-docker images supporting `linux/amd64`, `linux/arm/v6`, `linux/arm/v7`,
-`linux/arm64/v8`, `linux/ppc64le` and `linux/s390x` platforms.
+Docker images are multi-arch images based on `debian:bookworm-slim`
+supporting `linux/amd64` and `linux/arm64/v8` platforms.
 
 ## Raspberry Pi support
 
@@ -133,14 +132,16 @@ The container by default installs tesseract and 3 datapacks:
 - `tesseract-ocr-data-rus` - Russian
 
 To add more languages you can extend this image and install one or more
-[available language datapacks](https://pkgs.alpinelinux.org/packages?name=tesseract-ocr-data-*&branch=edge&arch=x86_64)
+[available language datapacks](https://packages.debian.org/bookworm/tesseract-ocr-all)
 with the package manager:
 
 <!-- prettier-ignore-start -->
 
 ```Dockerfile
 FROM hertzg/tesseract-server:latest
-RUN apk add --no-cache tesseract-ocr-data-spa tesseract-ocr-data-ara # and so on
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr-data-spa tesseract-ocr-data-ara \
+    && rm -rf /var/lib/apt/lists/*
 ```
 
 <!-- prettier-ignore-end -->
