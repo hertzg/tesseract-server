@@ -4,17 +4,17 @@ import {
   exact,
   guard,
   integer,
+  nonEmptyArray,
   oneOf,
   optional,
   predicate,
   string,
-} from 'decoders';
-import { nonEmptyArray } from 'decoders/array';
+} from "decoders";
 import {
   OCREngineMode,
   Options,
   PageSegmentationMethod,
-} from '../../processor';
+} from "../../processor/index.ts";
 
 const psmDecoder = oneOf([
   PageSegmentationMethod.ORIENTATION_AND_SCRIPT_DETECTION_ONLY,
@@ -42,12 +42,12 @@ const oemDecoder = oneOf([
 
 const positiveInteger = compose(
   integer,
-  predicate(i => i >= 0, 'Must be positive integer'),
+  predicate((i) => i >= 0, "Must be positive integer"),
 );
 
 const dpiDecoder = compose(
   positiveInteger,
-  predicate(i => i > 0, 'Must be positive non zero integer'),
+  predicate((i) => i > 0, "Must be positive non zero integer"),
 );
 
 const options = exact({

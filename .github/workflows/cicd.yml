@@ -5,84 +5,58 @@ on:
       - master
   push:
     branches: []
-    tags: 'v*'
+    tags: "v*"
     paths:
-      - 'src/**/*'
-      - 'test/**/*'
-      - '.github/action/**/*'
-      - '.github/workflows/**/*'
-      - 'package*.json'
-      - 'tsconfig*.json'
-      - 'yarn.lock'
-      - 'Dockerfile'
-      - '.dockerignore'
-      - 'docker-entrypoint.sh'
-      - 'goss*.yaml'
+      - "src/**/*"
+      - "test/**/*"
+      - ".github/action/**/*"
+      - ".github/workflows/**/*"
+      - "deno.json"
+      - "deno.lock"
+      - "Dockerfile"
+      - ".dockerignore"
+      - "goss*.yaml"
 
 jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: denoland/setup-deno@v2
         with:
-          check-latest: true
-          node-version: '18.x'
-      - uses: bahmutov/npm-install@v1
-      - run: echo yarn lint # disable for now
-
-  build:
-    runs-on: ubuntu-24.04
-    steps:
-      - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v6
-      - uses: actions/cache@v5
-        id: cache
-        with:
-          path: dist/
-          key:
-            ${{ runner.os }}-src-${{ hashFiles('src/**', '**/package*.json',
-            '**/*.lock', 'tsconfig.json') }}
-
-      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
-        uses: actions/setup-node@v6
-        with:
-          check-latest: true
-          node-version: '18.x'
-      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
-        uses: bahmutov/npm-install@v1
-      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
-        run: yarn build
-
-      - run: |
-          tar -cvf dist.tar dist/
-          tar -cvf dist.prod.tar dist/index.js dist/*.production.*.js
-      - uses: actions/upload-artifact@v6
-        with:
-          name: dist.prod
-          path: dist.prod.tar
-          retention-days: 7
-      - uses: actions/upload-artifact@v6
-        with:
-          name: dist
-          path: dist.tar
-          retention-days: 7
+          deno-version: v2.x
+      - run: deno check src/index.ts
+      - run: deno lint
+      - run: deno fmt --check
 
   test:
     runs-on: ubuntu-24.04
     steps:
-      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: denoland/setup-deno@v2
         with:
-          check-latest: true
-          node-version: '18.x'
-      - uses: bahmutov/npm-install@v1
-      - run: yarn test --ci --coverage --maxWorkers=2
-      - uses: codecov/codecov-action@v5
-        if: ${{ success() }}
-        continue-on-error: true
+          deno-version: v2.x
+      - run: deno test --allow-all
+
+  compile:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            target: x86_64-unknown-linux-gnu
+          - platform: linux/arm64/v8
+            target: aarch64-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno compile --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --target ${{ matrix.target }} --output tesseract-server src/index.ts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tesseract-server-${{ matrix.target }}
+          path: tesseract-server
 
   docker:
     runs-on: ubuntu-24.04
@@ -124,7 +98,7 @@ jobs:
   docker-build:
     needs:
       - docker
-      - build
+      - compile
     runs-on: ${{ matrix.platform == 'linux/arm64/v8' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
     permissions:
       packages: read
@@ -159,29 +133,32 @@ jobs:
             ${{ runner.os }}-buildx-v2-${{ matrix.platform }}
             ${{ runner.os }}-buildx-v2-
 
-      # Build the container
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v7
-        id: download
+      - name: Map platform to deno target
+        id: target
+        run: |
+          case "${{ matrix.platform }}" in
+            linux/amd64) echo "name=x86_64-unknown-linux-gnu" >> $GITHUB_OUTPUT ;;
+            linux/arm64/v8) echo "name=aarch64-unknown-linux-gnu" >> $GITHUB_OUTPUT ;;
+          esac
+      - uses: actions/download-artifact@v4
         with:
-          name: dist.prod
-          path: ./
-      - run: |
-          tar xf dist.prod.tar
-          rm dist.prod.tar
+          name: tesseract-server-${{ steps.target.outputs.name }}
+          path: ./compiled/
+      - run: chmod +x ./compiled/tesseract-server
       - name: Build
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          build-args: |
-            DIST_SRC=./dist
-          target: prod_copy_dist
+          target: production
           platforms: ${{ matrix.platform }}
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ matrix.tag }}
+          build-contexts: |
+            builder=./compiled/
       - uses: ishworkh/container-image-artifact-upload@v2.0.0
         with:
           image: ${{ matrix.tag }}

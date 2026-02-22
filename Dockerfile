@@ -1,39 +1,29 @@
-FROM node:18-alpine3.15 AS base
-RUN apk add --no-cache tini #curl
+FROM denoland/deno:debian AS compiler
 WORKDIR /app
-COPY ./public/ ./public/
-COPY ./package.json /yarn.lock ./
+COPY deno.json deno.lock* ./
+COPY src/ ./src/
+RUN deno compile --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --output tesseract-server src/index.ts
 
-FROM base AS deps_prod
+FROM scratch AS builder
+COPY --from=compiler /app/tesseract-server /tesseract-server
+
+FROM debian:bookworm-slim AS monaco
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && curl -sL https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.49.0.tgz \
+    | tar -xz --strip-components=1 package/min \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM debian:bookworm-slim AS production
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tini tesseract-ocr \
+    tesseract-ocr-deu tesseract-ocr-kat tesseract-ocr-fra \
+    tesseract-ocr-spa tesseract-ocr-pol tesseract-ocr-rus \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /tesseract-server /usr/local/bin/tesseract-server
+COPY ./public/ /app/public/
+COPY --from=monaco /min /app/public/vendor/monaco-editor/min
+COPY ./deno.json /app/deno.json
 WORKDIR /app
-RUN env && ls -lah /usr/local/bin
-RUN /usr/local/bin/yarn install --production
-
-FROM base AS base_prod
-RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-deu tesseract-ocr-data-kat tesseract-ocr-data-fra tesseract-ocr-data-spa tesseract-ocr-data-pol tesseract-ocr-data-rus
-COPY --from=deps_prod /app/node_modules/ ./dist/node_modules/
-COPY ./docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["tesseract-server"]
 EXPOSE 8884
-#HEALTHCHECK CMD curl -f http://127.0.0.1:8884/.well-known/health/healthy || exit 1
-ENV NODE_ENV "production"
-
-FROM base_prod AS prod_copy_dist
-ARG DIST_SRC
-WORKDIR /app
-COPY $DIST_SRC/index.js $DIST_SRC/*.production.*.js ./dist/
-
-FROM deps_prod AS deps_dev
-WORKDIR /app
-RUN /usr/local/bin/yarn install
-
-FROM deps_dev AS builder
-WORKDIR /app
-COPY ./src ./src/
-COPY ./tsconfig.json ./
-RUN /usr/local/bin/yarn build
-
-FROM base_prod AS prod_build_dist
-WORKDIR /app
-COPY --from=builder /app/dist/index.js /app/dist/*.production.*.js ./dist/

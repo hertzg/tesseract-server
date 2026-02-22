@@ -1,4 +1,4 @@
-import { Options } from './index';
+import { Options } from "./index.ts";
 import {
   asArgument,
   asArguments,
@@ -6,23 +6,28 @@ import {
   parameter,
   resolve,
   stringify,
-} from './formatter';
+} from "./formatter/index.ts";
 
-type OptionFormatterMap = {
-  [key in keyof Options]: (value: Exclude<Options[key], undefined>) => string[];
-} & {
-  [key: string]: (value: any) => string[];
-};
+type OptionFormatterMap =
+  & {
+    [key in keyof Options]: (
+      value: Exclude<Options[key], undefined>,
+    ) => string[];
+  }
+  & {
+    // deno-lint-ignore no-explicit-any
+    [key: string]: (value: any) => string[];
+  };
 
 const formatMap: OptionFormatterMap = {
-  languages: asArgument('-l', languages),
-  dpi: asArgument('--dpi', stringify),
-  pageSegmentationMethod: asArgument('--psm', stringify),
-  ocrEngineMode: asArgument('--oem', stringify),
-  tessDataDir: asArgument('--tessdata-dir', resolve),
-  userPatternsFile: asArgument('--user-patterns', resolve),
-  userWordsFile: asArgument('--user-words', resolve),
-  configParams: asArguments('-c', parameter),
+  languages: asArgument("-l", languages),
+  dpi: asArgument("--dpi", stringify),
+  pageSegmentationMethod: asArgument("--psm", stringify),
+  ocrEngineMode: asArgument("--oem", stringify),
+  tessDataDir: asArgument("--tessdata-dir", resolve),
+  userPatternsFile: asArgument("--user-patterns", resolve),
+  userWordsFile: asArgument("--user-words", resolve),
+  configParams: asArguments("-c", parameter),
 };
 
 export const optionsToArgs = (options: Options): string[] =>

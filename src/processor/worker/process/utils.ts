@@ -1,4 +1,4 @@
-import { ChildProcessWithoutNullStreams } from 'child_process';
+import { ChildProcessWithoutNullStreams } from "node:child_process";
 
 export const waitForExitOrError = (
   proc: ChildProcessWithoutNullStreams,
@@ -7,11 +7,11 @@ export const waitForExitOrError = (
     data?: { code: number | null; signal: NodeJS.Signals | null },
   ) => void,
 ) => {
-  proc.once('error', err => {
+  proc.once("error", (err) => {
     callback(err);
   });
 
-  proc.once('exit', (code, signal) => {
+  proc.once("exit", (code, signal) => {
     callback(undefined, { code, signal });
   });
 };

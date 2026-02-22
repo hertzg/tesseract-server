@@ -1,17 +1,18 @@
-const { isBranch, isTag, isHead, isPull } = require('./git-ref');
+const { isBranch, isTag, isHead, isPull } = require("./git-ref");
 
-const isMaster = parsedRef => isBranch(parsedRef, 'master');
-const isVersionTag = parsedRef => isTag(parsedRef) && parsedRef[1].startsWith('v');
-const isPullRequest = parsedRef => isPull(parsedRef);
+const isMaster = (parsedRef) => isBranch(parsedRef, "master");
+const isVersionTag = (parsedRef) =>
+  isTag(parsedRef) && parsedRef[1].startsWith("v");
+const isPullRequest = (parsedRef) => isPull(parsedRef);
 
 const REF_TYPE = {
-  VERSION_TAG: 'version-tag',
-  MASTER_BRANCH: 'master-branch',
-  NON_MASTER_BRANCH: 'non-master-branch',
-  PULL_REQUEST: 'pull-request',
+  VERSION_TAG: "version-tag",
+  MASTER_BRANCH: "master-branch",
+  NON_MASTER_BRANCH: "non-master-branch",
+  PULL_REQUEST: "pull-request",
 };
 
-const getRefType = parsedRef => {
+const getRefType = (parsedRef) => {
   switch (true) {
     case isVersionTag(parsedRef):
       return REF_TYPE.VERSION_TAG;

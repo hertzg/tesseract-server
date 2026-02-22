@@ -1,13 +1,7 @@
 .idea/
+.vscode/
 *.log
 .DS_Store
 node_modules
 dist
 coverage/
-.yarn/*
-#!.yarn/cache
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions

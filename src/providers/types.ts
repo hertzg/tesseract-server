@@ -1,5 +1,5 @@
-import { IProcessor } from '../processor';
-import { HealthChecker } from '@cloudnative/health-connect';
+import { IProcessor } from "../processor/index.ts";
+import { HealthChecker } from "@cloudnative/health-connect";
 
 export interface IProvider {
   start(): Promise<void>;

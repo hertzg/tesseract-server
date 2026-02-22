@@ -1,19 +1,15 @@
-import {
-  IWorker,
-  OCREngineMode,
-  Options,
-  PageSegmentationMethod,
-} from './worker';
+import type { IWorker, Options } from "./worker/index.ts";
+import { OCREngineMode, PageSegmentationMethod } from "./worker/index.ts";
 import {
   Options as GenericPoolSettings,
   Pool as GenericPool,
-} from 'generic-pool';
-import { Readable } from 'stream';
-import { optionsToArgs } from './worker/options';
-import { TesseractResult } from './worker/process';
-import { createWorkerPool } from './createWorkerPool';
-import argv from '../argv';
-import { ensureEndOfLine, LineEnding } from './ensureEndOfLine';
+} from "generic-pool";
+import { Readable } from "node:stream";
+import { optionsToArgs } from "./worker/options/index.ts";
+import { TesseractResult } from "./worker/process/index.ts";
+import { createWorkerPool } from "./createWorkerPool.ts";
+import argv from "../argv/index.ts";
+import { ensureEndOfLine, LineEnding } from "./ensureEndOfLine.ts";
 
 export interface ProcessorOptions {
   pool?: {
@@ -24,14 +20,14 @@ export interface ProcessorOptions {
 
 export const createProcessor = (options: ProcessorOptions): IProcessor => {
   return new Processor({
-    lineEndings: argv['processor.lineEndings'] as ProcessorSettingsLineEndings,
+    lineEndings: argv["processor.lineEndings"] as ProcessorSettingsLineEndings,
     pool: {
       min: options?.pool?.min || 0,
       max: options?.pool?.max || 2,
       testOnBorrow: true,
       testOnReturn: true,
-      idleTimeoutMillis: argv['pool.default.idleTimeoutMillis'],
-      evictionRunIntervalMillis: argv['pool.default.evictionRunIntervalMillis'],
+      idleTimeoutMillis: argv["pool.default.idleTimeoutMillis"],
+      evictionRunIntervalMillis: argv["pool.default.evictionRunIntervalMillis"],
     },
   });
 };
@@ -59,10 +55,10 @@ export interface PoolStatus {
   min: number;
 }
 
-export const enum ProcessorSettingsLineEndings {
-  AUTO = 'auto',
-  LF = 'lf',
-  CRLF = 'crlf',
+export enum ProcessorSettingsLineEndings {
+  AUTO = "auto",
+  LF = "lf",
+  CRLF = "crlf",
 }
 
 export interface ProcessorSettings {
@@ -75,13 +71,16 @@ class Processor implements IProcessor {
 
   constructor(private settings: ProcessorSettings) {}
 
+  // deno-lint-ignore require-await
   status = async (): Promise<ProcessorStatus> => {
     return {
       pools: Array.from(this.pools.entries()).map(([args, pool]) => {
+        // deno-lint-ignore no-explicit-any
         const p = pool as any;
         return {
           args,
-          resources: Array.from(p._allObjects as Set<any>).map(resource => {
+          // deno-lint-ignore no-explicit-any
+          resources: Array.from(p._allObjects as Set<any>).map((resource) => {
             return {
               pid: resource.obj._proc.pid,
               killed: resource.obj._proc.killed,
@@ -106,10 +105,10 @@ class Processor implements IProcessor {
     };
   };
 
-  private _getPool = async (
+  private _getPool = (
     options: Options,
-  ): Promise<GenericPool<IWorker>> => {
-    const key = optionsToArgs(options).join(' ');
+  ): GenericPool<IWorker> => {
+    const key = optionsToArgs(options).join(" ");
     if (!this.pools.has(key)) {
       const settings: GenericPoolSettings = {
         ...this.settings.pool,
@@ -118,7 +117,7 @@ class Processor implements IProcessor {
       this.pools.set(key, pool);
     }
 
-    return this.pools.get(key) as any;
+    return this.pools.get(key)!;
   };
 
   private _treatLineEndings = (result: TesseractResult) => {
@@ -142,7 +141,7 @@ class Processor implements IProcessor {
     options: Options,
     input: Readable,
   ): Promise<TesseractResult> => {
-    const pool = await this._getPool(options);
+    const pool = this._getPool(options);
     const instance = await pool.acquire();
     const result = await instance.execute(input);
     await pool.release(instance);
@@ -150,4 +149,5 @@ class Processor implements IProcessor {
   };
 }
 
-export { Options, OCREngineMode, PageSegmentationMethod };
+export type { Options };
+export { OCREngineMode, PageSegmentationMethod };

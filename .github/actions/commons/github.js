@@ -1,4 +1,4 @@
-const ghaMatrix = include => ({
+const ghaMatrix = (include) => ({
   include,
 });
 

@@ -1,61 +1,51 @@
-import { asOptions } from '../src/providers/http/decoders';
-import { OCREngineMode, PageSegmentationMethod } from '../src/processor';
+import { assertEquals, assertThrows } from "@std/assert";
+import { asOptions } from "../src/providers/http/decoders.ts";
+import {
+  OCREngineMode,
+  PageSegmentationMethod,
+} from "../src/processor/index.ts";
 
-describe('http decoders', () => {
-  it('should throw on invalid values', () => {
-    expect(() => asOptions(undefined)).toThrow();
-    expect(() => asOptions(null)).toThrow();
-    expect(() => asOptions('')).toThrow();
-    expect(() => asOptions(1)).toThrow();
-    expect(() => asOptions([])).toThrow();
+Deno.test("http decoders - should throw on invalid values", () => {
+  assertThrows(() => asOptions(undefined));
+  assertThrows(() => asOptions(null));
+  assertThrows(() => asOptions(""));
+  assertThrows(() => asOptions(1));
+  assertThrows(() => asOptions([]));
+});
+
+Deno.test("http decoders - should throw on invalid dpi values", () => {
+  assertThrows(() => asOptions({ dpi: -100 }));
+  assertThrows(() => asOptions({ dpi: 0 }));
+  asOptions({ dpi: 300 });
+  asOptions({ dpi: 600 });
+});
+
+Deno.test("http decoders - should throw on wrong psm and oem options", () => {
+  assertThrows(() => asOptions({ pageSegmentationMethod: 99999 }));
+  assertThrows(() => asOptions({ pageSegmentationMethod: -1 }));
+  asOptions({
+    pageSegmentationMethod:
+      PageSegmentationMethod.AUTO_PAGE_SEGMENTATION_WITH_OSD,
   });
 
-  it('should throw on invalid dpi values', () => {
-    expect(() => asOptions({ dpi: -100 })).toThrow();
-    expect(() => asOptions({ dpi: 0 })).toThrow();
-    expect(() => asOptions({ dpi: 300 })).not.toThrow();
-    expect(() => asOptions({ dpi: 600 })).not.toThrow();
-  });
+  assertThrows(() => asOptions({ ocrEngineMode: 98774 }));
+  assertThrows(() => asOptions({ ocrEngineMode: -13 }));
+  asOptions({ ocrEngineMode: OCREngineMode.AUTO });
+});
 
-  it('should throw on wrong psm and oem options', () => {
-    expect(() => asOptions({ pageSegmentationMethod: 99999 })).toThrow();
-    expect(() => asOptions({ pageSegmentationMethod: -1 })).toThrow();
-    expect(() =>
-      asOptions({
-        pageSegmentationMethod:
-          PageSegmentationMethod.AUTO_PAGE_SEGMENTATION_WITH_OSD,
-      }),
-    ).not.toThrow();
+Deno.test("http decoders - should throw on non string config option values", () => {
+  assertThrows(() => asOptions({ configParams: { nullKey: null } }));
+  assertThrows(() => asOptions({ configParams: { undefinedKey: undefined } }));
+  assertThrows(() => asOptions({ configParams: { numKey: 999 } }));
+  assertThrows(() => asOptions({ configParams: { boolKey: false } }));
+  assertThrows(() => asOptions({ configParams: { arrKey: [] } }));
+  assertThrows(() => asOptions({ configParams: { objKey: {} } }));
+});
 
-    expect(() => asOptions({ ocrEngineMode: 98774 })).toThrow();
-    expect(() => asOptions({ ocrEngineMode: -13 })).toThrow();
-    expect(() =>
-      asOptions({ ocrEngineMode: OCREngineMode.AUTO }),
-    ).not.toThrow();
-  });
+Deno.test("http decoders - should pass language options", () => {
+  const result1 = asOptions({ languages: ["eng"] });
+  assertEquals(result1.languages, ["eng"]);
 
-  it('should throw on non string config option values', () => {
-    const expectConfigParams = (configParams: unknown) =>
-      expect(() =>
-        asOptions({
-          configParams,
-        }),
-      );
-
-    expectConfigParams({ nullKey: null }).toThrow();
-    expectConfigParams({ undefinedKey: undefined }).toThrow();
-    expectConfigParams({ numKey: 999 }).toThrow();
-    expectConfigParams({ boolKey: false }).toThrow();
-    expectConfigParams({ arrKey: [] }).toThrow();
-    expectConfigParams({ objKey: {} }).toThrow();
-  });
-
-  it('should pass language options', () => {
-    expect(asOptions({ languages: ['eng'] })).toMatchObject({
-      languages: ['eng'],
-    });
-    expect(asOptions({ languages: ['eng', 'deu'] })).toMatchObject({
-      languages: ['eng', 'deu'],
-    });
-  });
+  const result2 = asOptions({ languages: ["eng", "deu"] });
+  assertEquals(result2.languages, ["eng", "deu"]);
 });

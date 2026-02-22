@@ -1,5 +1,5 @@
-const cc = require('conventional-changelog-conventionalcommits');
-const versionRc = require('./.versionrc');
+const cc = require("conventional-changelog-conventionalcommits");
+const versionRc = require("./.versionrc");
 
 module.exports = {
   options: {

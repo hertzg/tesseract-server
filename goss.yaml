@@ -1,32 +1,19 @@
 file:
-  /docker-entrypoint.sh:
+  /usr/local/bin/tesseract-server:
     exists: true
-    mode: '0755'
+    mode: "0755"
     filetype: file
     contains: []
-  /sbin/tini:
+  /usr/bin/tini:
     exists: true
-    mode: '0755'
+    mode: "0755"
     filetype: file
     contains: []
 package:
   tesseract-ocr:
     installed: true
-    versions:
-      - 4.1.3-r0
-  tesseract-ocr-data-*:
-    installed: true
-    versions:
-    - tesseract-ocr-data-rus-4.1.3-r0
-    - tesseract-ocr-data-spa-4.1.3-r0
-    - tesseract-ocr-data-fra-4.1.3-r0
-    - tesseract-ocr-data-kat-4.1.3-r0
-    - tesseract-ocr-data-pol-4.1.3-r0
-    - tesseract-ocr-data-deu-4.1.3-r0
 process:
   tini:
-    running: true
-  node:
     running: true
 http:
   http://127.0.0.1:8884/status:
@@ -35,3 +22,14 @@ http:
     no-follow-redirects: false
     timeout: 5000
     body: []
+  http://127.0.0.1:8884/:
+    status: 200
+    timeout: 5000
+    body:
+      - "monaco-editor"
+  http://127.0.0.1:8884/vendor/monaco-editor/min/vs/loader.js:
+    status: 200
+    timeout: 5000
+  http://127.0.0.1:8884/vendor/monaco-editor/min/vs/editor/editor.main.js:
+    status: 200
+    timeout: 5000
