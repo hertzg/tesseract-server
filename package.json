@@ -43,7 +43,7 @@
     "event-loop-lag": "^1.4.0",
     "express": "^5.0.0",
     "generic-pool": "^3.9.0",
-    "monaco-editor": "^0.49.0",
+    "monaco-editor": "^0.55.0",
     "multer": "^2.0.0",
     "yargs": "^17.7.2"
   },
