@@ -1,6 +1,6 @@
-import Yargs, { terminalWidth } from 'yargs';
-import { tmpdir } from 'os';
-import { ProcessorSettingsLineEndings } from '../processor';
+import Yargs from 'yargs';
+import { tmpdir } from 'node:os';
+import { ProcessorSettingsLineEndings } from '../processor/index.ts';
 
 export const createYargs = (argv: readonly string[], cwd?: string) =>
   Yargs(argv, cwd)
@@ -8,7 +8,7 @@ export const createYargs = (argv: readonly string[], cwd?: string) =>
       'dot-notation': false,
       'camel-case-expansion': false,
     })
-    .wrap(terminalWidth())
+    .wrap(Yargs().terminalWidth())
     .scriptName('tesseract-server')
     .usage(
       [

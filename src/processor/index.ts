@@ -1,19 +1,21 @@
-import {
+import type {
   IWorker,
-  OCREngineMode,
   Options,
+} from './worker/index.ts';
+import {
+  OCREngineMode,
   PageSegmentationMethod,
-} from './worker';
+} from './worker/index.ts';
 import {
   Options as GenericPoolSettings,
   Pool as GenericPool,
 } from 'generic-pool';
-import { Readable } from 'stream';
-import { optionsToArgs } from './worker/options';
-import { TesseractResult } from './worker/process';
-import { createWorkerPool } from './createWorkerPool';
-import argv from '../argv';
-import { ensureEndOfLine, LineEnding } from './ensureEndOfLine';
+import { Readable } from 'node:stream';
+import { optionsToArgs } from './worker/options/index.ts';
+import { TesseractResult } from './worker/process/index.ts';
+import { createWorkerPool } from './createWorkerPool.ts';
+import argv from '../argv/index.ts';
+import { ensureEndOfLine, LineEnding } from './ensureEndOfLine.ts';
 
 export interface ProcessorOptions {
   pool?: {
@@ -59,7 +61,7 @@ export interface PoolStatus {
   min: number;
 }
 
-export const enum ProcessorSettingsLineEndings {
+export enum ProcessorSettingsLineEndings {
   AUTO = 'auto',
   LF = 'lf',
   CRLF = 'crlf',
@@ -150,4 +152,5 @@ class Processor implements IProcessor {
   };
 }
 
-export { Options, OCREngineMode, PageSegmentationMethod };
+export type { Options };
+export { OCREngineMode, PageSegmentationMethod };

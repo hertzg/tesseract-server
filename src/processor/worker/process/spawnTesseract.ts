@@ -1,4 +1,4 @@
-import { spawnWithWorkingDirectory } from './spawnWithWorkingDirectory';
+import { spawnWithWorkingDirectory } from './spawnWithWorkingDirectory.ts';
 
 const detectTesseract = () => 'tesseract';
 export const spawnTesseract = (

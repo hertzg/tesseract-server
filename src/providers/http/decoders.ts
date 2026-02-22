@@ -4,17 +4,17 @@ import {
   exact,
   guard,
   integer,
+  nonEmptyArray,
   oneOf,
   optional,
   predicate,
   string,
 } from 'decoders';
-import { nonEmptyArray } from 'decoders/array';
 import {
   OCREngineMode,
   Options,
   PageSegmentationMethod,
-} from '../../processor';
+} from '../../processor/index.ts';
 
 const psmDecoder = oneOf([
   PageSegmentationMethod.ORIENTATION_AND_SCRIPT_DETECTION_ONLY,

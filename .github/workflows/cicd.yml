@@ -11,78 +11,31 @@ on:
       - 'test/**/*'
       - '.github/action/**/*'
       - '.github/workflows/**/*'
-      - 'package*.json'
-      - 'tsconfig*.json'
-      - 'yarn.lock'
+      - 'deno.json'
+      - 'deno.lock'
       - 'Dockerfile'
       - '.dockerignore'
-      - 'docker-entrypoint.sh'
       - 'goss*.yaml'
 
 jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: denoland/setup-deno@v2
         with:
-          check-latest: true
-          node-version: '18.x'
-      - uses: bahmutov/npm-install@v1
-      - run: echo yarn lint # disable for now
-
-  build:
-    runs-on: ubuntu-24.04
-    steps:
-      - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v6
-      - uses: actions/cache@v5
-        id: cache
-        with:
-          path: dist/
-          key:
-            ${{ runner.os }}-src-${{ hashFiles('src/**', '**/package*.json',
-            '**/*.lock', 'tsconfig.json') }}
-
-      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
-        uses: actions/setup-node@v6
-        with:
-          check-latest: true
-          node-version: '18.x'
-      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
-        uses: bahmutov/npm-install@v1
-      - if: ${{ steps.cache.outputs.cache-hit != 'true'}}
-        run: yarn build
-
-      - run: |
-          tar -cvf dist.tar dist/
-          tar -cvf dist.prod.tar dist/index.js dist/*.production.*.js
-      - uses: actions/upload-artifact@v6
-        with:
-          name: dist.prod
-          path: dist.prod.tar
-          retention-days: 7
-      - uses: actions/upload-artifact@v6
-        with:
-          name: dist
-          path: dist.tar
-          retention-days: 7
+          deno-version: v2.x
+      - run: deno lint
+      - run: deno fmt --check
 
   test:
     runs-on: ubuntu-24.04
     steps:
-      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: denoland/setup-deno@v2
         with:
-          check-latest: true
-          node-version: '18.x'
-      - uses: bahmutov/npm-install@v1
-      - run: yarn test --ci --coverage --maxWorkers=2
-      - uses: codecov/codecov-action@v5
-        if: ${{ success() }}
-        continue-on-error: true
+          deno-version: v2.x
+      - run: deno test --allow-all
 
   docker:
     runs-on: ubuntu-24.04
@@ -124,7 +77,6 @@ jobs:
   docker-build:
     needs:
       - docker
-      - build
     runs-on: ${{ matrix.platform == 'linux/arm64/v8' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
     permissions:
       packages: read
@@ -159,24 +111,13 @@ jobs:
             ${{ runner.os }}-buildx-v2-${{ matrix.platform }}
             ${{ runner.os }}-buildx-v2-
 
-      # Build the container
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v7
-        id: download
-        with:
-          name: dist.prod
-          path: ./
-      - run: |
-          tar xf dist.prod.tar
-          rm dist.prod.tar
       - name: Build
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          build-args: |
-            DIST_SRC=./dist
-          target: prod_copy_dist
+          target: production
           platforms: ${{ matrix.platform }}
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache

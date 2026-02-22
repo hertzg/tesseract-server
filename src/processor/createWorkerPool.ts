@@ -1,4 +1,4 @@
-import { createWorker, Options, IWorker } from './worker';
+import { createWorker, Options, IWorker } from './worker/index.ts';
 import {
   createPool as createGenericPool,
   Options as GenericPoolSettings,

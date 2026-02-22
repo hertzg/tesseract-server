@@ -1,4 +1,4 @@
-import Path from 'path';
+import Path from 'node:path';
 
 export const stringify = <T>(value: T) => String(value);
 
@@ -11,4 +11,4 @@ export const resolve = <T extends string>(pathOrFile: T) =>
 export const parameter = <K extends string, V extends string>(key: K, val: V) =>
   [stringify(key), stringify(val)].join('=');
 
-export * from './as';
+export * from './as.ts';

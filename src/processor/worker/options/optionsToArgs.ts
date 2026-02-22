@@ -1,4 +1,4 @@
-import { Options } from './index';
+import { Options } from './index.ts';
 import {
   asArgument,
   asArguments,
@@ -6,7 +6,7 @@ import {
   parameter,
   resolve,
   stringify,
-} from './formatter';
+} from './formatter/index.ts';
 
 type OptionFormatterMap = {
   [key in keyof Options]: (value: Exclude<Options[key], undefined>) => string[];

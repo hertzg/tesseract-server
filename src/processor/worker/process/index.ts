@@ -1,10 +1,10 @@
-import { ChildProcessWithoutNullStreams } from 'child_process';
-import { spawnTesseract } from './spawnTesseract';
-import { Readable } from 'stream';
-import { bufferOutputs } from './buffer';
-import Assert from 'assert';
+import { ChildProcessWithoutNullStreams } from 'node:child_process';
+import { spawnTesseract } from './spawnTesseract.ts';
+import { Readable } from 'node:stream';
+import { bufferOutputs } from './buffer.ts';
+import Assert from 'node:assert';
 
-export const enum ProcessState {
+export enum ProcessState {
   WAITING = 0,
   WORKING = 1,
   FINISHED = 2,
@@ -57,18 +57,10 @@ class Tesseract implements ITesseract {
 
     this._proc.once('error', this._onError);
     this._proc.once('exit', this._onExit);
-    bufferOutputs(this._proc, (err, data) => {
-      Assert.ifError(err);
-      Assert(data);
-
-      const { stdout, stderr } = data;
-      Assert(stdout);
-      Assert(stderr);
-
-      this._buffData = {
-        stderr,
-        stdout,
-      };
+    bufferOutputs(this._proc).then(({ stdout, stderr }) => {
+      this._buffData = { stdout, stderr };
+    }).catch((err) => {
+      this._onError(err);
     });
   }
 

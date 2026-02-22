@@ -1,4 +1,4 @@
-import { createYargs } from './yargs';
+import { createYargs } from './yargs.ts';
 
 export { createYargs };
 export const yargs = createYargs(process.argv);

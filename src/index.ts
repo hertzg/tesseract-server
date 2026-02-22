@@ -1,7 +1,7 @@
-import argv from './argv';
-import { createProviders } from './providers';
-import { createProcessor } from './processor';
-import { createHealthChecker } from './health';
+import argv from './argv/index.ts';
+import { createProviders } from './providers/index.ts';
+import { createProcessor } from './processor/index.ts';
+import { createHealthChecker } from './health.ts';
 
 const processor = createProcessor({
   pool: {

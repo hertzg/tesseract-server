@@ -1,5 +1,5 @@
-import { IProvider, IProviderFactoryContext } from './types';
-import { createHttpProvider } from './http';
+import { IProvider, IProviderFactoryContext } from './types.ts';
+import { createHttpProvider } from './http/index.ts';
 
 export const createProviders = (
   context: IProviderFactoryContext,

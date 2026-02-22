@@ -1,39 +1,17 @@
-FROM node:18-alpine3.15 AS base
-RUN apk add --no-cache tini #curl
+FROM denoland/deno:alpine AS builder
 WORKDIR /app
-COPY ./public/ ./public/
-COPY ./package.json /yarn.lock ./
+COPY deno.json deno.lock* ./
+COPY src/ ./src/
+RUN deno compile --allow-all --output tesseract-server src/index.ts
 
-FROM base AS deps_prod
+FROM alpine:3.21 AS production
+RUN apk add --no-cache tini tesseract-ocr \
+    tesseract-ocr-data-deu tesseract-ocr-data-kat tesseract-ocr-data-fra \
+    tesseract-ocr-data-spa tesseract-ocr-data-pol tesseract-ocr-data-rus
+COPY --from=builder /app/tesseract-server /usr/local/bin/tesseract-server
+COPY ./public/ /app/public/
+COPY ./deno.json /app/deno.json
 WORKDIR /app
-RUN env && ls -lah /usr/local/bin
-RUN /usr/local/bin/yarn install --production
-
-FROM base AS base_prod
-RUN apk add --no-cache tesseract-ocr tesseract-ocr-data-deu tesseract-ocr-data-kat tesseract-ocr-data-fra tesseract-ocr-data-spa tesseract-ocr-data-pol tesseract-ocr-data-rus
-COPY --from=deps_prod /app/node_modules/ ./dist/node_modules/
-COPY ./docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["tesseract-server"]
 EXPOSE 8884
-#HEALTHCHECK CMD curl -f http://127.0.0.1:8884/.well-known/health/healthy || exit 1
-ENV NODE_ENV "production"
-
-FROM base_prod AS prod_copy_dist
-ARG DIST_SRC
-WORKDIR /app
-COPY $DIST_SRC/index.js $DIST_SRC/*.production.*.js ./dist/
-
-FROM deps_prod AS deps_dev
-WORKDIR /app
-RUN /usr/local/bin/yarn install
-
-FROM deps_dev AS builder
-WORKDIR /app
-COPY ./src ./src/
-COPY ./tsconfig.json ./
-RUN /usr/local/bin/yarn build
-
-FROM base_prod AS prod_build_dist
-WORKDIR /app
-COPY --from=builder /app/dist/index.js /app/dist/*.production.*.js ./dist/

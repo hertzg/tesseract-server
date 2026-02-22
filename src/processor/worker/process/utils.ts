@@ -1,4 +1,4 @@
-import { ChildProcessWithoutNullStreams } from 'child_process';
+import { ChildProcessWithoutNullStreams } from 'node:child_process';
 
 export const waitForExitOrError = (
   proc: ChildProcessWithoutNullStreams,

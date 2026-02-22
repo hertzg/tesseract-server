@@ -5,14 +5,36 @@ import {
   LivenessEndpoint,
   ReadinessEndpoint,
 } from '@cloudnative/health-connect';
-import FS from 'fs';
+import FS from 'node:fs';
+import Path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import multer from 'multer';
-import { IProcessor, Options } from '../../processor';
-import argv from '../../argv';
-import { Readable } from 'stream';
-import { IProvider, IProviderFactory } from '../types';
-import { asOptions } from './decoders';
-import OS from 'os';
+import { IProcessor, Options } from '../../processor/index.ts';
+import argv from '../../argv/index.ts';
+import { Readable } from 'node:stream';
+import { IProvider, IProviderFactory } from '../types.ts';
+import { asOptions } from './decoders.ts';
+import OS from 'node:os';
+
+const getVersion = (): string => {
+  try {
+    const denoJsonPath = Path.resolve('deno.json');
+    const denoJson = JSON.parse(FS.readFileSync(denoJsonPath, 'utf-8'));
+    return denoJson.version || 'unknown';
+  } catch {
+    return 'unknown';
+  }
+};
+
+const getMonacoPath = (): string => {
+  try {
+    const resolved = import.meta.resolve('monaco-editor');
+    const monacoDir = Path.dirname(fileURLToPath(resolved));
+    return Path.join(monacoDir, 'min');
+  } catch {
+    return 'node_modules/monaco-editor/min';
+  }
+};
 
 export const createHttpProvider: IProviderFactory = ({
   processor,
@@ -58,9 +80,7 @@ class HTTPProvider implements IProvider {
       console.log('webui enabled');
       this.app.use(
         '/vendor/monaco-editor/min',
-        process.env.NODE_ENV === 'production'
-          ? express.static('dist/node_modules/monaco-editor/min')
-          : express.static('node_modules/monaco-editor/min'),
+        express.static(getMonacoPath()),
       );
     }
   }
@@ -69,7 +89,7 @@ class HTTPProvider implements IProvider {
     this.tess.status().then(status => {
       res.status(200).json({
         data: {
-          version: process.env?.npm_package_version || 'unknown',
+          version: getVersion(),
           host: {
             hostname: OS.hostname(),
             platform: OS.platform(),

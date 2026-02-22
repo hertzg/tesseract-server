@@ -1,4 +1,4 @@
-export const enum PageSegmentationMethod {
+export enum PageSegmentationMethod {
   ORIENTATION_AND_SCRIPT_DETECTION_ONLY = 0,
   AUTO_PAGE_SEGMENTATION_WITH_OSD = 1,
   AUTO_PAGE_SEGMENTATION_WITHOUT_OSD_AND_OCR = 2,
@@ -15,7 +15,7 @@ export const enum PageSegmentationMethod {
   RAW_SINGLE_LINE = 13,
 }
 
-export const enum OCREngineMode {
+export enum OCREngineMode {
   TESSERACT = 0,
   LSTM = 1,
   TESSERACT_WITH_LSTM = 2,

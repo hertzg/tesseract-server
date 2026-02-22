@@ -1,6 +1,6 @@
 import { parse } from 'remark';
 import { selectAll } from 'unist-util-select';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 
 export const findByTestId = (ast: ReturnType<typeof parse>, id: string) =>
   id.length

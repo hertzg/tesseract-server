@@ -1,4 +1,4 @@
-export const enum LineEnding {
+export enum LineEnding {
   LF = '\n',
   CRLF = '\r\n',
 }

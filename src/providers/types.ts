@@ -1,4 +1,4 @@
-import { IProcessor } from '../processor';
+import { IProcessor } from '../processor/index.ts';
 import { HealthChecker } from '@cloudnative/health-connect';
 
 export interface IProvider {
