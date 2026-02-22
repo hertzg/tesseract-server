@@ -8,7 +8,7 @@ FROM scratch AS builder
 COPY --from=compiler /app/tesseract-server /tesseract-server
 
 FROM alpine:3.21 AS production
-RUN apk add --no-cache tini tesseract-ocr \
+RUN apk add --no-cache tini tesseract-ocr gcompat \
     tesseract-ocr-data-deu tesseract-ocr-data-kat tesseract-ocr-data-fra \
     tesseract-ocr-data-spa tesseract-ocr-data-pol tesseract-ocr-data-rus
 COPY --from=builder /tesseract-server /usr/local/bin/tesseract-server
