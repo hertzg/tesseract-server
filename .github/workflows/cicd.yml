@@ -151,12 +151,24 @@ jobs:
     steps:
       - id: ts
         run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - id: fmt
+        env:
+          TAGS_JSON: ${{ needs.docker.outputs.tags }}
+        run: |
+          TAG_LIST=$(echo "$TAGS_JSON" | jq -r '.[]' | sed 's/^/- `/' | sed 's/$/`/')
+          {
+            echo "tags<<EOF"
+            echo "$TAG_LIST"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ steps.ts.outputs.timestamp }}` | docker (tags) | :white_check_mark: `${{ needs.docker.outputs.tags }}` |
+            | `${{ steps.ts.outputs.timestamp }}` | docker | :white_check_mark: tags resolved |
+
+            ${{ steps.fmt.outputs.tags }}
 
   docker-build:
     needs:
