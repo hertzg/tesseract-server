@@ -39,9 +39,9 @@ jobs:
           header: cicd-report
           message: |
             ## CICD Report
-            | Timestamp | Stage | Result |
-            |-----------|-------|--------|
-            | `${{ github.event.pull_request.updated_at }}` | lint | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} ${{ job.status }} |
+            | Stage | Result |
+            |-------|--------|
+            | lint | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} ${{ job.status }} |
 
   test:
     runs-on: ubuntu-24.04
@@ -59,7 +59,7 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | test | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} ${{ job.status }} |
+            | test | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} ${{ job.status }} |
 
   compile:
     runs-on: ubuntu-24.04
@@ -88,7 +88,7 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | compile (${{ matrix.target }}) | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} [tesseract-server-${{ matrix.target }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |
+            | compile | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} [tesseract-server-${{ matrix.target }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |
 
   docker:
     runs-on: ubuntu-24.04
@@ -144,7 +144,7 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | docker | :white_check_mark: tags resolved |
+            | docker | :white_check_mark: tags resolved |
 
             ${{ steps.fmt.outputs.tags }}
 
@@ -195,7 +195,7 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | docker-build (${{ matrix.platform }}) | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} `${{ matrix.tag }}` |
+            | build | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} `${{ matrix.tag }}` |
 
   docker-test:
     needs:
@@ -222,7 +222,7 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | docker-test (${{ matrix.platform }}) | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} `${{ matrix.tag }}` |
+            | test | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} `${{ matrix.tag }}` |
 
   docker-dive:
     needs:
@@ -249,7 +249,7 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | docker-dive (${{ matrix.platform }}) | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} `${{ matrix.tag }}` |
+            | dive | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} `${{ matrix.tag }}` |
 
   docker-push:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
@@ -305,7 +305,7 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | docker-push (${{ matrix.platform }}) | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} pushed |
+            | push | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} pushed |
 
             ${{ steps.push.outputs.pushed }}
 
@@ -363,6 +363,6 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.event.pull_request.updated_at }}` | docker-multiarch | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} manifests pushed |
+            | multiarch | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} manifests pushed |
 
             ${{ steps.manifests.outputs.pushed }}
