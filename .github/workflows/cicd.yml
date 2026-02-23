@@ -279,7 +279,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push image tags
-        id: push
         env:
           LOCAL_TAG: ${{ matrix.tag }}
           PLATFORM: ${{ matrix.platform }}
@@ -287,27 +286,18 @@ jobs:
         run: |
           ESCAPED_PLATFORM="${PLATFORM//[^0-9a-zA-Z._-]/-}"
           BUILD_TAG="git-${SHA}-${ESCAPED_PLATFORM}"
-          PUSHED=""
           for REPO in $(echo '["ghcr.io/hertzg/tesseract-server","hertzg/tesseract-server"]' | jq -r '.[]'); do
             PUSH_NAME="${REPO}:${BUILD_TAG}"
             docker tag "$LOCAL_TAG" "$PUSH_NAME"
             docker push "$PUSH_NAME"
-            PUSHED="${PUSHED}- \`${PUSH_NAME}\`\n"
           done
-          {
-            echo "pushed<<EOF"
-            echo -e "$PUSHED"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
       - if: ${{ github.event_name == 'pull_request' && always() }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | push | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} pushed |
-
-            ${{ steps.push.outputs.pushed }}
+            | push | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} `${{ matrix.tag }}` |
 
   docker-multiarch:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
@@ -363,6 +353,6 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            | multiarch | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} manifests pushed |
+            | multiarch | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} |
 
             ${{ steps.manifests.outputs.pushed }}
