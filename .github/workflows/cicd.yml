@@ -254,9 +254,8 @@ jobs:
   docker-push:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
     needs:
-      - test
       - docker
-      - docker-test
+      - docker-build
     runs-on: ${{ matrix.runner }}
     permissions:
       packages: write
@@ -302,7 +301,9 @@ jobs:
   docker-multiarch:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
     needs:
+      - test
       - docker
+      - docker-test
       - docker-push
     runs-on: ubuntu-24.04
     permissions:
