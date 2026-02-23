@@ -34,14 +34,16 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           message: |
             ## CICD Report
-            | Run | Stage | Result |
-            |-----|-------|--------|
-            | `${{ github.run_id }}` | lint | ${{ needs.lint.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.lint.result }} |
+            | Timestamp | Stage | Result |
+            |-----------|-------|--------|
+            | `${{ steps.ts.outputs.timestamp }}` | lint | ${{ needs.lint.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.lint.result }} |
 
   test:
     runs-on: ubuntu-24.04
@@ -59,12 +61,14 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | test | ${{ needs.test.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.test.result }} |
+            | `${{ steps.ts.outputs.timestamp }}` | test | ${{ needs.test.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.test.result }} |
 
   compile:
     runs-on: ubuntu-24.04
@@ -93,12 +97,14 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | compile | ${{ needs.compile.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.compile.result }} |
+            | `${{ steps.ts.outputs.timestamp }}` | compile | ${{ needs.compile.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.compile.result }} |
 
   docker:
     runs-on: ubuntu-24.04
@@ -143,12 +149,14 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | docker (tags) | :white_check_mark: `${{ needs.docker.outputs.tags }}` |
+            | `${{ steps.ts.outputs.timestamp }}` | docker (tags) | :white_check_mark: `${{ needs.docker.outputs.tags }}` |
 
   docker-build:
     needs:
@@ -197,12 +205,14 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | docker-build | ${{ needs.docker-build.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-build.result }} |
+            | `${{ steps.ts.outputs.timestamp }}` | docker-build | ${{ needs.docker-build.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-build.result }} |
 
   docker-test:
     needs:
@@ -229,12 +239,14 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | docker-test | ${{ needs.docker-test.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-test.result }} |
+            | `${{ steps.ts.outputs.timestamp }}` | docker-test | ${{ needs.docker-test.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-test.result }} |
 
   docker-dive:
     needs:
@@ -261,12 +273,14 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | docker-dive | ${{ needs.docker-dive.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-dive.result }} |
+            | `${{ steps.ts.outputs.timestamp }}` | docker-dive | ${{ needs.docker-dive.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-dive.result }} |
 
   docker-push:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
@@ -317,12 +331,14 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | docker-push | ${{ needs.docker-push.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-push.result }} |
+            | `${{ steps.ts.outputs.timestamp }}` | docker-push | ${{ needs.docker-push.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-push.result }} |
 
   docker-multiarch:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
@@ -373,9 +389,11 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - id: ts
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
           append: true
           message: |
-            | `${{ github.run_id }}` | docker-multiarch | ${{ needs.docker-multiarch.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-multiarch.result }} |
+            | `${{ steps.ts.outputs.timestamp }}` | docker-multiarch | ${{ needs.docker-multiarch.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-multiarch.result }} |
