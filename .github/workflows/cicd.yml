@@ -4,12 +4,10 @@ on:
     branches:
       - master
   push:
-    branches: []
     tags: "v*"
     paths:
       - "src/**/*"
       - "test/**/*"
-      - ".github/action/**/*"
       - ".github/workflows/**/*"
       - "deno.json"
       - "deno.lock"
@@ -29,6 +27,20 @@ jobs:
       - run: deno lint
       - run: deno fmt --check
 
+  report-lint:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: lint
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            | `${{ github.run_id }}` | lint | ${{ needs.lint.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.lint.result }} |
+
   test:
     runs-on: ubuntu-24.04
     steps:
@@ -37,6 +49,20 @@ jobs:
         with:
           deno-version: v2.x
       - run: deno test --allow-all
+
+  report-test:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: test
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            | `${{ github.run_id }}` | test | ${{ needs.test.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.test.result }} |
 
   compile:
     runs-on: ubuntu-24.04
@@ -58,92 +84,91 @@ jobs:
           name: tesseract-server-${{ matrix.target }}
           path: tesseract-server
 
-  docker:
+  report-compile:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: compile
     runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
-    outputs:
-      config: ${{ steps.generate.outputs.config }}
-      builds: ${{ steps.generate.outputs.builds }}
-      manifests: ${{ steps.generate.outputs.manifests }}
     steps:
-      - run: git config --global core.autocrlf false
-      - uses: actions/checkout@v6
-      - id: generate
-        uses: ./.github/actions/docker/buildConfig
-        with:
-          repositories: |
-            ghcr.io/hertzg/tesseract-server
-            hertzg/tesseract-server
-          platforms: |
-            linux/amd64
-            linux/arm64/v8
-      - uses: jwalton/gh-find-current-pr@v1
-        if: ${{ github.event_name != 'pull_request' }}
-        id: find-pr
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ github.event_name != 'pull_request' }}
         with:
-          number: ${{ steps.find-pr.outputs.pr }}
+          header: cicd-report
+          append: true
           message: |
-            # Docker build request
-            ```json
-            ${{ toJSON(fromJSON(steps.generate.outputs.config)) }}
-            ```
+            | `${{ github.run_id }}` | compile | ${{ needs.compile.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.compile.result }} |
 
-            Images are being built, please wait a few minutes before they get published. They will appear in this comment as soon as they are ready. You can follow the process by inspecting the running checks.
+  docker:
+    runs-on: ubuntu-24.04
+    outputs:
+      builds: ${{ steps.generate.outputs.builds }}
+      tags: ${{ steps.generate.outputs.tags }}
+    steps:
+      - id: generate
+        run: |
+          REPOS='["ghcr.io/hertzg/tesseract-server","hertzg/tesseract-server"]'
+          PLATFORMS='[{"platform":"linux/amd64","target":"x86_64-unknown-linux-gnu","runner":"ubuntu-22.04"},{"platform":"linux/arm64/v8","target":"aarch64-unknown-linux-gnu","runner":"ubuntu-22.04-arm"}]'
+          SHA="${{ github.sha }}"
+
+          BUILDS=$(echo "$PLATFORMS" | jq -c --arg sha "$SHA" '{include: [.[] | {platform, target, runner, tag: ("tesseract-server:git-" + $sha + "-" + (.platform | gsub("[^0-9a-zA-Z._-]"; "-")))}]}')
+          echo "builds=$BUILDS" >> "$GITHUB_OUTPUT"
+
+          # Generate tags for multiarch manifests
+          REF="${{ github.ref }}"
+          EVENT="${{ github.event_name }}"
+
+          TAGS="[]"
+          if [[ "$REF" == refs/tags/v* ]]; then
+            VERSION="${REF#refs/tags/}"
+            TAGS=$(echo "$REPOS" | jq -c --arg v "$VERSION" '[.[] | . + ":" + $v, . + ":latest"]')
+          elif [[ "$REF" == "refs/heads/master" ]]; then
+            TAGS=$(echo "$REPOS" | jq -c '[.[] | . + ":master"]')
+          elif [[ "$REF" == refs/heads/* ]]; then
+            BRANCH="${REF#refs/heads/}"
+            SAFE_BRANCH="${BRANCH//[^a-zA-Z0-9._-]/_}"
+            TAGS=$(echo "$REPOS" | jq -c --arg b "branch-$SAFE_BRANCH" '[.[] | . + ":" + $b]')
+          elif [[ "$EVENT" == "pull_request" ]]; then
+            PR_NUM="${{ github.event.pull_request.number }}"
+            TAGS=$(echo "$REPOS" | jq -c --arg pr "pr-$PR_NUM" '[.[] | . + ":" + $pr]')
+          fi
+
+          echo "tags=$TAGS" >> "$GITHUB_OUTPUT"
+
+  report-docker:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: docker
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            | `${{ github.run_id }}` | docker (tags) | :white_check_mark: `${{ needs.docker.outputs.tags }}` |
 
   docker-build:
     needs:
       - docker
       - compile
-    runs-on: ${{ matrix.platform == 'linux/arm64/v8' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
-    permissions:
-      packages: read
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
     steps:
       - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
-        if:
-          ${{ github.event_name != 'pull_request' ||
-          github.event.pull_request.head.repo.full_name ==
-          'hertzg/tesseract-server' }}
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: docker/login-action@v3
-        if:
-          ${{ github.event_name != 'pull_request' ||
-          github.event.pull_request.head.repo.full_name ==
-          'hertzg/tesseract-server' }}
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/cache@v5
         with:
           path: /tmp/.buildx-cache
-          key:
-            ${{ runner.os }}-buildx-v2-${{ matrix.platform }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-v2-${{ matrix.platform }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-v2-${{ matrix.platform }}
             ${{ runner.os }}-buildx-v2-
-
       - uses: actions/checkout@v6
-      - name: Map platform to deno target
-        id: target
-        run: |
-          case "${{ matrix.platform }}" in
-            linux/amd64) echo "name=x86_64-unknown-linux-gnu" >> $GITHUB_OUTPUT ;;
-            linux/arm64/v8) echo "name=aarch64-unknown-linux-gnu" >> $GITHUB_OUTPUT ;;
-          esac
       - uses: actions/download-artifact@v7
         with:
-          name: tesseract-server-${{ steps.target.outputs.name }}
+          name: tesseract-server-${{ matrix.target }}
           path: ./compiled/
       - run: chmod +x ./compiled/tesseract-server
       - name: Build
@@ -163,11 +188,25 @@ jobs:
         with:
           image: ${{ matrix.tag }}
 
+  report-docker-build:
+    if: ${{ github.event_name == 'pull_request' && always() }}
+    needs: docker-build
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            | `${{ github.run_id }}` | docker-build | ${{ needs.docker-build.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-build.result }} |
+
   docker-test:
     needs:
       - docker
       - docker-build
-    runs-on: ${{ matrix.platform == 'linux/arm64/v8' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -175,18 +214,31 @@ jobs:
       - uses: ishworkh/container-image-artifact-download@v2.1.0
         with:
           image: ${{ matrix.tag }}
-      # Test that container is working
       - uses: e1himself/goss-installation-action@v1.3.0
         with:
           version: v0.4.9
       - uses: actions/checkout@v6
       - run: dgoss run ${{ matrix.tag }}
 
+  report-docker-test:
+    if: ${{ github.event_name == 'pull_request' && always() }}
+    needs: docker-test
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            | `${{ github.run_id }}` | docker-test | ${{ needs.docker-test.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-test.result }} |
+
   docker-dive:
     needs:
       - docker
       - docker-build
-    runs-on: ${{ matrix.platform == 'linux/arm64/v8' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix: ${{ fromJSON(needs.docker.outputs.builds) }}
       fail-fast: false
@@ -200,16 +252,27 @@ jobs:
             -v /var/run/docker.sock:/var/run/docker.sock \
             wagoodman/dive:v0.13 ${{ matrix.tag }} --ci
 
+  report-docker-dive:
+    if: ${{ github.event_name == 'pull_request' && always() }}
+    needs: docker-dive
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            | `${{ github.run_id }}` | docker-dive | ${{ needs.docker-dive.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-dive.result }} |
+
   docker-push:
-    if:
-      ${{ github.event_name != 'pull_request' ||
-      github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server'
-      }}
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
     needs:
       - test
       - docker
       - docker-test
-    runs-on: ${{ matrix.platform == 'linux/arm64/v8' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
+    runs-on: ${{ matrix.runner }}
     permissions:
       packages: write
     strategy:
@@ -229,16 +292,38 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - env:
-          LOCAL_NAME: ${{ matrix.tag }}
-          PUSH_NAMES: ${{ join(matrix.push, ' ') }}
+      - name: Push image tags
+        env:
+          LOCAL_TAG: ${{ matrix.tag }}
+          TAGS_JSON: ${{ needs.docker.outputs.tags }}
+          PLATFORM: ${{ matrix.platform }}
+          SHA: ${{ github.sha }}
         run: |
-          for PUSH_NAME in $PUSH_NAMES; do
-            docker tag $LOCAL_NAME $PUSH_NAME
-            docker push $PUSH_NAME
-          done;
+          # Push the per-platform build tag to each registry
+          ESCAPED_PLATFORM="${PLATFORM//[^0-9a-zA-Z._-]/-}"
+          BUILD_TAG="git-${SHA}-${ESCAPED_PLATFORM}"
+          for REPO in $(echo '["ghcr.io/hertzg/tesseract-server","hertzg/tesseract-server"]' | jq -r '.[]'); do
+            PUSH_NAME="${REPO}:${BUILD_TAG}"
+            docker tag "$LOCAL_TAG" "$PUSH_NAME"
+            docker push "$PUSH_NAME"
+          done
+
+  report-docker-push:
+    if: ${{ github.event_name == 'pull_request' && always() }}
+    needs: docker-push
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            | `${{ github.run_id }}` | docker-push | ${{ needs.docker-push.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-push.result }} |
 
   docker-multiarch:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
     needs:
       - docker
       - docker-push
@@ -246,9 +331,6 @@ jobs:
     permissions:
       pull-requests: write
       packages: write
-    strategy:
-      matrix: ${{ fromJSON(needs.docker.outputs.manifests) }}
-      fail-fast: false
     steps:
       - uses: docker/login-action@v3
         with:
@@ -259,23 +341,39 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - env:
-          DOCKER_CLI_EXPERIMENTAL: enabled
+      - name: Create and push multiarch manifests
+        env:
+          TAGS_JSON: ${{ needs.docker.outputs.tags }}
+          BUILDS_JSON: ${{ needs.docker.outputs.builds }}
+          SHA: ${{ github.sha }}
         run: |
-          docker manifest create ${{ matrix.name }} ${{ join(matrix.images, ' ') }}
-          docker manifest push ${{ matrix.name }}
-      - uses: jwalton/gh-find-current-pr@v1
-        if: ${{ github.event_name != 'pull_request' }}
-        id: find-pr
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Collect per-platform image refs for manifest
+          IMAGES=""
+          for PLATFORM in $(echo "$BUILDS_JSON" | jq -r '.include[].platform'); do
+            ESCAPED="${PLATFORM//[^0-9a-zA-Z._-]/-}"
+            # We use the first repo as the source for manifest images
+            IMAGES="$IMAGES ghcr.io/hertzg/tesseract-server:git-${SHA}-${ESCAPED}"
+          done
+
+          # Create a manifest for each tag
+          for TAG in $(echo "$TAGS_JSON" | jq -r '.[]'); do
+            echo "Creating manifest: $TAG"
+            # shellcheck disable=SC2086
+            docker manifest create "$TAG" $IMAGES
+            docker manifest push "$TAG"
+            echo "Pushed manifest: $TAG"
+          done
+
+  report-docker-multiarch:
+    if: ${{ github.event_name == 'pull_request' && always() }}
+    needs: docker-multiarch
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
       - uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ github.event_name != 'pull_request' }}
         with:
-          number: ${{ steps.find-pr.outputs.pr }}
+          header: cicd-report
           append: true
           message: |
-            ## Published `${{ matrix.name }}`
-            ```json
-            ${{ toJSON(matrix) }}
-            ```
+            | `${{ github.run_id }}` | docker-multiarch | ${{ needs.docker-multiarch.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.docker-multiarch.result }} |
