@@ -168,13 +168,6 @@ jobs:
       fail-fast: false
     steps:
       - uses: docker/setup-buildx-action@v4
-      - uses: actions/cache@v5
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-v2-${{ matrix.platform }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-v2-${{ matrix.platform }}
-            ${{ runner.os }}-buildx-v2-
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
@@ -208,8 +201,8 @@ jobs:
           target: production
           platforms: ${{ matrix.platform }}
           push: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-from: type=gha,scope=buildx-${{ matrix.platform }}
+          cache-to: type=gha,scope=buildx-${{ matrix.platform }},mode=max
           tags: |
             ${{ steps.staging.outputs.ghcr }}
             ${{ steps.staging.outputs.dockerhub }}
