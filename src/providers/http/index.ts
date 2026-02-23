@@ -32,7 +32,16 @@ const getMonacoPath = (): string => {
     const monacoDir = Path.dirname(fileURLToPath(resolved));
     return Path.join(monacoDir, "min");
   } catch {
-    return "node_modules/monaco-editor/min";
+    // Compiled binary: Monaco is embedded via deno compile --include vendor/
+    return Path.resolve(
+      import.meta.dirname!,
+      "..",
+      "..",
+      "..",
+      "vendor",
+      "monaco-editor",
+      "min",
+    );
   }
 };
 
