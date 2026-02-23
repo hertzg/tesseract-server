@@ -24,6 +24,6 @@ COPY ./public/ /app/public/
 COPY --from=monaco /min /app/public/vendor/monaco-editor/min
 COPY ./deno.json /app/deno.json
 WORKDIR /app
-ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["tesseract-server"]
+ENTRYPOINT ["/usr/bin/tini", "--", "tesseract-server"]
+CMD []
 EXPOSE 8884
