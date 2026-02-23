@@ -325,15 +325,19 @@ jobs:
           BUILDS_JSON: ${{ needs.docker.outputs.builds }}
           SHA: ${{ github.sha }}
         run: |
-          # Collect per-platform image refs for manifest
-          IMAGES=""
-          for PLATFORM in $(echo "$BUILDS_JSON" | jq -r '.include[].platform'); do
-            ESCAPED="${PLATFORM//[^0-9a-zA-Z._-]/-}"
-            IMAGES="$IMAGES ghcr.io/hertzg/tesseract-server:git-${SHA}-${ESCAPED}"
-          done
+          PLATFORMS=$(echo "$BUILDS_JSON" | jq -r '.include[].platform')
 
           PUSHED=""
           for TAG in $(echo "$TAGS_JSON" | jq -r '.[]'); do
+            # Extract repo (everything before the colon) to match source registry
+            REPO="${TAG%%:*}"
+
+            IMAGES=""
+            for PLATFORM in $PLATFORMS; do
+              ESCAPED="${PLATFORM//[^0-9a-zA-Z._-]/-}"
+              IMAGES="$IMAGES ${REPO}:git-${SHA}-${ESCAPED}"
+            done
+
             echo "Creating manifest: $TAG"
             # shellcheck disable=SC2086
             docker manifest create "$TAG" $IMAGES
