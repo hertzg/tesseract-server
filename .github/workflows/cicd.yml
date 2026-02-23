@@ -331,16 +331,15 @@ jobs:
             # Extract repo (everything before the colon) to match source registry
             REPO="${TAG%%:*}"
 
-            IMAGES=""
+            SOURCES=""
             for PLATFORM in $PLATFORMS; do
               ESCAPED="${PLATFORM//[^0-9a-zA-Z._-]/-}"
-              IMAGES="$IMAGES ${REPO}:git-${SHA}-${ESCAPED}"
+              SOURCES="$SOURCES ${REPO}:git-${SHA}-${ESCAPED}"
             done
 
             echo "Creating manifest: $TAG"
             # shellcheck disable=SC2086
-            docker manifest create "$TAG" $IMAGES
-            docker manifest push "$TAG"
+            docker buildx imagetools create -t "$TAG" $SOURCES
             echo "Pushed manifest: $TAG"
             PUSHED="${PUSHED}- \`${TAG}\`\n"
           done
