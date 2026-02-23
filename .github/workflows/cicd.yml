@@ -37,8 +37,10 @@ jobs:
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: cicd-report
-          append: true
           message: |
+            ## CICD Report
+            | Run | Stage | Result |
+            |-----|-------|--------|
             | `${{ github.run_id }}` | lint | ${{ needs.lint.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.lint.result }} |
 
   test:
