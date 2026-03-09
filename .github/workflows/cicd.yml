@@ -84,7 +84,7 @@ jobs:
           mkdir -p vendor/monaco-editor
           mv min vendor/monaco-editor/
       - run: deno compile --include vendor --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --target ${{ matrix.target }} --output tesseract-server src/index.ts
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: tesseract-server-${{ matrix.target }}
           path: tesseract-server
