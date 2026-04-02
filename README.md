@@ -19,8 +19,6 @@ $ docker run -p 8884:8884 hertzg/tesseract-server:latest
 You can use the service by sending `multipart` http requests containing
 `options` and `file` fields.
 
-<!-- prettier-ignore-start -->
-
 ```shell script
 # Run OCR using english language on file sample.jpg in current directory
 $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0.1:8884/tesseract
@@ -37,19 +35,15 @@ $ curl -F "options={\"languages\":[\"eng\"]}" -F file=@sample.jpg http://127.0.0
 }
 ```
 
-<!-- prettier-ignore-end -->
-
 ## Usage
 
 The service provides configurations as cli options. All the options with their
 descriptions, types and defaults including some usage examples can be seen using
 `--help` flag.
 
-<!-- prettier-ignore-start -->
-
 ```shell script
 # Using Docker
-$ docker hertzg/tesseract-server:latest --help
+$ docker run hertzg/tesseract-server:latest --help
 ```
 
 ```text test-id="--help" test-param-columns="160"
@@ -86,67 +80,62 @@ References:
   Issues: https://github.com/hertzg/tesseract-server/issues
 ```
 
-<!-- prettier-ignore-end -->
-
 ## Docker
 
-Docker images are multi-arch images based on `debian:bookworm-slim` supporting
+Docker images are multi-arch images based on Alpine Linux supporting
 `linux/amd64` and `linux/arm64/v8` platforms.
 
 ## Raspberry Pi support
 
-The docker images support ARM architectures which means that they can be used on
-at least the following versions of Raspberry Pi:
+The docker images support 64-bit ARM (`linux/arm64`) which means they can run on
+Raspberry Pi models with 64-bit capable processors running a 64-bit OS:
 
-- RPi 1 Model A
-- RPi 1 Model A+
 - RPi 3 Model A+
-- RPi 1 Model B
-- RPi 1 Model B+
-- RPi 2 Model B
-- RPi 2 Model B v1.2 (:heavy_check_mark: tested)
 - RPi 3 Model B
 - RPi 3 Model B+ (:heavy_check_mark: tested)
 - RPi 4 Model B (:heavy_check_mark: tested)
-- Compute Module 1
-- Compute Module 3
-- Compute Module 3 Lite
-- Compute Module 3+
-- Compute Module 3+ Lite
-- RPi Zero PCB v1.2
-- RPi Zero PCB v1.3
-- RPi Zero W
+- RPi 5
+- RPi Zero 2 W
+- Compute Module 3 / 3+ / 3 Lite / 3+ Lite
+- Compute Module 4 / 4S
 
-If you have any of those devices and have successfully used the images feel free
-to report them and help update this list. :open_hands:
+Older 32-bit only models (RPi 1, RPi Zero, RPi 2 v1.1) are not supported.
 
 ## Supported Languages
 
-The container by default installs tesseract and 3 datapacks:
+The container by default installs tesseract with the following language packs:
 
-- `tesseract-ocr` - English (included)
-- `tesseract-ocr-data-deu` - German
-- `tesseract-ocr-data-fra` - French
-- `tesseract-ocr-data-kat` - Georgia
-- `tesseract-ocr-data-pol` - Polish
-- `tesseract-ocr-data-rus` - Russian
+- `eng` - English (included with tesseract)
+- `deu` - German
+- `fra` - French
+- `kat` - Georgian
+- `pol` - Polish
+- `rus` - Russian
+- `spa` - Spanish
 
-To add more languages you can extend this image and install one or more
-[available language datapacks](https://packages.debian.org/bookworm/tesseract-ocr-all)
-with the package manager:
+### Installing additional languages at runtime
 
-<!-- prettier-ignore-start -->
+You can install additional language packs on container startup using the
+`TESSERACT_SERVER_INSTALL_LANGUAGES` environment variable. Specify a
+comma-separated list of language codes:
+
+```shell script
+$ docker run -p 8884:8884 -e TESSERACT_SERVER_INSTALL_LANGUAGES=jpn,ara,hin hertzg/tesseract-server:latest
+```
+
+The available language codes can be found in the
+[Alpine tesseract-ocr-data packages](https://pkgs.alpinelinux.org/packages?name=tesseract-ocr-data-*&branch=edge).
+
+### Adding languages via custom Dockerfile
+
+You can also extend the image and install language packs at build time:
 
 ```Dockerfile
 FROM hertzg/tesseract-server:latest
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    tesseract-ocr-data-spa tesseract-ocr-data-ara \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache tesseract-ocr-data-jpn tesseract-ocr-data-ara
 ```
 
-<!-- prettier-ignore-end -->
-
-After starting the container the new language will be automatically available.
+After starting the container the new languages will be automatically available.
 
 ## HTTP API
 
@@ -163,8 +152,6 @@ This is the main endpoint that expects http `multipart` request containing
 The `options` json object fields directly relate to the CLI options of
 `tesseract` command.
 
-<!-- prettier-ignore-start -->
-
 ```json5
 {
   "languages": ['eng'],               // -l LANG[+LANG]        Specify language(s) used for OCR.
@@ -180,11 +167,7 @@ The `options` json object fields directly relate to the CLI options of
 }
 ```
 
-<!-- prettier-ignore-end -->
-
 The returned response has the following shape
-
-<!-- prettier-ignore-start -->
 
 ```json5
 {
@@ -197,8 +180,6 @@ The returned response has the following shape
 }
 ```
 
-<!-- prettier-ignore-end -->
-
 ### Status Endpoint - `/status`
 
 ```shell
@@ -209,8 +190,6 @@ $ curl http://127.0.0.1:8884/status
 Returns the pool and their statuses as JSON. When you make OCR request the first
 pool will be created and then re-used. This endpoint also shows detailed
 information about each pool including process pids and eviction flags.
-
-<!-- prettier-ignore-start -->
 
 ```json5
 {
@@ -235,8 +214,6 @@ information about each pool including process pids and eviction flags.
   },
 }
 ```
-
-<!-- prettier-ignore-end -->
 
 ### Health Endpoints
 
