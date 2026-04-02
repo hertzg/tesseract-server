@@ -10,11 +10,7 @@ COPY deno.json deno.lock* ./
 RUN deno install
 COPY ./public/ ./public/
 COPY ./src/ ./src/
-
-ARG BUILD_COMMIT="dev"
-ARG BUILD_REF="local"
-ENV BUILD_COMMIT=${BUILD_COMMIT}
-ENV BUILD_REF=${BUILD_REF}
+COPY build.json* ./
 
 ENTRYPOINT ["tini", "--", "deno", "run", "--allow-net", "--allow-read", "--allow-write", "--allow-run", "--allow-env", "--allow-sys", "src/index.ts"]
 EXPOSE 8884

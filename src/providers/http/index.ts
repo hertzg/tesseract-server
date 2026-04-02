@@ -90,27 +90,25 @@ class HTTPProvider implements IProvider {
   }
 
   private _onStatus: RequestHandler = (_req: Request, res: Response) => {
-    this.tess.status().then((status) => {
-      const build = getBuildInfo();
-      res.status(200).json({
-        data: {
-          version: build.version,
-          build: {
+    Promise.all([this.tess.status(), getBuildInfo()]).then(
+      ([status, build]) => {
+        res.status(200).json({
+          data: {
+            version: build.version,
             commit: build.commit,
-            ref: build.ref,
+            host: {
+              hostname: OS.hostname(),
+              platform: OS.platform(),
+              arch: OS.arch(),
+              uptime: OS.uptime(),
+              release: OS.release(),
+              loadavg: OS.loadavg(),
+            },
+            processor: status,
           },
-          host: {
-            hostname: OS.hostname(),
-            platform: OS.platform(),
-            arch: OS.arch(),
-            uptime: OS.uptime(),
-            release: OS.release(),
-            loadavg: OS.loadavg(),
-          },
-          processor: status,
-        },
-      });
-    });
+        });
+      },
+    );
   };
 
   private _getOptions = (

@@ -23,10 +23,10 @@ await configure({
   ],
 });
 
-const build = getBuildInfo();
+const build = await getBuildInfo();
 const logger = getLogger("tesseract-server");
 logger.info(
-  `Starting tesseract-server v${build.version} (${build.ref}@${
+  `Starting tesseract-server v${build.version} (${
     build.commit.substring(0, 7)
   })`,
 );

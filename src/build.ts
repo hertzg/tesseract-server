@@ -1,25 +1,19 @@
-import FS from "node:fs";
-import Path from "node:path";
-import process from "node:process";
-
 export interface BuildInfo {
   version: string;
   commit: string;
-  ref: string;
 }
 
-export const getBuildInfo = (): BuildInfo => {
-  let version = "unknown";
+const readJson = async (
+  path: string,
+): Promise<Record<string, unknown> | null> => {
   try {
-    const denoJsonPath = Path.resolve("deno.json");
-    const denoJson = JSON.parse(FS.readFileSync(denoJsonPath, "utf-8"));
-    version = denoJson.version || "unknown";
+    return JSON.parse(await Deno.readTextFile(path));
   } catch {
-    // ignore
+    return null;
   }
-  return {
-    version,
-    commit: process.env.BUILD_COMMIT || "dev",
-    ref: process.env.BUILD_REF || "local",
-  };
 };
+
+export const getBuildInfo = async (): Promise<BuildInfo> => ({
+  version: String((await readJson("deno.json"))?.version ?? "unknown"),
+  commit: String((await readJson("build.json"))?.commit ?? "dev"),
+});

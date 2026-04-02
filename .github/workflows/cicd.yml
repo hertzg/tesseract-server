@@ -73,17 +73,20 @@ jobs:
           BUILD_TAG="git-${SHA}-${ESCAPED}"
           echo "ghcr=ghcr.io/hertzg/tesseract-server:${BUILD_TAG}" >> "$GITHUB_OUTPUT"
           echo "dockerhub=hertzg/tesseract-server:${BUILD_TAG}" >> "$GITHUB_OUTPUT"
+      - name: Write build metadata
+        run: echo '{"commit":"${{ github.sha }}"}' > build.json
       - name: Build image
-        run: |
-          docker build -t tesseract-server:test \
-            --build-arg BUILD_COMMIT=${{ github.sha }} \
-            --build-arg BUILD_REF=${{ github.ref }} \
-            .
+        run: docker build -t tesseract-server:test .
       - uses: e1himself/goss-installation-action@v1.3.0
         with:
           version: v0.4.9
       - name: Test image
         run: dgoss run tesseract-server:test
+      - name: Generate OCI labels
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/hertzg/tesseract-server
       - name: Push to registries
         uses: docker/build-push-action@v7
         with:
@@ -94,9 +97,7 @@ jobs:
           provenance: false
           cache-from: type=gha,scope=buildx-${{ matrix.platform }}
           cache-to: type=gha,scope=buildx-${{ matrix.platform }},mode=max
-          build-args: |
-            BUILD_COMMIT=${{ github.sha }}
-            BUILD_REF=${{ github.ref }}
+          labels: ${{ steps.meta.outputs.labels }}
           tags: |
             ${{ steps.staging.outputs.ghcr }}
             ${{ steps.staging.outputs.dockerhub }}
