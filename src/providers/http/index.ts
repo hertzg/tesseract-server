@@ -172,14 +172,10 @@ class HTTPProvider implements IProvider {
         argv["http.listen.address"],
         () => {
           const addr = srv.address();
-          const build = getBuildInfo();
-          const shortCommit = build.commit.substring(0, 7);
           const url = addr && typeof addr === "object"
             ? `http://${addr.address}:${addr.port}`
             : String(addr);
-          logger.info(
-            `Listening on ${url} (v${build.version}, ${build.ref}@${shortCommit})`,
-          );
+          logger.info(`Listening on ${url}`);
           resolve();
         },
       );
