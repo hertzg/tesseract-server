@@ -1,6 +1,8 @@
 {
-  "version": "3.0.3",
-  "exclude": [".github/"],
+  "version": "3.1.0",
+  "exclude": [
+    ".github/"
+  ],
   "tasks": {
     "dev": "deno run --allow-all src/index.ts",
     "test": "deno test --allow-all",
