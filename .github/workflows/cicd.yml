@@ -52,7 +52,12 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno test --allow-all
+      - run: deno test --allow-all --coverage=coverage
+      - run: deno coverage coverage --lcov --output=coverage.lcov
+      - uses: codecov/codecov-action@v5
+        with:
+          files: coverage.lcov
+          token: ${{ secrets.CODECOV_TOKEN }}
       - if: ${{ github.event_name == 'pull_request' && always() }}
         uses: marocchino/sticky-pull-request-comment@v3
         with:
