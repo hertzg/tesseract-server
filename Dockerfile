@@ -1,9 +1,9 @@
-FROM denoland/deno:debian
-RUN apt-get update && apt-get install -y --no-install-recommends \
+FROM denoland/deno:alpine
+RUN apk add --no-cache \
     tini \
-    tesseract-ocr tesseract-ocr-deu tesseract-ocr-kat tesseract-ocr-fra \
-    tesseract-ocr-spa tesseract-ocr-pol tesseract-ocr-rus \
-    && rm -rf /var/lib/apt/lists/*
+    tesseract-ocr \
+    tesseract-ocr-data-deu tesseract-ocr-data-kat tesseract-ocr-data-fra \
+    tesseract-ocr-data-spa tesseract-ocr-data-pol tesseract-ocr-data-rus
 
 WORKDIR /app
 COPY deno.json deno.lock* ./
