@@ -2,8 +2,9 @@ FROM denoland/deno:alpine
 RUN apk add --no-cache \
     tini \
     tesseract-ocr \
-    tesseract-ocr-data-deu tesseract-ocr-data-kat tesseract-ocr-data-fra \
-    tesseract-ocr-data-spa tesseract-ocr-data-pol tesseract-ocr-data-rus
+    tesseract-ocr-data-eng tesseract-ocr-data-deu tesseract-ocr-data-kat \
+    tesseract-ocr-data-fra tesseract-ocr-data-spa tesseract-ocr-data-pol \
+    tesseract-ocr-data-rus
 
 WORKDIR /app
 COPY deno.json deno.lock* ./
