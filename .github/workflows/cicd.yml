@@ -167,6 +167,6 @@ jobs:
             ### Docker Images
             Multi-arch (amd64 + arm64) images ready to test:
             ```
-            docker run --rm -p 8884:8884 ${{ steps.manifests.outputs.ghcr_tag }}
+            docker run --rm --init -p 8884:8884 ${{ steps.manifests.outputs.ghcr_tag }}
             ```
             ${{ steps.manifests.outputs.pushed }}
