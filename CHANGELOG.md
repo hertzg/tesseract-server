@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0](https://github.com/hertzg/tesseract-server/compare/v3.0.3...v3.1.0) (2026-04-02)
+
+
+### 🚀 Features
+
+* **ci:** replace Docker artifact passing with registry-based staging ([67b46b5](https://github.com/hertzg/tesseract-server/commit/67b46b5de8cfbfc430992f6deea8cf53829269f3))
+* **ci:** switch Docker buildx cache from local to GHA ([45c498b](https://github.com/hertzg/tesseract-server/commit/45c498bf6b2fd203b365f7a6be89c4364c51e511))
+* **container:** switch base image from Debian to Alpine ([#244](https://github.com/hertzg/tesseract-server/issues/244)) ([549d3de](https://github.com/hertzg/tesseract-server/commit/549d3de8c919c4a4461ee81935ed54acee95761c))
+
+
+### 🐛 Bug Fixes
+
+* **ci:** disable provenance and align docker/login-action to v4 ([7e1ffde](https://github.com/hertzg/tesseract-server/commit/7e1ffde1321387a842b9b71b9c3640d19362bdfe))
+* **ci:** use buildx imagetools for multiarch manifest creation ([23979fe](https://github.com/hertzg/tesseract-server/commit/23979fe8e80c6d79413baa2c9b169a6faed332b5))
+
+
+### 🛠️ General Chores
+
+* **deps:** update codecov/codecov-action action to v6 ([#239](https://github.com/hertzg/tesseract-server/issues/239)) ([61b1c70](https://github.com/hertzg/tesseract-server/commit/61b1c7061ecc9f0f1093d780a75c1f0006c129e1))
+* **deps:** update docker/metadata-action action to v6 ([#241](https://github.com/hertzg/tesseract-server/issues/241)) ([7a89eaa](https://github.com/hertzg/tesseract-server/commit/7a89eaa737a1e4540897db363029c04c1bcaa210))
+* **deps:** update marocchino/sticky-pull-request-comment action to v3 ([eb9e5a1](https://github.com/hertzg/tesseract-server/commit/eb9e5a1a294a5057347a4558ce0773f7fe4ebb8b))
+
+
+### 🚆 Pipeline Improvements
+
+* add release-please for automated releases ([#242](https://github.com/hertzg/tesseract-server/issues/242)) ([2ba28ac](https://github.com/hertzg/tesseract-server/commit/2ba28ace138a80703c7580569aa9a5dd34905f72))
+* re-add Codecov coverage reporting ([#238](https://github.com/hertzg/tesseract-server/issues/238)) ([ba52b11](https://github.com/hertzg/tesseract-server/commit/ba52b11215d02ec8f893c8797f3edaa665d595b4))
+* simplify pipeline, improve Docker DX and logging ([#240](https://github.com/hertzg/tesseract-server/issues/240)) ([d07785a](https://github.com/hertzg/tesseract-server/commit/d07785a5802807a50a3319fb393ee287cde185de))
+
+
+### 🌟 Refactorings
+
+* remove compile step, use deno run directly in Docker ([0784ac0](https://github.com/hertzg/tesseract-server/commit/0784ac044fa8a752b16e09551ed687faebfd1c6a))
+* remove tini, simplify Dockerfile and fix CI target ([#237](https://github.com/hertzg/tesseract-server/issues/237)) ([c208a98](https://github.com/hertzg/tesseract-server/commit/c208a982747872cce1314e26aed3d02ddc6ae6fd))
+
 ### [2.6.1](https://github.com/hertzg/tesseract-server/compare/v2.6.0...v2.6.1) (2024-04-07)
 
 ### 🛠️ General Chores
