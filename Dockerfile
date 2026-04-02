@@ -11,6 +11,8 @@ RUN deno install
 COPY ./public/ ./public/
 COPY ./src/ ./src/
 COPY build.json* ./
+COPY docker-entrypoint.sh /usr/local/bin/
 
-ENTRYPOINT ["tini", "--", "deno", "run", "--allow-net", "--allow-read", "--allow-write", "--allow-run", "--allow-env", "--allow-sys", "src/index.ts"]
+ENTRYPOINT ["tini", "--", "docker-entrypoint.sh"]
+CMD ["deno", "run", "--allow-net", "--allow-read", "--allow-write", "--allow-run", "--allow-env", "--allow-sys", "src/index.ts"]
 EXPOSE 8884
