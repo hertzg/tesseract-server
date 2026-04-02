@@ -170,4 +170,4 @@ jobs:
           header: cicd-report
           append: true
           message: |
-            ✅ [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) published
+            ✅ [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) published at ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
