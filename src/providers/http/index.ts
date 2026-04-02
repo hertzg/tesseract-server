@@ -87,7 +87,7 @@ class HTTPProvider implements IProvider {
 
     if (argv["http.endpoint.webui.enable"]) {
       this.app.use(express.static("public"));
-      console.log("webui enabled");
+      console.log("  Web UI: enabled");
       this.app.use(
         "/vendor/monaco-editor/min",
         express.static(getMonacoPath()),
@@ -172,7 +172,15 @@ class HTTPProvider implements IProvider {
         argv["http.listen.port"],
         argv["http.listen.address"],
         () => {
-          console.log("Listening @ %j", srv.address());
+          const addr = srv.address();
+          const version = getVersion();
+          if (addr && typeof addr === "object") {
+            console.log(
+              `tesseract-server v${version} listening on http://${addr.address}:${addr.port}`,
+            );
+          } else {
+            console.log(`tesseract-server v${version} listening on ${addr}`);
+          }
           resolve();
         },
       );
