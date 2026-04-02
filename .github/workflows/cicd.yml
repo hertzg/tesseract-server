@@ -23,8 +23,6 @@ on:
 jobs:
   lint-and-test:
     runs-on: ubuntu-24.04
-    permissions:
-      pull-requests: write
     steps:
       - uses: actions/checkout@v6
       - uses: denoland/setup-deno@v2
@@ -39,16 +37,6 @@ jobs:
         with:
           files: coverage.lcov
           token: ${{ secrets.CODECOV_TOKEN }}
-      - if: ${{ github.event_name == 'pull_request' && (github.event.pull_request.head.repo.full_name == github.repository) }}
-        uses: marocchino/sticky-pull-request-comment@v3
-        with:
-          header: cicd-report
-          message: |
-            ### Docker Images
-            Multi-arch (amd64 + arm64) image building for `${{ github.sha }}`...
-            ```
-            docker run --rm --pull always -p 8884:8884 ghcr.io/hertzg/tesseract-server:pr-${{ github.event.pull_request.number }}
-            ```
 
   docker-build:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
@@ -145,15 +133,12 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
       - name: Create and push multiarch manifests
-        id: manifests
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           SHA: ${{ github.sha }}
         run: |
           PLATFORMS=("linux-amd64" "linux-arm64-v8")
 
-          PUSHED=""
-          FIRST_GHCR=""
           while IFS= read -r TAG; do
             [ -z "$TAG" ] && continue
             REPO="${TAG%%:*}"
@@ -166,26 +151,23 @@ jobs:
             # shellcheck disable=SC2086
             docker buildx imagetools create -t "$TAG" $SOURCES
             echo "Pushed manifest: $TAG"
-            PUSHED="${PUSHED}- \`${TAG}\`\n"
-            if [ -z "$FIRST_GHCR" ] && [[ "$TAG" == ghcr.io/* ]]; then
-              FIRST_GHCR="$TAG"
-            fi
           done <<< "$TAGS"
-
-          {
-            echo "pushed<<EOF"
-            echo -e "$PUSHED"
-            echo "EOF"
-            echo "ghcr_tag=${FIRST_GHCR}"
-          } >> "$GITHUB_OUTPUT"
-      - if: ${{ github.event_name == 'pull_request' }}
+      - name: Create PR comment (first build only)
+        if: ${{ github.event_name == 'pull_request' }}
         uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: cicd-report
+          only_create: true
           message: |
-            ### Docker Images
-            Multi-arch (amd64 + arm64) image published (`${{ github.sha }}`):
+            ### 🐳 Docker
             ```
-            docker run --rm --pull always -p 8884:8884 ${{ steps.manifests.outputs.ghcr_tag }}
+            docker run --rm --pull always -p 8884:8884 ghcr.io/hertzg/tesseract-server:pr-${{ github.event.pull_request.number }}
             ```
-            ${{ steps.manifests.outputs.pushed }}
+      - name: Append build result
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: cicd-report
+          append: true
+          message: |
+            ✅ [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) published
