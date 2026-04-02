@@ -15,16 +15,10 @@ import { Readable } from "node:stream";
 import { IProvider, IProviderFactory } from "../types.ts";
 import { asOptions } from "./decoders.ts";
 import OS from "node:os";
+import { getLogger } from "@logtape/logtape";
+import { getBuildInfo } from "../../build.ts";
 
-const getVersion = (): string => {
-  try {
-    const denoJsonPath = Path.resolve("deno.json");
-    const denoJson = JSON.parse(FS.readFileSync(denoJsonPath, "utf-8"));
-    return denoJson.version || "unknown";
-  } catch {
-    return "unknown";
-  }
-};
+const logger = getLogger(["tesseract-server", "http"]);
 
 const getMonacoPath = (): string => {
   try {
@@ -87,7 +81,7 @@ class HTTPProvider implements IProvider {
 
     if (argv["http.endpoint.webui.enable"]) {
       this.app.use(express.static("public"));
-      console.log("webui enabled");
+      logger.info("Web UI enabled");
       this.app.use(
         "/vendor/monaco-editor/min",
         express.static(getMonacoPath()),
@@ -96,22 +90,25 @@ class HTTPProvider implements IProvider {
   }
 
   private _onStatus: RequestHandler = (_req: Request, res: Response) => {
-    this.tess.status().then((status) => {
-      res.status(200).json({
-        data: {
-          version: getVersion(),
-          host: {
-            hostname: OS.hostname(),
-            platform: OS.platform(),
-            arch: OS.arch(),
-            uptime: OS.uptime(),
-            release: OS.release(),
-            loadavg: OS.loadavg(),
+    Promise.all([this.tess.status(), getBuildInfo()]).then(
+      ([status, build]) => {
+        res.status(200).json({
+          data: {
+            version: build.version,
+            commit: build.commit,
+            host: {
+              hostname: OS.hostname(),
+              platform: OS.platform(),
+              arch: OS.arch(),
+              uptime: OS.uptime(),
+              release: OS.release(),
+              loadavg: OS.loadavg(),
+            },
+            processor: status,
           },
-          processor: status,
-        },
-      });
-    });
+        });
+      },
+    );
   };
 
   private _getOptions = (
@@ -162,7 +159,7 @@ class HTTPProvider implements IProvider {
         });
       })
       .catch(() => {
-        console.log("Error processing http request");
+        logger.error("Error processing HTTP request");
       });
   };
 
@@ -172,7 +169,11 @@ class HTTPProvider implements IProvider {
         argv["http.listen.port"],
         argv["http.listen.address"],
         () => {
-          console.log("Listening @ %j", srv.address());
+          const addr = srv.address();
+          const url = addr && typeof addr === "object"
+            ? `http://${addr.address}:${addr.port}`
+            : String(addr);
+          logger.info(`Listening on ${url}`);
           resolve();
         },
       );

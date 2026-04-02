@@ -12,7 +12,9 @@ http:
     allow-insecure: false
     no-follow-redirects: false
     timeout: 5000
-    body: []
+    body:
+      - "version"
+      - "commit"
   http://127.0.0.1:8884/:
     status: 200
     timeout: 5000
