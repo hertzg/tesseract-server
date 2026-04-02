@@ -6,6 +6,5 @@ services:
       dockerfile: Dockerfile
       context: .
     image: tesseract-server:dev
-    init: true
     ports:
       - 8884:8884
