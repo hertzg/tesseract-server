@@ -15,32 +15,10 @@ import { Readable } from "node:stream";
 import { IProvider, IProviderFactory } from "../types.ts";
 import { asOptions } from "./decoders.ts";
 import OS from "node:os";
-import process from "node:process";
 import { getLogger } from "@logtape/logtape";
+import { getBuildInfo } from "../../build.ts";
 
 const logger = getLogger(["tesseract-server", "http"]);
-
-interface BuildInfo {
-  version: string;
-  commit: string;
-  ref: string;
-}
-
-const getBuildInfo = (): BuildInfo => {
-  let version = "unknown";
-  try {
-    const denoJsonPath = Path.resolve("deno.json");
-    const denoJson = JSON.parse(FS.readFileSync(denoJsonPath, "utf-8"));
-    version = denoJson.version || "unknown";
-  } catch {
-    // ignore
-  }
-  return {
-    version,
-    commit: process.env.BUILD_COMMIT || "dev",
-    ref: process.env.BUILD_REF || "local",
-  };
-};
 
 const getMonacoPath = (): string => {
   try {
