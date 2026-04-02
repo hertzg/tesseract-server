@@ -26,7 +26,9 @@ await configure({
 const build = getBuildInfo();
 const logger = getLogger("tesseract-server");
 logger.info(
-  `Starting tesseract-server v${build.version} (${build.ref}@${build.commit.substring(0, 7)})`,
+  `Starting tesseract-server v${build.version} (${build.ref}@${
+    build.commit.substring(0, 7)
+  })`,
 );
 
 const processor = createProcessor({
