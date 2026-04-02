@@ -61,41 +61,6 @@ jobs:
           message: |
             | test | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} ${{ job.status }} |
 
-  compile:
-    runs-on: ubuntu-24.04
-    permissions:
-      pull-requests: write
-    strategy:
-      matrix:
-        include:
-          - platform: linux/amd64
-            target: x86_64-unknown-linux-gnu
-          - platform: linux/arm64/v8
-            target: aarch64-unknown-linux-gnu
-    steps:
-      - uses: actions/checkout@v6
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-      - name: Download Monaco Editor
-        run: |
-          curl -sL https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.49.0.tgz \
-            | tar -xz --strip-components=1 package/min
-          mkdir -p vendor/monaco-editor
-          mv min vendor/monaco-editor/
-      - run: deno compile --include vendor --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --target ${{ matrix.target }} --output tesseract-server src/index.ts
-      - uses: actions/upload-artifact@v7
-        with:
-          name: tesseract-server-${{ matrix.target }}
-          path: tesseract-server
-      - if: ${{ github.event_name == 'pull_request' && always() }}
-        uses: marocchino/sticky-pull-request-comment@v3
-        with:
-          header: cicd-report
-          append: true
-          message: |
-            | compile | ${{ job.status == 'success' && ':white_check_mark:' || ':x:' }} [tesseract-server-${{ matrix.target }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |
-
   docker:
     runs-on: ubuntu-24.04
     permissions:
@@ -107,10 +72,10 @@ jobs:
       - id: generate
         run: |
           REPOS='["ghcr.io/hertzg/tesseract-server","hertzg/tesseract-server"]'
-          PLATFORMS='[{"platform":"linux/amd64","target":"x86_64-unknown-linux-gnu","runner":"ubuntu-22.04"},{"platform":"linux/arm64/v8","target":"aarch64-unknown-linux-gnu","runner":"ubuntu-22.04-arm"}]'
+          PLATFORMS='[{"platform":"linux/amd64","runner":"ubuntu-22.04"},{"platform":"linux/arm64/v8","runner":"ubuntu-22.04-arm"}]'
           SHA="${{ github.sha }}"
 
-          BUILDS=$(echo "$PLATFORMS" | jq -c --arg sha "$SHA" '{include: [.[] | {platform, target, runner, tag: ("tesseract-server:git-" + $sha + "-" + (.platform | gsub("[^0-9a-zA-Z._-]"; "-")))}]}')
+          BUILDS=$(echo "$PLATFORMS" | jq -c --arg sha "$SHA" '{include: [.[] | {platform, runner, tag: ("tesseract-server:git-" + $sha + "-" + (.platform | gsub("[^0-9a-zA-Z._-]"; "-")))}]}')
           echo "builds=$BUILDS" >> "$GITHUB_OUTPUT"
 
           # Generate tags for multiarch manifests
@@ -158,7 +123,6 @@ jobs:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'hertzg/tesseract-server' }}
     needs:
       - docker
-      - compile
     runs-on: ${{ matrix.runner }}
     permissions:
       packages: write
@@ -169,11 +133,6 @@ jobs:
     steps:
       - uses: docker/setup-buildx-action@v4
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
-        with:
-          name: tesseract-server-${{ matrix.target }}
-          path: ./compiled/
-      - run: chmod +x ./compiled/tesseract-server
       - uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -207,8 +166,6 @@ jobs:
           tags: |
             ${{ steps.staging.outputs.ghcr }}
             ${{ steps.staging.outputs.dockerhub }}
-          build-contexts: |
-            builder=./compiled/
       - if: ${{ github.event_name == 'pull_request' && always() }}
         uses: marocchino/sticky-pull-request-comment@v3
         with:
