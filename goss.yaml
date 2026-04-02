@@ -3,17 +3,9 @@ file:
     exists: true
     filetype: file
     contains: []
-  /usr/bin/tini:
-    exists: true
-    mode: "0755"
-    filetype: file
-    contains: []
 package:
   tesseract-ocr:
     installed: true
-process:
-  tini:
-    running: true
 http:
   http://127.0.0.1:8884/status:
     status: 200

@@ -157,7 +157,6 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          target: production
           platforms: ${{ matrix.platform }}
           push: true
           provenance: false
