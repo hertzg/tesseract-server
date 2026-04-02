@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "deno.json",
+          "jsonpath": "$.version"
+        }
+      ],
+      "changelog-sections": [
+        { "type": "feat", "section": "🚀 Features" },
+        { "type": "fix", "section": "🐛 Bug Fixes" },
+        { "type": "docs", "section": "📖 Documentation Updates" },
+        { "type": "test", "section": "🧪 Testing Improvements" },
+        { "type": "chore", "section": "🛠️ General Chores" },
+        { "type": "ci", "section": "🚆 Pipeline Improvements" },
+        { "type": "refactor", "section": "🌟 Refactorings" },
+        { "type": "perf", "section": "📈 Performance Improvements" }
+      ]
+    }
+  }
+}

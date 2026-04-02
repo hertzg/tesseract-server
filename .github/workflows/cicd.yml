@@ -9,16 +9,10 @@ on:
     branches:
       - master
   push:
-    tags: "v*"
-    paths:
-      - "src/**/*"
-      - "test/**/*"
-      - ".github/workflows/**/*"
-      - "deno.json"
-      - "deno.lock"
-      - "Dockerfile"
-      - ".dockerignore"
-      - "goss*.yaml"
+    branches:
+      - master
+    tags:
+      - "v*"
 
 jobs:
   lint-and-test:
@@ -131,6 +125,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             type=ref,event=branch
             type=ref,event=pr
       - name: Create and push multiarch manifests
