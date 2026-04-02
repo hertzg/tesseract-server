@@ -1,11 +1,24 @@
 file:
-  /usr/bin/deno:
+  /bin/deno:
     exists: true
     filetype: file
     contains: []
+  /usr/share/tessdata/eng.traineddata:
+    exists: true
 package:
   tesseract-ocr:
     installed: true
+command:
+  tesseract --list-langs:
+    exit-status: 0
+    stdout:
+      - eng
+      - deu
+      - fra
+      - kat
+      - pol
+      - rus
+      - spa
 http:
   http://127.0.0.1:8884/status:
     status: 200

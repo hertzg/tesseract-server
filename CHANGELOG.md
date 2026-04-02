@@ -1,13 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See
-[standard-version](https://github.com/conventional-changelog/standard-version)
-for commit guidelines.
-
-## Unreleased (pending for next release)
-
-All unreleased changes scheduled for the next release are in
-[CHANGELOG-next.md](./CHANGELOG-next.md)
+All notable changes to this project will be documented in this file.
 
 ### [2.6.1](https://github.com/hertzg/tesseract-server/compare/v2.6.0...v2.6.1) (2024-04-07)
 

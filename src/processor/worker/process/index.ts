@@ -57,6 +57,7 @@ class Tesseract implements ITesseract {
     });
 
     this._proc.once("error", this._onError);
+    this._proc.stdin.once("error", this._onError);
     this._proc.once("exit", this._onExit);
     bufferOutputs(this._proc).then(({ stdout, stderr }) => {
       this._buffData = { stdout, stderr };
