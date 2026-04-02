@@ -1,6 +1,7 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@logtape/logtape@0.12": "0.12.3",
     "jsr:@std/assert@1": "1.0.17",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "npm:@cloudnative/health-connect@^2.1.0": "2.1.0",
@@ -16,6 +17,9 @@
     "npm:yargs@^17.7.2": "17.7.2"
   },
   "jsr": {
+    "@logtape/logtape@0.12.3": {
+      "integrity": "8d2c9b48a72d8bcadc64294a582f08df3fe048850952e26b04b822bb2affb6e9"
+    },
     "@std/assert@1.0.17": {
       "integrity": "df5ebfffe77c03b3fa1401e11c762cc8f603d51021c56c4d15a8c7ab45e90dbe",
       "dependencies": [
@@ -805,6 +809,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@logtape/logtape@0.12",
       "jsr:@std/assert@1",
       "npm:@cloudnative/health-connect@^2.1.0",
       "npm:decoders@^1.25.5",

@@ -16,6 +16,9 @@ import { IProvider, IProviderFactory } from "../types.ts";
 import { asOptions } from "./decoders.ts";
 import OS from "node:os";
 import process from "node:process";
+import { getLogger } from "@logtape/logtape";
+
+const logger = getLogger(["tesseract-server", "http"]);
 
 interface BuildInfo {
   version: string;
@@ -100,7 +103,7 @@ class HTTPProvider implements IProvider {
 
     if (argv["http.endpoint.webui.enable"]) {
       this.app.use(express.static("public"));
-      console.log("  Web UI: enabled");
+      logger.info("Web UI enabled");
       this.app.use(
         "/vendor/monaco-editor/min",
         express.static(getMonacoPath()),
@@ -180,7 +183,7 @@ class HTTPProvider implements IProvider {
         });
       })
       .catch(() => {
-        console.log("Error processing http request");
+        logger.error("Error processing HTTP request");
       });
   };
 
@@ -196,8 +199,8 @@ class HTTPProvider implements IProvider {
           const url = addr && typeof addr === "object"
             ? `http://${addr.address}:${addr.port}`
             : String(addr);
-          console.log(
-            `tesseract-server v${build.version} (${build.ref}@${shortCommit}) listening on ${url}`,
+          logger.info(
+            `Listening on ${url} (v${build.version}, ${build.ref}@${shortCommit})`,
           );
           resolve();
         },
