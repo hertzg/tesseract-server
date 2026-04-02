@@ -23,6 +23,8 @@ on:
 jobs:
   lint-and-test:
     runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
       - uses: denoland/setup-deno@v2
@@ -37,6 +39,16 @@ jobs:
         with:
           files: coverage.lcov
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ github.event_name == 'pull_request' && (github.event.pull_request.head.repo.full_name == github.repository) }}
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: cicd-report
+          message: |
+            ### Docker Images
+            Multi-arch (amd64 + arm64) image building for `${{ github.sha }}`...
+            ```
+            docker run --rm --pull always -p 8884:8884 ghcr.io/hertzg/tesseract-server:pr-${{ github.event.pull_request.number }}
+            ```
 
   docker-build:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
@@ -172,7 +184,7 @@ jobs:
           header: cicd-report
           message: |
             ### Docker Images
-            Multi-arch (amd64 + arm64) images ready to test:
+            Multi-arch (amd64 + arm64) image published (`${{ github.sha }}`):
             ```
             docker run --rm --pull always -p 8884:8884 ${{ steps.manifests.outputs.ghcr_tag }}
             ```
