@@ -15,15 +15,28 @@ import { Readable } from "node:stream";
 import { IProvider, IProviderFactory } from "../types.ts";
 import { asOptions } from "./decoders.ts";
 import OS from "node:os";
+import process from "node:process";
 
-const getVersion = (): string => {
+interface BuildInfo {
+  version: string;
+  commit: string;
+  ref: string;
+}
+
+const getBuildInfo = (): BuildInfo => {
+  let version = "unknown";
   try {
     const denoJsonPath = Path.resolve("deno.json");
     const denoJson = JSON.parse(FS.readFileSync(denoJsonPath, "utf-8"));
-    return denoJson.version || "unknown";
+    version = denoJson.version || "unknown";
   } catch {
-    return "unknown";
+    // ignore
   }
+  return {
+    version,
+    commit: process.env.BUILD_COMMIT || "dev",
+    ref: process.env.BUILD_REF || "local",
+  };
 };
 
 const getMonacoPath = (): string => {
@@ -97,9 +110,14 @@ class HTTPProvider implements IProvider {
 
   private _onStatus: RequestHandler = (_req: Request, res: Response) => {
     this.tess.status().then((status) => {
+      const build = getBuildInfo();
       res.status(200).json({
         data: {
-          version: getVersion(),
+          version: build.version,
+          build: {
+            commit: build.commit,
+            ref: build.ref,
+          },
           host: {
             hostname: OS.hostname(),
             platform: OS.platform(),
@@ -173,14 +191,14 @@ class HTTPProvider implements IProvider {
         argv["http.listen.address"],
         () => {
           const addr = srv.address();
-          const version = getVersion();
-          if (addr && typeof addr === "object") {
-            console.log(
-              `tesseract-server v${version} listening on http://${addr.address}:${addr.port}`,
-            );
-          } else {
-            console.log(`tesseract-server v${version} listening on ${addr}`);
-          }
+          const build = getBuildInfo();
+          const shortCommit = build.commit.substring(0, 7);
+          const url = addr && typeof addr === "object"
+            ? `http://${addr.address}:${addr.port}`
+            : String(addr);
+          console.log(
+            `tesseract-server v${build.version} (${build.ref}@${shortCommit}) listening on ${url}`,
+          );
           resolve();
         },
       );
