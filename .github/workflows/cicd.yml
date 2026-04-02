@@ -78,7 +78,7 @@ jobs:
         run: dgoss run tesseract-server:test
       - name: Generate OCI labels
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/hertzg/tesseract-server
       - name: Push to registries
@@ -117,7 +117,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate tags
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             ghcr.io/hertzg/tesseract-server
