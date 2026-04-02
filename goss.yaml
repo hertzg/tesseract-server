@@ -1,5 +1,5 @@
 file:
-  /usr/bin/deno:
+  /bin/deno:
     exists: true
     filetype: file
     contains: []
