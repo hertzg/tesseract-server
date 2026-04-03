@@ -3,6 +3,9 @@
   "exclude": [
     ".github/"
   ],
+  "fmt": {
+    "exclude": ["CHANGELOG.md"]
+  },
   "tasks": {
     "dev": "deno run --allow-all src/index.ts",
     "test": "deno test --allow-all",
