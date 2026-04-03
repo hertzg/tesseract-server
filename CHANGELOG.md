@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.1](https://github.com/hertzg/tesseract-server/compare/v3.1.0...v3.1.1) (2026-04-03)
+
+
+### 🛠️ General Chores
+
+* exclude CHANGELOG.md from deno fmt ([840f3a0](https://github.com/hertzg/tesseract-server/commit/840f3a08ec10d6913313a7e9f929a53755bcf0f1))
+
+
+### 🚆 Pipeline Improvements
+
+* **release-please:** use GitHub App token to trigger CI on release PRs ([e67c23a](https://github.com/hertzg/tesseract-server/commit/e67c23ac6e5971c80a0bd654cfcdede7e300de8d))
+
 ## [3.1.0](https://github.com/hertzg/tesseract-server/compare/v3.0.3...v3.1.0) (2026-04-02)
 
 

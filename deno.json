@@ -1,10 +1,12 @@
 {
-  "version": "3.1.0",
+  "version": "3.1.1",
   "exclude": [
     ".github/"
   ],
   "fmt": {
-    "exclude": ["CHANGELOG.md"]
+    "exclude": [
+      "CHANGELOG.md"
+    ]
   },
   "tasks": {
     "dev": "deno run --allow-all src/index.ts",
