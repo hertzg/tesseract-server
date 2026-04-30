@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.2](https://github.com/hertzg/tesseract-server/compare/v3.1.1...v3.1.2) (2026-04-30)
+
+
+### 🛠️ General Chores
+
+* **deps:** update dependency @logtape/logtape to v2 ([#250](https://github.com/hertzg/tesseract-server/issues/250)) ([a0b64a7](https://github.com/hertzg/tesseract-server/commit/a0b64a7488d16849c205202cabec2e67bcef364d))
+
 ## [3.1.1](https://github.com/hertzg/tesseract-server/compare/v3.1.0...v3.1.1) (2026-04-23)
 
 
