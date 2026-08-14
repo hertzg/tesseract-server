@@ -19,7 +19,7 @@
     "express": "npm:express@^5.0.0",
     "@cloudnative/health-connect": "npm:@cloudnative/health-connect@^2.1.0",
     "multer": "npm:multer@^2.0.0",
-    "yargs": "npm:yargs@^17.7.2",
+    "yargs": "npm:yargs@^18.0.0",
     "generic-pool": "npm:generic-pool@^3.9.0",
     "decoders": "npm:decoders@^1.25.5",
     "monaco-editor": "npm:monaco-editor@^0.49.0",
